@@ -27,6 +27,8 @@ public class BasicViewManager implements ViewManager {
 
     @Override
     public Optional<String> callGPT(String prompt) throws GPTPort.MissingAPIKeyException {
+        if (gptPort == null)
+            throw new GPTPort.MissingAPIKeyException();
         return gptPort.callGPT(gptModel, prompt);
     }
 }

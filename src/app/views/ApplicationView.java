@@ -1,5 +1,6 @@
 package app.views;
 
+import app.managers.backend.GPTPort;
 import app.managers.frontend.ViewManager;
 
 import javax.swing.*;
@@ -10,7 +11,6 @@ import javax.swing.*;
 public class ApplicationView implements View {
 
     private ViewManager manager;
-
     private JFrame frame;
     private JTextArea queryTextArea;
     private JButton sendButton;
@@ -40,6 +40,12 @@ public class ApplicationView implements View {
 
         sendButton.addActionListener(e -> {
             String query = queryTextArea.getText();
+            try {
+                manager.callGPT(query);
+            } catch (GPTPort.MissingAPIKeyException ex) {
+                System.err.println("API key is missing.");
+                throw new RuntimeException(ex);
+            }
         });
 
         frame.setVisible(true);
