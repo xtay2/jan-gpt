@@ -1,6 +1,6 @@
 package app.managers.backend;
 
-import app.records.GPTVersion;
+import app.records.GPTModel;
 
 import java.util.Optional;
 
@@ -16,15 +16,15 @@ public class GPTManager implements GPTPort {
     }
 
     @Override
-    public Optional<String> callGPT(GPTVersion version, String prompt) {
-        if(version == null || prompt == null)
+    public Optional<String> callGPT(GPTModel model, String prompt) {
+        if(model == null || prompt == null)
             return Optional.empty();
 
         return Optional.empty();
     }
 
     @Override
-    public boolean testConnection(GPTVersion version) {
+    public boolean testConnection(GPTModel model) {
         return false;
     }
 }

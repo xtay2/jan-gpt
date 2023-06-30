@@ -1,6 +1,6 @@
 package app.managers.backend;
 
-import app.records.GPTVersion;
+import app.records.GPTModel;
 
 import java.util.Optional;
 
@@ -23,10 +23,10 @@ public interface GPTPort {
      *
      * @return The response from the API or {@link Optional#empty()} if the API call failed.
      */
-    Optional<String> callGPT(GPTVersion version, String prompt);
+    Optional<String> callGPT(GPTModel model, String prompt);
 
     /**
      * Test the connection to the GPT API.
      */
-    boolean testConnection(GPTVersion version);
+    boolean testConnection(GPTModel model);
 }

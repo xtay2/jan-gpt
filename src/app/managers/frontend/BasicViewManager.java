@@ -1,7 +1,7 @@
 package app.managers.frontend;
 
 import app.managers.backend.GPTPort;
-import app.records.GPTVersion;
+import app.records.GPTModel;
 
 import java.util.Optional;
 
@@ -11,22 +11,22 @@ import java.util.Optional;
 public class BasicViewManager implements ViewManager {
 
     private GPTPort gptPort;
-    private GPTVersion gptVersion;
+    private GPTModel gptModel;
 
     @Override
     public boolean setAPIKey(String apiKey) {
         gptPort = GPTPort.getInstance(apiKey);
-        return gptPort.testConnection(gptVersion);
+        return gptPort.testConnection(gptModel);
     }
 
     @Override
-    public boolean setGPTVersion(GPTVersion version) {
-        gptVersion = version;
-        return gptPort.testConnection(gptVersion);
+    public boolean setGPTVersion(GPTModel model) {
+        gptModel = model;
+        return gptPort.testConnection(gptModel);
     }
 
     @Override
     public Optional<String> callGPT(String prompt) {
-        return gptPort.callGPT(gptVersion, prompt);
+        return gptPort.callGPT(gptModel, prompt);
     }
 }

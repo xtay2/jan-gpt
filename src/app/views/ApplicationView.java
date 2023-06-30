@@ -3,8 +3,6 @@ package app.views;
 import app.managers.frontend.ViewManager;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 /**
  * @author Dennis Woithe
@@ -16,7 +14,7 @@ public class ApplicationView implements View {
     private JFrame frame;
     private JTextArea queryTextArea;
     private JButton sendButton;
-    private String gptVersion;
+    private String gptModel;
 
 
     /**

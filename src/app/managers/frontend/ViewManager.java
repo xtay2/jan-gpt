@@ -1,6 +1,6 @@
 package app.managers.frontend;
 
-import app.records.GPTVersion;
+import app.records.GPTModel;
 
 import java.util.Optional;
 
@@ -21,7 +21,7 @@ public interface ViewManager {
      *
      * @return false if null was passed or the version is not supported.
      */
-    boolean setGPTVersion(GPTVersion version);
+    boolean setGPTVersion(GPTModel version);
 
 
     /**
