@@ -1,0 +1,34 @@
+package app.managers.frontend;
+
+import app.records.GPTVersion;
+
+import java.util.Optional;
+
+/**
+ * @author Dennis Woithe
+ */
+public interface ViewManager {
+
+    /**
+     * Set the API key to use for the GPT API.
+     *
+     * @return true if the API key was set successfully and can establish a connection.
+     */
+    boolean setAPIKey(String apiKey);
+
+    /**
+     * Set the GPT version to use.
+     *
+     * @return false if null was passed or the version is not supported.
+     */
+    boolean setGPTVersion(GPTVersion version);
+
+
+    /**
+     * Send a prompt to the GPT-3 API and return the response.
+     *
+     * @return The response from the API or {@link Optional#empty()} if the API call failed.
+     */
+    Optional<String> callGPT(String prompt);
+
+}
