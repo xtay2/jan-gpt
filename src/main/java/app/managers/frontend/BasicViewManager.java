@@ -1,5 +1,6 @@
 package main.java.app.managers.frontend;
 
+import main.java.app.managers.backend.ApiKeyManager;
 import main.java.app.managers.backend.GPTPort;
 import main.java.app.records.GPTModel;
 
@@ -13,10 +14,19 @@ public class BasicViewManager implements ViewManager {
     private GPTPort gptPort;
     private GPTModel gptModel = GPTModel.GPT_3_5;
 
+    public BasicViewManager() {
+        ApiKeyManager.getApiKey().ifPresent(this::setAPIKey);
+    }
+
+    @Override
+    public boolean hasAPIKey() {
+        return gptPort != null;
+    }
+
     @Override
     public boolean setAPIKey(String apiKey) {
         gptPort = GPTPort.getInstance(apiKey);
-        return gptPort.testConnection(gptModel);
+        return gptPort.testConnection(gptModel) && ApiKeyManager.saveApiKey(apiKey);
     }
 
     @Override

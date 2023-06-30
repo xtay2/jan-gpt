@@ -1,5 +1,6 @@
 package main.java.app.views;
 
+import main.java.app.managers.backend.ApiKeyManager;
 import main.java.app.managers.backend.GPTPort;
 import main.java.app.managers.frontend.ViewManager;
 
@@ -22,26 +23,43 @@ public class ConsoleView implements View, AutoCloseable {
         if (isRunning())
             throw new IllegalStateException("Shell is already running.");
         this.manager = manager;
-        manager.setAPIKey("");
         running = true;
+        checkAPIKey();
         write("Willkommen bei " + NAME + ". Was kann ich für dich tun?\n");
         do {
-            write(NAME + "> ");
+            write("Prompt> ");
             var output = execute(input.nextLine());
-            write(output);
+            if(output != null)
+                write(output);
         } while (running);
     }
 
-    private String execute(String input) {
-        try {
-            return manager.callGPT(input).orElse("Ich habe dich leider nicht verstanden.");
-        } catch (GPTPort.MissingAPIKeyException e) {
-            return "Ich kann dir leider nicht helfen, da ich keine API-Schlüssel habe.";
-        } catch (GPTPort.MissingModelException e) {
-            return "Bitte lege ein Modell fest, mit dem ich arbeiten soll.";
+    private void checkAPIKey() {
+        while (!manager.hasAPIKey()) {
+
         }
     }
 
+    private String execute(String input) {
+        if(input == null || input.isBlank()) return null;
+        if(input.equalsIgnoreCase("exit")) {
+            write(answer("Auf Wiedersehen!"));
+            close();
+            return null;
+        }
+        try {
+            return answer(manager.callGPT(input).orElse("Ich habe dich leider nicht verstanden."));
+        } catch (GPTPort.MissingAPIKeyException e) {
+            return answer("Ich kann dir leider nicht helfen, da ich keine API-Schlüssel habe.");
+        } catch (GPTPort.MissingModelException e) {
+            return answer("Bitte lege das Modell fest, mit dem ich arbeiten soll.");
+        }
+    }
+
+    private String answer(String answer) {
+        if(answer == null || answer.isBlank()) return null;
+        return NAME + "> " + answer;
+    }
 
     /**
      * Writes the given message to the output stream.
@@ -65,12 +83,6 @@ public class ConsoleView implements View, AutoCloseable {
 
     public boolean isRunning() {
         return running;
-    }
-
-    /** Closes this shell and writes the given exit message to the output stream. */
-    public void close(String exitMessage) {
-        write(exitMessage);
-        close();
     }
 
     /** Closes this shell and the corresponding streams. */

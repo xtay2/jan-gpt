@@ -10,6 +10,9 @@ import java.util.Optional;
  */
 public interface ViewManager {
 
+    /** Return true if an API key was set. */
+    boolean hasAPIKey();
+
     /**
      * Set the API key to use for the GPT API.
      *
