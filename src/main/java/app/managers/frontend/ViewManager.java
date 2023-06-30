@@ -24,12 +24,11 @@ public interface ViewManager {
      */
     boolean setGPTModel(GPTModel version);
 
-
     /**
      * Send a prompt to the GPT-3 API and return the response.
      *
      * @return The response from the API or {@link Optional#empty()} if the API call failed.
      */
-    Optional<String> callGPT(String prompt) throws GPTPort.MissingAPIKeyException;
+    Optional<String> callGPT(String prompt) throws GPTPort.MissingAPIKeyException, GPTPort.MissingModelException;
 
 }

@@ -1,14 +1,32 @@
 package main.java.app.managers.backend;
 
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import main.java.app.records.GPTModel;
+import main.java.app.records.Message;
+import main.java.app.records.Role;
 
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 /**
  * @author Dennis Woithe
  */
 public class GPTManager implements GPTPort {
+
+    private static final URI GPT_URI = URI.create("https://api.openai.com/v1/chat/completions");
+
+    private final List<Message> messages = new ArrayList<>();
+
+    private final HttpClient httpClient = HttpClient.newHttpClient();
 
     private final String apiKey;
 
@@ -17,17 +35,54 @@ public class GPTManager implements GPTPort {
     }
 
     @Override
-    public Optional<String> callGPT(GPTModel model, String prompt) throws GPTPort.MissingAPIKeyException {
-        if(apiKey == null)
+    public Optional<String> callGPT(GPTModel model, String prompt) throws GPTPort.MissingAPIKeyException, MissingModelException {
+        if (apiKey == null)
             throw new GPTPort.MissingAPIKeyException();
-        if(model == null || prompt == null)
+        if (model == null)
+            throw new GPTPort.MissingModelException();
+        if (prompt == null)
             return Optional.empty();
+        // PREPARE REQUEST
+        messages.add(new Message(Role.USER, prompt));
+        var request = HttpRequest.newBuilder()
+                .uri(GPT_URI)
+                .POST(HttpRequest.BodyPublishers.ofString(buildPromptRequestBody(model).toString()))
+                .header("Authorization", "Bearer " + apiKey)
+                .header("Content-Type", "application/json")
+                .build();
+        // RECEIVE RESPONSE
+        try {
+            var responseBody = httpClient.send(request, HttpResponse.BodyHandlers.ofString()).body();
+            var responseMsg = parseJsonResponse(responseBody);
+            responseMsg.ifPresent(s -> messages.add(new Message(Role.ASSISTANT, s)));
+            return responseMsg;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
+    }
 
-        return Optional.empty();
+    private Optional<String> parseJsonResponse(String response) {
+        if (response == null || response.isBlank())
+            return Optional.empty();
+        var jsonResponse = new Gson().fromJson(response, JsonObject.class);
+        try {
+            return Optional.of(jsonResponse.get("choices").getAsJsonArray().get(0).getAsJsonObject().get("message").getAsJsonObject().get("content").getAsString().trim());
+        } catch (Exception e) {
+            return Optional.empty();
+        }
     }
 
     @Override
     public boolean testConnection(GPTModel model) {
         return false;
     }
+
+    private JsonObject buildPromptRequestBody(GPTModel model) {
+        var requestBody = new JsonObject();
+        requestBody.add("model", new JsonPrimitive(model.modelName));
+        requestBody.add("messages", messages.stream().map(Message::toJsonObject).collect(JsonArray::new, JsonArray::add, JsonArray::addAll));
+        return requestBody;
+    }
+
 }

@@ -9,7 +9,6 @@ import javax.swing.*;
  * @author Dennis Woithe
  */
 public class ApplicationView implements View {
-
     private ViewManager manager;
     private JFrame frame;
     private JTextArea queryTextArea;
@@ -44,6 +43,9 @@ public class ApplicationView implements View {
                 manager.callGPT(query);
             } catch (GPTPort.MissingAPIKeyException ex) {
                 System.err.println("API key is missing.");
+                throw new RuntimeException(ex);
+            } catch (GPTPort.MissingModelException ex) {
+                System.err.println("Model is missing.");
                 throw new RuntimeException(ex);
             }
         });

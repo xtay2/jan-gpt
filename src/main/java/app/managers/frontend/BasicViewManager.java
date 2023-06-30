@@ -11,7 +11,7 @@ import java.util.Optional;
 public class BasicViewManager implements ViewManager {
 
     private GPTPort gptPort;
-    private GPTModel gptModel;
+    private GPTModel gptModel = GPTModel.GPT_3_5;
 
     @Override
     public boolean setAPIKey(String apiKey) {
@@ -26,7 +26,7 @@ public class BasicViewManager implements ViewManager {
     }
 
     @Override
-    public Optional<String> callGPT(String prompt) throws GPTPort.MissingAPIKeyException {
+    public Optional<String> callGPT(String prompt) throws GPTPort.MissingAPIKeyException, GPTPort.MissingModelException {
         if (gptPort == null)
             throw new GPTPort.MissingAPIKeyException();
         return gptPort.callGPT(gptModel, prompt);

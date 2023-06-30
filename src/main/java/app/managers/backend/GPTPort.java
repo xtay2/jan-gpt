@@ -24,7 +24,7 @@ public interface GPTPort {
      *
      * @return The response from the API or {@link Optional#empty()} if the API call failed.
      */
-    Optional<String> callGPT(GPTModel model, String prompt) throws MissingAPIKeyException;
+    Optional<String> callGPT(GPTModel model, String prompt) throws MissingAPIKeyException, MissingModelException;
 
     /**
      * Test the connection to the GPT API.
@@ -34,6 +34,12 @@ public interface GPTPort {
     class MissingAPIKeyException extends Exception {
         public MissingAPIKeyException() {
             super("No API key was provided.");
+        }
+    }
+
+    class MissingModelException extends Exception {
+        public MissingModelException() {
+            super("No model was provided.");
         }
     }
 
