@@ -1,5 +1,6 @@
 package app.managers.frontend;
 
+import app.managers.backend.GPTPort;
 import app.records.GPTModel;
 
 import java.util.Optional;
@@ -21,7 +22,7 @@ public interface ViewManager {
      *
      * @return false if null was passed or the version is not supported.
      */
-    boolean setGPTVersion(GPTModel version);
+    boolean setGPTModel(GPTModel version);
 
 
     /**
@@ -29,6 +30,6 @@ public interface ViewManager {
      *
      * @return The response from the API or {@link Optional#empty()} if the API call failed.
      */
-    Optional<String> callGPT(String prompt);
+    Optional<String> callGPT(String prompt) throws GPTPort.MissingAPIKeyException;
 
 }

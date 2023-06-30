@@ -16,7 +16,9 @@ public class GPTManager implements GPTPort {
     }
 
     @Override
-    public Optional<String> callGPT(GPTModel model, String prompt) {
+    public Optional<String> callGPT(GPTModel model, String prompt) throws MissingAPIKeyException {
+        if(apiKey == null)
+            throw new MissingAPIKeyException();
         if(model == null || prompt == null)
             return Optional.empty();
 

@@ -20,13 +20,13 @@ public class BasicViewManager implements ViewManager {
     }
 
     @Override
-    public boolean setGPTVersion(GPTModel model) {
+    public boolean setGPTModel(GPTModel model) {
         gptModel = model;
         return gptPort.testConnection(gptModel);
     }
 
     @Override
-    public Optional<String> callGPT(String prompt) {
+    public Optional<String> callGPT(String prompt) throws GPTPort.MissingAPIKeyException {
         return gptPort.callGPT(gptModel, prompt);
     }
 }
