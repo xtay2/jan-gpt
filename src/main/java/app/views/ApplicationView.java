@@ -1,7 +1,7 @@
-package app.views;
+package main.java.app.views;
 
-import app.managers.backend.GPTPort;
-import app.managers.frontend.ViewManager;
+import main.java.app.managers.backend.GPTPort;
+import main.java.app.managers.frontend.ViewManager;
 
 import javax.swing.*;
 

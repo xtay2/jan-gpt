@@ -1,4 +1,4 @@
-package app.records;
+package main.java.app.records;
 
 /**
  * @author Dennis Woithe

@@ -1,6 +1,6 @@
-package app.views;
+package main.java.app.views;
 
-import app.managers.frontend.ViewManager;
+import main.java.app.managers.frontend.ViewManager;
 
 /**
  * @author Dennis Woithe

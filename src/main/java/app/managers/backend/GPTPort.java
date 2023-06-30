@@ -1,6 +1,7 @@
-package app.managers.backend;
+package main.java.app.managers.backend;
 
-import app.records.GPTModel;
+
+import main.java.app.records.GPTModel;
 
 import java.util.Optional;
 

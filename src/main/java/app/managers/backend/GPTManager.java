@@ -1,6 +1,7 @@
-package app.managers.backend;
+package main.java.app.managers.backend;
 
-import app.records.GPTModel;
+
+import main.java.app.records.GPTModel;
 
 import java.util.Optional;
 
@@ -16,9 +17,9 @@ public class GPTManager implements GPTPort {
     }
 
     @Override
-    public Optional<String> callGPT(GPTModel model, String prompt) throws MissingAPIKeyException {
+    public Optional<String> callGPT(GPTModel model, String prompt) throws GPTPort.MissingAPIKeyException {
         if(apiKey == null)
-            throw new MissingAPIKeyException();
+            throw new GPTPort.MissingAPIKeyException();
         if(model == null || prompt == null)
             return Optional.empty();
 

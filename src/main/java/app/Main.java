@@ -1,9 +1,7 @@
-package app;
+package main.java.app;
 
-import app.managers.frontend.BasicViewManager;
-import app.factories.ViewFactory;
-import app.managers.frontend.ViewManager;
 
+import main.java.app.factories.ViewFactory;
 
 /**
  * @author Dennis Woithe

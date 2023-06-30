@@ -1,7 +1,7 @@
-package app.managers.frontend;
+package main.java.app.managers.frontend;
 
-import app.managers.backend.GPTPort;
-import app.records.GPTModel;
+import main.java.app.managers.backend.GPTPort;
+import main.java.app.records.GPTModel;
 
 import java.util.Optional;
 
