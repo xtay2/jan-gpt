@@ -1,6 +1,7 @@
 package main.java.app;
 
 
+import com.google.gson.Gson;
 import main.java.app.factories.ViewFactory;
 
 /**
