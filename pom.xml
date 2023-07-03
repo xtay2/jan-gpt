@@ -6,7 +6,7 @@
 
     <groupId>com.trinext.jan-gpt</groupId>
     <artifactId>JanGPT</artifactId>
-    <version>beta-0.1</version>
+    <version>beta-0.2</version>
 
     <properties>
         <maven.compiler.source>19</maven.compiler.source>
@@ -29,7 +29,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>app.Main</mainClass>
+                            <mainClass>main.java.app.Main</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

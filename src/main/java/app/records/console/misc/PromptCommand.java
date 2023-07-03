@@ -20,12 +20,12 @@ public class PromptCommand extends ConsoleCommand {
         try {
             manager.callGPT(input).map(s -> s + "\n").ifPresentOrElse(
                     outStream,
-                    () -> errStream.accept("Ich habe dich leider nicht verstanden.")
+                    () -> errStream.accept("Ich habe dich leider nicht verstanden.\n")
             );
         } catch (GPTPort.MissingAPIKeyException e) {
-            errStream.accept("Ich kann dir leider nicht helfen, da ich keine API-Schlüssel habe.");
+            errStream.accept("Ich kann dir leider nicht helfen, da ich keine API-Schlüssel habe.\n");
         } catch (GPTPort.MissingModelException e) {
-            errStream.accept("Bitte lege das Modell fest, mit dem ich arbeiten soll.");
+            errStream.accept("Bitte lege das Modell fest, mit dem ich arbeiten soll.\n");
         }
     }
 }

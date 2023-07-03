@@ -2,7 +2,6 @@ package main.java.app.records.console.misc;
 
 import main.java.app.managers.frontend.ViewManager;
 import main.java.app.records.console.ConsoleCommand;
-import main.java.app.views.ConsoleView;
 
 import java.util.function.Consumer;
 
@@ -21,7 +20,7 @@ public class ExitCommand extends ConsoleCommand {
 
     @Override
     public void apply(String input, Consumer<String> outStream, Consumer<String> errStream, ViewManager manager) {
-        outStream.accept(ConsoleView.SHELL_NAME + "> Auf Wiedersehen!");
+        outStream.accept("Auf Wiedersehen!");
         System.exit(0);
     }
 }

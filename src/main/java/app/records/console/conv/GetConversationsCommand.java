@@ -24,7 +24,7 @@ public class GetConversationsCommand extends ConsoleCommand {
             if (conv.isEmpty())
                 outStream.accept("Es sind keine Konversationen gespeichert.");
             else
-                outStream.accept("Gespeicherte Konversationen:\n" + String.join("\n", conv));
-        }, () -> errStream.accept("Die Gespeicherten Konversationen konnten nicht ausgelesen werden."));
+                outStream.accept("Gespeicherte Konversationen:\n" + String.join("\n", conv) + "\n");
+        }, () -> errStream.accept("Die Gespeicherten Konversationen konnten nicht ausgelesen werden.\n"));
     }
 }

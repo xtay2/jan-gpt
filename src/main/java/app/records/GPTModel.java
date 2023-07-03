@@ -1,5 +1,6 @@
 package main.java.app.records;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import main.java.app.managers.backend.ApiKeyManager;
 
@@ -33,21 +34,17 @@ public class GPTModel {
             if (apikey.isEmpty())
                 return Optional.empty();
             JsonParser.parseString(
-                    HttpClient.newHttpClient().send(
-                            HttpRequest.newBuilder(MODELS_URI)
-                                    .GET()
-                                    .header("Authorization", "Bearer " + apikey.get())
-                                    .build(),
-                            HttpResponse.BodyHandlers.ofString()
-                    ).body()
-            ).getAsJsonObject().getAsJsonArray("data").asList().stream().map(jObj -> {
-                        var model = jObj.getAsJsonObject();
-                        return new GPTModel(
-                                model.get("id").getAsString(),
-                                model.get("created").getAsLong()
-                        );
-                    }
-            ).forEach(MODELS::add);
+                            HttpClient.newHttpClient().send(
+                                    HttpRequest.newBuilder(MODELS_URI)
+                                            .GET()
+                                            .header("Authorization", "Bearer " + apikey.get())
+                                            .build(),
+                                    HttpResponse.BodyHandlers.ofString()
+                            ).body()
+                    ).getAsJsonObject().getAsJsonArray("data").asList().stream().map(JsonElement::getAsJsonObject)
+                    .filter(jsonObject -> jsonObject.getAsJsonPrimitive("id").getAsString().startsWith("gpt"))
+                    .map(jObj -> new GPTModel(jObj.get("id").getAsString(), jObj.get("created").getAsLong())
+                    ).forEach(MODELS::add);
             return Optional.of(MODELS);
         } catch (Exception e) {
             return Optional.empty();

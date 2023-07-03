@@ -27,14 +27,15 @@ public class HelpCommand extends ConsoleCommand {
         var builder = new StringBuilder();
         builder.append("Verfügbare Befehle:\n");
         CommandGroup group = null;
+        final int FRONT_PAD = 10, MAX_BACK_PAD = 110;
         for (var command : otherCommands) {
             if (group != command.group) {
                 group = command.group;
                 var name = group.name();
                 builder.append("\n")
-                        .append("-".repeat(10))
+                        .append("-".repeat(FRONT_PAD))
                         .append(name)
-                        .append("-".repeat(110 - name.length()))
+                        .append("-".repeat(MAX_BACK_PAD - name.length()))
                         .append("\n");
             }
             builder.append(command.syntax)
@@ -42,6 +43,6 @@ public class HelpCommand extends ConsoleCommand {
                     .append(command.description)
                     .append("\n");
         }
-        outStream.accept(builder.append("-".repeat(130)).append("\n").toString());
+        outStream.accept(builder.append("-".repeat(FRONT_PAD + MAX_BACK_PAD)).append("\n").toString());
     }
 }

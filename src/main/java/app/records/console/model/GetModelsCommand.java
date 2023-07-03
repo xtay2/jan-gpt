@@ -21,6 +21,6 @@ public class GetModelsCommand extends ConsoleCommand {
 
     @Override
     public void apply(String input, Consumer<String> outStream, Consumer<String> errStream, ViewManager manager) {
-        outStream.accept("Verfügbare Modelle:\n" + GPTModel.modelString());
+        outStream.accept("Verfügbare Modelle:\n" + GPTModel.modelString() + "\n");
     }
 }

@@ -25,7 +25,7 @@ public class LoadConversationCommand extends ConsoleCommand {
         manager.loadConversation(input.trim())
                 .map(conv -> "Konversation \"" + input.trim() + "\" wurde rekonstruiert:\n" +
                         conv.stream()
-                        .map(c -> c.role() + ": " + c.content())
+                        .map(c -> c.role().alias(true) + ": " + c.content() + "\n")
                         .collect(Collectors.joining("\n"))
                 ).ifPresentOrElse(
                         outStream,
