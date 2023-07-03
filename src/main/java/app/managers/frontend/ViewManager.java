@@ -2,7 +2,9 @@ package main.java.app.managers.frontend;
 
 import main.java.app.managers.backend.GPTPort;
 import main.java.app.records.GPTModel;
+import main.java.app.records.Message;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -41,5 +43,11 @@ public interface ViewManager {
     Optional<GPTModel> getGPTModel();
 
     /** Save the current conversation to a file. */
-    boolean saveConversationAs(String strip);
+    boolean saveConversationAs(String name);
+
+    /** Return the names of all saved conversations. */
+    Optional<List<String>> getConversations();;
+
+    /** Load a conversation from a file. */
+    Optional<List<Message>> loadConversation(String name);
 }

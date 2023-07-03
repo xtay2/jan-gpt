@@ -91,6 +91,12 @@ public class GPTManager implements GPTPort {
         return messages;
     }
 
+    @Override
+    public void setMessages(List<Message> messages) {
+        this.messages.clear();
+        this.messages.addAll(messages);
+    }
+
     private JsonObject buildPromptRequestBody(GPTModel model) {
         var requestBody = new JsonObject();
         requestBody.add("model", new JsonPrimitive(model.modelName));

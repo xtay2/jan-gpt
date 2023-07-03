@@ -36,6 +36,9 @@ public interface GPTPort {
     /** Returns the messages of the current conversation. */
     List<Message> getMessages();
 
+    /** Sets the messages of the current conversation. */
+    void setMessages(List<Message> messages);
+
     class MissingAPIKeyException extends Exception {
         public MissingAPIKeyException() {
             super("No API key was provided.");

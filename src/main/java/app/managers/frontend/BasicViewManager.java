@@ -4,7 +4,9 @@ import main.java.app.managers.backend.ApiKeyManager;
 import main.java.app.managers.backend.ConversationManager;
 import main.java.app.managers.backend.GPTPort;
 import main.java.app.records.GPTModel;
+import main.java.app.records.Message;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -56,7 +58,19 @@ public class BasicViewManager implements ViewManager {
     }
 
     @Override
-    public boolean saveConversationAs(String conversationName) {
-        return ConversationManager.saveConversation(conversationName,gptPort.getMessages());
+    public boolean saveConversationAs(String name) {
+        return ConversationManager.saveConversation(name,gptPort.getMessages());
+    }
+
+    @Override
+    public Optional<List<String>> getConversations() {
+        return ConversationManager.getConversationNames();
+    }
+
+    @Override
+    public Optional<List<Message>> loadConversation(String name) {
+        var conv = ConversationManager.loadConversation(name);
+        conv.ifPresent(gptPort::setMessages);
+        return conv;
     }
 }

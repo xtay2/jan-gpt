@@ -1,10 +1,12 @@
 package main.java.app.managers.backend;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import main.java.app.records.Message;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.SyncFailedException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -51,15 +53,14 @@ public interface ConversationManager {
     }
 
     static Optional<List<String>> getConversationNames() {
-        try {
-            return Optional.of(
-                    Files.walk(Path.of(CONVERSATIONS_PATH))
-                            .filter(Files::isRegularFile)
-                            .map(Path::getFileName)
-                            .map(Path::toString)
-                            .filter(s -> s.endsWith(".json"))
-                            .map(s -> s.substring(0, s.lastIndexOf(".json")))
-                            .collect(Collectors.toList())
+        try (var files = Files.walk(Path.of(CONVERSATIONS_PATH))) {
+            return Optional.of(files
+                    .filter(Files::isRegularFile)
+                    .map(Path::getFileName)
+                    .map(Path::toString)
+                    .filter(s -> s.endsWith(".json"))
+                    .map(s -> s.substring(0, s.lastIndexOf(".json")))
+                    .collect(Collectors.toList())
             );
         } catch (IOException e) {
             return Optional.empty();
