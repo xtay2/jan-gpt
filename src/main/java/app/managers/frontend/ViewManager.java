@@ -39,4 +39,7 @@ public interface ViewManager {
 
     /** Return the currently set {@link GPTModel}. */
     Optional<GPTModel> getGPTModel();
+
+    /** Save the current conversation to a file. */
+    boolean saveConversationAs(String strip);
 }

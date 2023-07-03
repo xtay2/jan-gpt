@@ -1,6 +1,7 @@
 package main.java.app.managers.frontend;
 
 import main.java.app.managers.backend.ApiKeyManager;
+import main.java.app.managers.backend.ConversationManager;
 import main.java.app.managers.backend.GPTPort;
 import main.java.app.records.GPTModel;
 
@@ -52,5 +53,10 @@ public class BasicViewManager implements ViewManager {
     @Override
     public Optional<GPTModel> getGPTModel() {
         return Optional.ofNullable(gptModel);
+    }
+
+    @Override
+    public boolean saveConversationAs(String conversationName) {
+        return ConversationManager.saveConversation(conversationName,gptPort.getMessages());
     }
 }

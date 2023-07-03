@@ -2,7 +2,9 @@ package main.java.app.managers.backend;
 
 
 import main.java.app.records.GPTModel;
+import main.java.app.records.Message;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -30,6 +32,9 @@ public interface GPTPort {
      * Test the connection to the GPT API.
      */
     boolean testConnection();
+
+    /** Returns the messages of the current conversation. */
+    List<Message> getMessages();
 
     class MissingAPIKeyException extends Exception {
         public MissingAPIKeyException() {

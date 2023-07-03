@@ -14,7 +14,7 @@ import java.util.Set;
  */
 public class ConsoleView implements View {
 
-    private static final String SHELL_NAME = "Jan-GPT";
+    public static final String SHELL_NAME = "Jan-GPT";
     private static final Scanner input = new Scanner(System.in, StandardCharsets.UTF_8);
     private static final PrintWriter output = new PrintWriter(new OutputStreamWriter(System.out, StandardCharsets.UTF_8), true);
 
@@ -32,7 +32,7 @@ public class ConsoleView implements View {
         this.manager = manager;
         checkAPIKey();
         assert manager.hasGPTModel();
-        write(SHELL_NAME, "Hallo! Was kann ich für dich tun?\n(Solltest du Hilfe benötigen, gib \"help\" ein.)");
+        write(SHELL_NAME, "Hallo! Was kann ich für dich tun?\n(Für eine Auswahl an Befehlen, gib \"help\" ein.)\n");
         // Run
         while (true) {
             write("Prompt", "");

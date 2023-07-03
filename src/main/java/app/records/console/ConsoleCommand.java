@@ -29,10 +29,11 @@ public abstract class ConsoleCommand {
      */
     public static Set<ConsoleCommand> getCommands() {
         var commands = new HashSet<>(Set.of(
+                new ExitCommand(),
                 new ChangeModelCommand(),
                 new GetModelsCommand(),
                 new GetCurrentModelCommand(),
-                new ExitCommand()
+                new SaveConversationCommand()
         ));
         commands.add(new HelpCommand(commands));
         return commands;
