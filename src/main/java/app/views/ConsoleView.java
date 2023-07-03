@@ -12,13 +12,12 @@ import java.util.Set;
 /**
  * @author Dennis Woithe
  */
-public class ConsoleView implements View, AutoCloseable {
+public class ConsoleView implements View {
 
     private static final String SHELL_NAME = "Jan-GPT";
     private static final Scanner input = new Scanner(System.in, StandardCharsets.UTF_8);
     private static final PrintWriter output = new PrintWriter(new OutputStreamWriter(System.out, StandardCharsets.UTF_8), true);
 
-    private boolean running = false;
     private ViewManager manager;
 
     private final Set<ConsoleCommand> commands;
@@ -27,27 +26,26 @@ public class ConsoleView implements View, AutoCloseable {
         this.commands = ConsoleCommand.getCommands();
     }
 
+    @SuppressWarnings("InfiniteLoopStatement")
     public void start(ViewManager manager) {
-        if (isRunning())
-            throw new IllegalStateException("Shell is already running.");
         // Init
         this.manager = manager;
-        running = true;
         checkAPIKey();
+        assert manager.hasGPTModel();
         write(SHELL_NAME, "Hallo! Was kann ich für dich tun?\n(Solltest du Hilfe benötigen, gib \"help\" ein.)");
         // Run
-        do {
+        while (true) {
             write("Prompt", "");
             var output = execute(input.nextLine());
             if(output != null)
                 write(SHELL_NAME, output);
-        } while (running);
+        }
     }
 
     private void checkAPIKey() {
         if(manager.hasAPIKey()) return;
         write(SHELL_NAME, "Bitte gib deinen API-Schlüssel ein: ");
-        while (isRunning() && !manager.hasAPIKey()) {
+        while (!manager.hasAPIKey()) {
             if(manager.setAPIKey(input.nextLine())) continue;
             write(SHELL_NAME,"Der API-Schlüssel ist ungültig. Versuche es erneut: ");
         }
@@ -85,24 +83,6 @@ public class ConsoleView implements View, AutoCloseable {
         for (char c : msg.toCharArray())
             output.write(c);
         output.flush();
-    }
-
-    public boolean isClosed() {
-        return !running;
-    }
-
-    public boolean isRunning() {
-        return running;
-    }
-
-    /** Closes this shell and the corresponding streams. */
-    @Override
-    public void close() {
-        if (isClosed())
-            throw new IllegalStateException(SHELL_NAME + " was already closed.");
-        input.close();
-        output.close();
-        running = false;
     }
 
 }
