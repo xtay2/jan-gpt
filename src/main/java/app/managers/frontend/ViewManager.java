@@ -53,4 +53,8 @@ public interface ViewManager {
 
     /** Start a new conversation. */
     void newConversation();
+
+    /** Delete a conversation-file. */
+    boolean deleteConversation(String name);
+
 }

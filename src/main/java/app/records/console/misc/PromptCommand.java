@@ -18,14 +18,14 @@ public class PromptCommand extends ConsoleCommand {
     @Override
     public void apply(String input, Consumer<String> outStream, Consumer<String> errStream, ViewManager manager) {
         try {
-            manager.callGPT(input).map(s -> s + "\n").ifPresentOrElse(
+            manager.callGPT(input).ifPresentOrElse(
                     outStream,
-                    () -> errStream.accept("Ich habe dich leider nicht verstanden.\n")
+                    () -> errStream.accept("Ich habe dich leider nicht verstanden.")
             );
         } catch (GPTPort.MissingAPIKeyException e) {
-            errStream.accept("Ich kann dir leider nicht helfen, da ich keine API-Schlüssel habe.\n");
+            errStream.accept("Ich kann dir leider nicht helfen, da ich keine API-Schlüssel habe.");
         } catch (GPTPort.MissingModelException e) {
-            errStream.accept("Bitte lege das Modell fest, mit dem ich arbeiten soll.\n");
+            errStream.accept("Bitte lege das Modell fest, mit dem ich arbeiten soll.");
         }
     }
 }

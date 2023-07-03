@@ -19,14 +19,13 @@ public class LoadConversationCommand extends ConsoleCommand {
         );
     }
 
-
     @Override
     public void apply(String input, Consumer<String> outStream, Consumer<String> errStream, ViewManager manager) {
         manager.loadConversation(input.trim())
                 .map(conv -> "Konversation \"" + input.trim() + "\" wurde rekonstruiert:\n" +
                         conv.stream()
                         .map(c -> c.role().alias(true) + ": " + c.content() + "\n")
-                        .collect(Collectors.joining("\n"))
+                        .collect(Collectors.joining("\n")).strip()
                 ).ifPresentOrElse(
                         outStream,
                         () -> errStream.accept("Konversation konnte nicht geladen werden.")

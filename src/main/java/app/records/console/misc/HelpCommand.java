@@ -43,6 +43,6 @@ public class HelpCommand extends ConsoleCommand {
                     .append(command.description)
                     .append("\n");
         }
-        outStream.accept(builder.append("-".repeat(FRONT_PAD + MAX_BACK_PAD)).append("\n").toString());
+        outStream.accept(builder.append("-".repeat(FRONT_PAD + MAX_BACK_PAD)).toString());
     }
 }

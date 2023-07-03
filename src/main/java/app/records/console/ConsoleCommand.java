@@ -1,6 +1,7 @@
 package main.java.app.records.console;
 
 import main.java.app.managers.frontend.ViewManager;
+import main.java.app.records.console.conv.DeleteConversationCommand;
 import main.java.app.records.console.conv.GetConversationsCommand;
 import main.java.app.records.console.conv.LoadConversationCommand;
 import main.java.app.records.console.conv.SaveConversationCommand;
@@ -59,6 +60,7 @@ public abstract class ConsoleCommand {
                 new SaveConversationCommand(),
                 new GetConversationsCommand(),
                 new LoadConversationCommand(),
+                new DeleteConversationCommand(),
 
                 // Misc
                 new ExitCommand()
