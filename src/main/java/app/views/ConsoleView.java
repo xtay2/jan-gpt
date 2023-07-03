@@ -19,7 +19,7 @@ public class ConsoleView implements View {
 
     public static final String SHELL_NAME = Role.ASSISTANT.alias(true), USER_NAME = Role.USER.alias(true);
     private static final Scanner input = new Scanner(System.in, StandardCharsets.UTF_8);
-    private static final PrintWriter output = new PrintWriter(new OutputStreamWriter(System.out, StandardCharsets.UTF_8), true);
+    private static final PrintWriter output = new PrintWriter(new OutputStreamWriter(System.out, StandardCharsets.UTF_8), false);
 
     private ViewManager manager;
 
@@ -35,20 +35,20 @@ public class ConsoleView implements View {
         this.manager = manager;
         checkAPIKey();
         assert manager.hasGPTModel();
-        write(SHELL_NAME, "Hallo! Was kann ich für dich tun?\n(Für eine Auswahl an Befehlen, gib \"help\" ein.)\n");
+        write("Hallo! Was kann ich für dich tun?\n(Für eine Auswahl an Befehlen, gib \"help\" ein.)");
         // Run
         while (true) {
-            write(USER_NAME, "");
+            awaitPrompt();
             execute(input.nextLine());
         }
     }
 
     private void checkAPIKey() {
         if (manager.hasAPIKey()) return;
-        write(SHELL_NAME, ANSI.colorize("Bitte gib deinen API-Schlüssel ein: ", ANSI.Color.YELLOW));
+        write(ANSI.colorize("Bitte gib deinen API-Schlüssel ein: ", ANSI.Color.YELLOW));
         while (!manager.hasAPIKey()) {
             if (manager.setAPIKey(input.nextLine())) return;
-            write(SHELL_NAME, ANSI.colorize("Der API-Schlüssel ist ungültig. Versuche es erneut: ", ANSI.Color.RED));
+            write(ANSI.colorize("Der API-Schlüssel ist ungültig. Versuche es erneut: ", ANSI.Color.RED));
         }
     }
 
@@ -59,8 +59,8 @@ public class ConsoleView implements View {
             if (inputStr.startsWith(command.name)) {
                 command.apply(
                         inputStr.substring(command.name.length()).trim(),
-                        out -> write(SHELL_NAME, out),
-                        out -> write(SHELL_NAME, ANSI.colorize(out, ANSI.Color.RED)),
+                        this::write,
+                        out -> write(ANSI.colorize(out, ANSI.Color.RED)),
                         manager
                 );
                 return;
@@ -68,8 +68,8 @@ public class ConsoleView implements View {
         }
         new PromptCommand().apply(
                 inputStr,
-                out -> write(SHELL_NAME, out),
-                out -> write(SHELL_NAME, ANSI.colorize(out, ANSI.Color.RED)),
+                this::write,
+                out -> write(ANSI.colorize(out, ANSI.Color.RED)),
                 manager
         );
     }
@@ -79,15 +79,20 @@ public class ConsoleView implements View {
      * Writes the given message to the output stream.
      * If the message is null, nothing happens.
      *
-     * @param alias the name of the sender
-     * @param msg   the message to write
+     * @param msg the message to write
      */
-    private void write(String alias, String msg) {
+    private void write(String msg) {
         if (msg == null) return;
-        msg = alias + "> " + msg;
+        msg = ConsoleView.SHELL_NAME + "> " + msg + "\n\n";
         for (char c : msg.toCharArray())
             output.write(c);
         output.flush();
     }
+
+    private void awaitPrompt() {
+        output.write(USER_NAME + "> ");
+        output.flush();
+    }
+
 
 }

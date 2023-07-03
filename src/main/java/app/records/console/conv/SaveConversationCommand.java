@@ -21,13 +21,13 @@ public class SaveConversationCommand extends ConsoleCommand {
     @Override
     public void apply(String input, Consumer<String> outStream, Consumer<String> errStream, ViewManager manager) {
         if (input.isBlank()) {
-            errStream.accept("Bitte gib einen Namen einzigartigen Namen für die Konversation an.\n");
+            errStream.accept("Bitte gib einen Namen einzigartigen Namen für die Konversation an.");
             return;
         }
         if (manager.saveConversationAs(input.strip())) {
-            outStream.accept("Konversation wurde gespeichert.\n");
+            outStream.accept("Konversation wurde gespeichert.");
             return;
         }
-        errStream.accept("Konversation konnte nicht gespeichert werden.\n");
+        errStream.accept("Konversation konnte nicht gespeichert werden.");
     }
 }

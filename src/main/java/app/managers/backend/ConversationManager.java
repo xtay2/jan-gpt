@@ -1,12 +1,10 @@
 package main.java.app.managers.backend;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import main.java.app.records.Message;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.SyncFailedException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -66,6 +64,14 @@ public interface ConversationManager {
             );
         } catch (IOException e) {
             return Optional.empty();
+        }
+    }
+
+    static boolean deleteConversation(String conversationName) {
+        try {
+            return Files.deleteIfExists(conversationPath(conversationName));
+        } catch (IOException e) {
+            return false;
         }
     }
 

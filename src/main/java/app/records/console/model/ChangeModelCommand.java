@@ -27,12 +27,12 @@ public class ChangeModelCommand extends ConsoleCommand {
         }
         GPTModel.valueOf(input).ifPresentOrElse(model -> {
                     if (manager.setGPTModel(model))
-                        outStream.accept("Modell erfolgreich geändert.\n");
+                        outStream.accept("Modell erfolgreich geändert.");
                     else
-                        errStream.accept("Modell konnte nicht geändert werden.\n");
+                        errStream.accept("Modell konnte nicht geändert werden.");
                 },
                 () -> errStream.accept(
-                        "Modell \"" + input + "\" konnte nicht gefunden werden. Verfügbare Versionen:\n" + GPTModel.modelString() + "\n"
+                        "Modell \"" + input + "\" konnte nicht gefunden werden. Verfügbare Versionen:\n" + GPTModel.modelString()
                 )
         );
     }

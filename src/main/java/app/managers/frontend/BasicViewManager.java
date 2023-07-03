@@ -73,4 +73,9 @@ public class BasicViewManager implements ViewManager {
         conv.ifPresent(gptPort::setMessages);
         return conv;
     }
+
+    @Override
+    public boolean deleteConversation(String name) {
+        return ConversationManager.deleteConversation(name);
+    }
 }
