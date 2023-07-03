@@ -12,7 +12,7 @@ import java.util.Optional;
 public class BasicViewManager implements ViewManager {
 
     private GPTPort gptPort;
-    private GPTModel gptModel = GPTModel.GPT_3_5;
+    private GPTModel gptModel = GPTModel.getNewest().orElse(null);
 
     public BasicViewManager() {
         ApiKeyManager.getApiKey().ifPresent(this::setAPIKey);
@@ -20,19 +20,26 @@ public class BasicViewManager implements ViewManager {
 
     @Override
     public boolean hasAPIKey() {
-        return gptPort != null;
+        return gptPort != null && gptPort.testConnection();
+    }
+
+    @Override
+    public boolean hasGPTModel() {
+        return gptModel != null;
     }
 
     @Override
     public boolean setAPIKey(String apiKey) {
         gptPort = GPTPort.getInstance(apiKey);
-        return gptPort.testConnection(gptModel) && ApiKeyManager.saveApiKey(apiKey);
+        return gptPort.testConnection() && ApiKeyManager.saveApiKey(apiKey);
     }
 
     @Override
     public boolean setGPTModel(GPTModel model) {
+        if (model == null)
+            return false;
         gptModel = model;
-        return gptPort.testConnection(gptModel);
+        return gptPort.testConnection();
     }
 
     @Override
@@ -40,5 +47,10 @@ public class BasicViewManager implements ViewManager {
         if (gptPort == null)
             throw new GPTPort.MissingAPIKeyException();
         return gptPort.callGPT(gptModel, prompt);
+    }
+
+    @Override
+    public Optional<GPTModel> getGPTModel() {
+        return Optional.ofNullable(gptModel);
     }
 }

@@ -29,7 +29,7 @@ public interface GPTPort {
     /**
      * Test the connection to the GPT API.
      */
-    boolean testConnection(GPTModel model);
+    boolean testConnection();
 
     class MissingAPIKeyException extends Exception {
         public MissingAPIKeyException() {

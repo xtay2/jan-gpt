@@ -1,80 +1,90 @@
 package main.java.app.views;
 
-import main.java.app.managers.backend.ApiKeyManager;
 import main.java.app.managers.backend.GPTPort;
 import main.java.app.managers.frontend.ViewManager;
+import main.java.app.records.console.ConsoleCommand;
 
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
+import java.util.Set;
 
 /**
  * @author Dennis Woithe
  */
 public class ConsoleView implements View, AutoCloseable {
 
-    private static final String NAME = "Jan-GPT";
-    private static final Scanner input = new Scanner(System.in);
-    private static final OutputStream output = System.out;
+    private static final String SHELL_NAME = "Jan-GPT";
+    private static final Scanner input = new Scanner(System.in, StandardCharsets.UTF_8);
+    private static final PrintWriter output = new PrintWriter(new OutputStreamWriter(System.out, StandardCharsets.UTF_8), true);
+
     private boolean running = false;
     private ViewManager manager;
+
+    private final Set<ConsoleCommand> commands;
+
+    public ConsoleView() {
+        this.commands = ConsoleCommand.getCommands();
+    }
 
     public void start(ViewManager manager) {
         if (isRunning())
             throw new IllegalStateException("Shell is already running.");
+        // Init
         this.manager = manager;
         running = true;
         checkAPIKey();
-        write("Willkommen bei " + NAME + ". Was kann ich für dich tun?\n");
+        write(SHELL_NAME, "Hallo! Was kann ich für dich tun?\n(Solltest du Hilfe benötigen, gib \"help\" ein.)");
+        // Run
         do {
-            write("Prompt> ");
+            write("Prompt", "");
             var output = execute(input.nextLine());
             if(output != null)
-                write(output);
+                write(SHELL_NAME, output);
         } while (running);
     }
 
     private void checkAPIKey() {
-        while (!manager.hasAPIKey()) {
-
+        if(manager.hasAPIKey()) return;
+        write(SHELL_NAME, "Bitte gib deinen API-Schlüssel ein: ");
+        while (isRunning() && !manager.hasAPIKey()) {
+            if(manager.setAPIKey(input.nextLine())) continue;
+            write(SHELL_NAME,"Der API-Schlüssel ist ungültig. Versuche es erneut: ");
         }
     }
 
-    private String execute(String input) {
-        if(input == null || input.isBlank()) return null;
-        if(input.equalsIgnoreCase("exit")) {
-            write(answer("Auf Wiedersehen!"));
-            close();
-            return null;
+    private String execute(String inputStr) {
+        if(inputStr == null || inputStr.isBlank()) return null;
+        inputStr = inputStr.strip();
+        for(var command : commands) {
+            if(inputStr.startsWith(command.name)) {
+                var inputRest = inputStr.substring(command.name.length()).trim();
+                return command.apply(inputRest, manager);
+            }
         }
+        // Prompt
         try {
-            return answer(manager.callGPT(input).orElse("Ich habe dich leider nicht verstanden."));
+            return manager.callGPT(inputStr).orElse("Ich habe dich leider nicht verstanden.");
         } catch (GPTPort.MissingAPIKeyException e) {
-            return answer("Ich kann dir leider nicht helfen, da ich keine API-Schlüssel habe.");
+            return "Ich kann dir leider nicht helfen, da ich keine API-Schlüssel habe.";
         } catch (GPTPort.MissingModelException e) {
-            return answer("Bitte lege das Modell fest, mit dem ich arbeiten soll.");
+            return "Bitte lege das Modell fest, mit dem ich arbeiten soll.";
         }
     }
 
-    private String answer(String answer) {
-        if(answer == null || answer.isBlank()) return null;
-        return NAME + "> " + answer;
-    }
 
     /**
      * Writes the given message to the output stream.
      * If the message is null, nothing happens.
+     * @param alias the name of the sender
+     * @param msg the message to write
      */
-    private void write(String msg) {
+    private void write(String alias, String msg) {
         if (msg == null) return;
-        if(!msg.startsWith(System.lineSeparator())) msg = System.lineSeparator() + msg;
-        try {
-            for (char c : msg.toCharArray())
-                output.write(c);
-            output.flush();
-        } catch (IOException e) {
-            close();
-        }
+        msg = System.lineSeparator() + alias.strip() + "> " + msg;
+        for (char c : msg.toCharArray())
+            output.write(c);
+        output.flush();
     }
 
     public boolean isClosed() {
@@ -89,15 +99,10 @@ public class ConsoleView implements View, AutoCloseable {
     @Override
     public void close() {
         if (isClosed())
-            throw new IllegalStateException(NAME + " was already closed.");
-        try {
-            input.close();
-            output.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            running = false;
-        }
+            throw new IllegalStateException(SHELL_NAME + " was already closed.");
+        input.close();
+        output.close();
+        running = false;
     }
 
 }

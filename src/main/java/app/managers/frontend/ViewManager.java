@@ -10,7 +10,7 @@ import java.util.Optional;
  */
 public interface ViewManager {
 
-    /** Return true if an API key was set. */
+    /** Return true if a valid API key was set. */
     boolean hasAPIKey();
 
     /**
@@ -19,6 +19,9 @@ public interface ViewManager {
      * @return true if the API key was set successfully and can establish a connection.
      */
     boolean setAPIKey(String apiKey);
+
+    /** Return true if a valid GPT version was set. */
+    boolean hasGPTModel();
 
     /**
      * Set the GPT version to use.
@@ -34,4 +37,6 @@ public interface ViewManager {
      */
     Optional<String> callGPT(String prompt) throws GPTPort.MissingAPIKeyException, GPTPort.MissingModelException;
 
+    /** Return the currently set {@link GPTModel}. */
+    Optional<GPTModel> getGPTModel();
 }

@@ -22,7 +22,7 @@ import java.util.Optional;
  */
 public class GPTManager implements GPTPort {
 
-    private static final URI GPT_URI = URI.create("https://api.openai.com/v1/chat/completions");
+    private static final URI GPT_CHAT_URI = URI.create("https://api.openai.com/v1/chat/completions"), GPT_MODEL_URI = URI.create("https://api.openai.com/v1/models");
 
     private final List<Message> messages = new ArrayList<>();
 
@@ -45,7 +45,7 @@ public class GPTManager implements GPTPort {
         // PREPARE REQUEST
         messages.add(new Message(Role.USER, prompt));
         var request = HttpRequest.newBuilder()
-                .uri(GPT_URI)
+                .uri(GPT_CHAT_URI)
                 .POST(HttpRequest.BodyPublishers.ofString(buildPromptRequestBody(model).toString()))
                 .header("Authorization", "Bearer " + apiKey)
                 .header("Content-Type", "application/json")
@@ -53,7 +53,7 @@ public class GPTManager implements GPTPort {
         // RECEIVE RESPONSE
         try {
             var responseBody = httpClient.send(request, HttpResponse.BodyHandlers.ofString()).body();
-            var responseMsg = parseJsonResponse(responseBody);
+            var responseMsg = parseJsonResponse(responseBody.strip());
             responseMsg.ifPresent(s -> messages.add(new Message(Role.ASSISTANT, s)));
             return responseMsg;
         } catch (Exception e) {
@@ -74,8 +74,16 @@ public class GPTManager implements GPTPort {
     }
 
     @Override
-    public boolean testConnection(GPTModel model) {
-        return false;
+    public boolean testConnection() {
+        try {
+            return httpClient.send(HttpRequest.newBuilder()
+                    .uri(GPT_MODEL_URI)
+                    .GET()
+                    .header("Authorization", "Bearer " + apiKey)
+                    .build(), HttpResponse.BodyHandlers.ofString()).statusCode() == 200;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     private JsonObject buildPromptRequestBody(GPTModel model) {
