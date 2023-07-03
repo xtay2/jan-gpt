@@ -18,7 +18,7 @@ public class PromptCommand extends ConsoleCommand {
     @Override
     public void apply(String input, Consumer<String> outStream, Consumer<String> errStream, ViewManager manager) {
         try {
-            manager.callGPT(input).ifPresentOrElse(
+            manager.callGPT(input).map(s -> s + "\n").ifPresentOrElse(
                     outStream,
                     () -> errStream.accept("Ich habe dich leider nicht verstanden.")
             );

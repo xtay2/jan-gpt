@@ -5,15 +5,18 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
 
+import static main.java.app.Main.BASE_DATA_PATH;
+
 /**
  * @author Dennis Woithe
  */
 public interface ApiKeyManager {
 
-    Path API_KEY_FILE_PATH = Path.of("api_key.txt");
+    Path API_KEY_FILE_PATH = Path.of(BASE_DATA_PATH + "api_key.txt");
 
     static boolean saveApiKey(String apiKey) {
         try {
+            Files.createDirectories(API_KEY_FILE_PATH.getParent());
             Files.writeString(API_KEY_FILE_PATH, apiKey);
             return true;
         } catch (Exception e) {

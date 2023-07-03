@@ -32,7 +32,7 @@ public class ChangeModelCommand extends ConsoleCommand {
                         errStream.accept("Modell konnte nicht geändert werden.");
                 },
                 () -> errStream.accept(
-                        "Modell \"" + input + "\" konnte nicht gefunden werden. Verfügbare Versionen:\n" + GPTModel.modelString()
+                        "Modell \"" + input + "\" konnte nicht gefunden werden. Verfügbare Versionen:\n" + GPTModel.modelString() + "\n"
                 )
         );
     }

@@ -14,12 +14,14 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static main.java.app.Main.BASE_DATA_PATH;
+
 /**
  * @author Dennis Woithe
  */
 public interface ConversationManager {
 
-    String CONVERSATIONS_PATH = "conversations";
+    String CONVERSATIONS_PATH = BASE_DATA_PATH + "conversations";
 
     private static Path conversationPath(String conversationName) {
         return Path.of(CONVERSATIONS_PATH + File.separator + conversationName + ".json");

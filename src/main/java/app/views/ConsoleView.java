@@ -1,11 +1,12 @@
 package main.java.app.views;
 
-import main.java.app.managers.backend.GPTPort;
 import main.java.app.managers.frontend.ViewManager;
 import main.java.app.records.console.ConsoleCommand;
 import main.java.app.records.console.misc.PromptCommand;
+import main.java.app.util.ANSI;
 
-import java.io.*;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 import java.util.Set;
@@ -47,7 +48,7 @@ public class ConsoleView implements View {
         if (manager.hasAPIKey()) return;
         write(output, SHELL_NAME, "Bitte gib deinen API-Schlüssel ein: ");
         while (!manager.hasAPIKey()) {
-            if (manager.setAPIKey(input.nextLine())) continue;
+            if (manager.setAPIKey(input.nextLine())) return;
             write(error, SHELL_NAME, "Der API-Schlüssel ist ungültig. Versuche es erneut: ");
         }
     }
@@ -68,8 +69,8 @@ public class ConsoleView implements View {
         }
         new PromptCommand().apply(
                 inputStr,
-                out -> write(output, USER_NAME, out),
-                out -> write(error, USER_NAME, out),
+                out -> write(output, SHELL_NAME, out),
+                out -> write(error, SHELL_NAME, out),
                 manager
         );
     }
@@ -84,7 +85,13 @@ public class ConsoleView implements View {
      */
     private void write(PrintWriter out, String alias, String msg) {
         if (msg == null) return;
-        msg = System.lineSeparator() + alias.strip() + "> " + msg;
+        alias = switch (alias.trim()) {
+            case SHELL_NAME -> ANSI.colorize(SHELL_NAME, ANSI.Color.BLUE);
+            case USER_NAME -> ANSI.colorize(USER_NAME, ANSI.Color.GREEN);
+            default -> ANSI.colorize(alias, ANSI.Color.YELLOW);
+        };
+
+        msg = System.lineSeparator() + alias + "> " + msg;
         for (char c : msg.toCharArray())
             out.write(c);
         out.flush();

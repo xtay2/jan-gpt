@@ -33,7 +33,8 @@ public class HelpCommand extends ConsoleCommand {
                 var name = group.name();
                 builder.append("\n")
                         .append("-".repeat(10))
-                        .append(name).append("-".repeat(110 - name.length()))
+                        .append(name)
+                        .append("-".repeat(110 - name.length()))
                         .append("\n");
             }
             builder.append(command.syntax)
@@ -41,6 +42,6 @@ public class HelpCommand extends ConsoleCommand {
                     .append(command.description)
                     .append("\n");
         }
-        outStream.accept(builder.toString());
+        outStream.accept(builder.append("-".repeat(130)).append("\n").toString());
     }
 }
