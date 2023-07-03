@@ -6,6 +6,7 @@ import main.java.app.managers.backend.GPTPort;
 import main.java.app.records.GPTModel;
 import main.java.app.records.Message;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -72,5 +73,10 @@ public class BasicViewManager implements ViewManager {
         var conv = ConversationManager.loadConversation(name);
         conv.ifPresent(gptPort::setMessages);
         return conv;
+    }
+
+    @Override
+    public void newConversation() {
+        gptPort.setMessages(new ArrayList<>());
     }
 }

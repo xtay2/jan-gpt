@@ -46,8 +46,11 @@ public interface ViewManager {
     boolean saveConversationAs(String name);
 
     /** Return the names of all saved conversations. */
-    Optional<List<String>> getConversations();;
+    Optional<List<String>> getConversations();
 
     /** Load a conversation from a file. */
     Optional<List<Message>> loadConversation(String name);
+
+    /** Start a new conversation. */
+    void newConversation();
 }

@@ -3,11 +3,16 @@ package main.java.app.views;
 import main.java.app.managers.backend.GPTPort;
 import main.java.app.managers.frontend.ViewManager;
 import main.java.app.records.GPTModel;
+import main.java.app.records.Role;
 
 import javax.swing.*;
 import java.awt.event.*;
 import java.awt.*;
+import java.util.*;
+import java.util.stream.Collectors;
 import javax.swing.JProgressBar;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 /**
  * @author Dennis Woithe
@@ -16,15 +21,13 @@ public class ApplicationView implements View {
 
     private ViewManager manager;
     private JFrame frame;
-    private JSlider fontSize;
     private JTextArea queryTextArea;
-    private JTextArea answerTextArea;
     private JTextArea conversationTextArea;
     private JProgressBar progressBar;
     private JButton sendButton;
+    private JTextField saveTextField;
 
-    private final int WIDTH = 1000;
-    private final int HEIGHT = 600;
+
 
     /**
      * @param manager The component that excepts data.
@@ -43,11 +46,12 @@ public class ApplicationView implements View {
         manager.setGPTModel(GPTModel.getNewest().orElseThrow());
 
         frame = new JFrame(manager.getGPTModel().map(m -> m.modelName).orElse("Kein Modell geladen"));
+        int HEIGHT = 500;
+        int WIDTH = 1000;
         frame.setBounds(100, 100, WIDTH, HEIGHT);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().setLayout(new BorderLayout()); // Use BorderLayout for the frame's content pane
         frame.setResizable(true); // Set JFrame to resizable
-
 
         // Conversation history
         conversationTextArea = new JTextArea();
@@ -55,7 +59,69 @@ public class ApplicationView implements View {
         conversationTextArea.setLineWrap(true);
         conversationTextArea.setWrapStyleWord(true);
         conversationTextArea.setPreferredSize(new Dimension(WIDTH, HEIGHT)); // Set initial preferred size
+        conversationTextArea.setText("Jan-GPT: \nHallo! Was kann ich für dich tun? \n_______ \n");
 
+
+        conversationTextArea.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                // Set focus on the query text field
+                SwingUtilities.invokeLater(() -> queryTextArea.requestFocusInWindow());
+
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                // Set focus on the query text field
+                SwingUtilities.invokeLater(() -> queryTextArea.requestFocusInWindow());
+
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                // Set focus on the query text field
+                SwingUtilities.invokeLater(() -> queryTextArea.requestFocusInWindow());
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                // Set focus on the query text field
+                SwingUtilities.invokeLater(() -> queryTextArea.requestFocusInWindow());
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                // Set focus on the query text field
+                SwingUtilities.invokeLater(() -> queryTextArea.requestFocusInWindow());
+
+            }
+        });
+
+
+        // DocumentListener to dynamically adjust preferred size
+        conversationTextArea.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                adjustWindowSize();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                adjustWindowSize();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                adjustWindowSize();
+            }
+
+            private void adjustWindowSize() {
+                conversationTextArea.setPreferredSize(conversationTextArea.getPreferredSize());
+                frame.pack();
+            }
+        });
         JScrollPane scrollPane = new JScrollPane(conversationTextArea);
 
 
@@ -71,23 +137,75 @@ public class ApplicationView implements View {
         // Send button
         sendButton = new JButton("Send");
 
-        // Dropdown menu
+        // Save button
+        JButton saveButton = new JButton("Save conversation");
+
+        // Save text field
+        saveTextField = new JTextField();
+
+
+        // Dropdown menu for model selection
         String[] models = GPTModel.values().toArray(String[]::new);
-        JComboBox<String> dropdownMenu = new JComboBox<>(models);
-        manager.getGPTModel().ifPresent(model -> dropdownMenu.setSelectedItem(model.modelName));
-        dropdownMenu.addActionListener(e -> {
-            String modelName = (String) dropdownMenu.getSelectedItem();
+        JComboBox<String> modelsCombo = new JComboBox<>(models);
+        manager.getGPTModel().ifPresent(model -> modelsCombo.setSelectedItem(model.modelName));
+        modelsCombo.addActionListener(e -> {
+            String modelName = (String) modelsCombo.getSelectedItem();
             var model = GPTModel.valueOf(modelName);
             if (model.isEmpty()) return;
-            manager.setGPTModel(model.get());
             frame.setTitle(modelName);
+            manager.setGPTModel(model.get());
+            // Set focus on the query text field
+            SwingUtilities.invokeLater(() -> queryTextArea.requestFocusInWindow());
         });
-// Slider for changing font size
+
+        // Dropdown menu for conversation selection
+        var convs = new Vector<>(manager.getConversations().orElse(Collections.emptyList()));
+        final var NEW_CONV = "Neue Konversation";
+        convs.add(0, NEW_CONV);
+        JComboBox<String> convsCombo = new JComboBox<>(convs);
+        convsCombo.addActionListener(e -> {
+            String convName = (String) convsCombo.getSelectedItem();
+            if(NEW_CONV.equals(convName)) {
+                manager.newConversation();
+                conversationTextArea.setText("Jan-GPT: \nHallo! Was kann ich für dich tun? \n_______ \n");
+            }
+            else {
+
+                var conv = manager.loadConversation(convName);
+                conversationTextArea.setText(conv.map(messages ->
+                        messages.stream().map(msg -> msg.role().alias(false) + ": "
+                                + msg.content() + "\n").collect(Collectors.joining())
+                ).orElse("Konversation konnte nicht geladen werden \n"));
+            }
+            // Set focus on the query text field
+            SwingUtilities.invokeLater(() -> queryTextArea.requestFocusInWindow());
+        });
+
+        // Set preferred size for the dropdown menu
+        Dimension dropdownSize = new Dimension(150, 30);
+        convsCombo.setPreferredSize(dropdownSize);
+        convsCombo.setMaximumSize(dropdownSize);
+        convsCombo.setMinimumSize(dropdownSize);
+
+        // Panel for holding the dropdown menu
+        JPanel convsPanel = new JPanel();
+        convsPanel.add(convsCombo);
+
+
+        // Slider for changing font size
         JSlider fontSizeSlider = new JSlider(JSlider.HORIZONTAL, 10, 30, 14);
         fontSizeSlider.setMajorTickSpacing(5);
         fontSizeSlider.setMinorTickSpacing(1);
         fontSizeSlider.setPaintTicks(true);
         fontSizeSlider.setPaintLabels(true);
+
+        // Set preferred size for the slider
+        Dimension sliderSize = new Dimension(130, 50);
+        fontSizeSlider.setPreferredSize(sliderSize);
+        fontSizeSlider.setMaximumSize(sliderSize);
+        fontSizeSlider.setMinimumSize(sliderSize);
+
+
         fontSizeSlider.addChangeListener(e -> {
             int fontSize = fontSizeSlider.getValue();
             Font newFont = new Font(Font.SANS_SERIF, Font.PLAIN, fontSize);
@@ -95,28 +213,41 @@ public class ApplicationView implements View {
             queryTextArea.setFont(newFont);
         });
 
-
         // Label for the font size slider
         JLabel fontSizeLabel = new JLabel("Font Size");
         fontSizeLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
-// Panel for holding the font size slider
-        JPanel sliderPanel = new JPanel();
-        sliderPanel.setLayout(new BorderLayout());
-        sliderPanel.add(fontSizeLabel, BorderLayout.NORTH);
-        sliderPanel.add(fontSizeSlider, BorderLayout.WEST);
 
-// Panel for holding the query panel and dropdown menu
+        saveTextField.setPreferredSize(new Dimension(80, 30));
+
+        JPanel savePanel = new JPanel();
+        savePanel.setLayout(new BorderLayout());
+        savePanel.add(saveTextField, BorderLayout.CENTER);
+        savePanel.add(saveButton, BorderLayout.EAST);
+
+        // Panel for holding the font size slider
+        JPanel sliderPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        sliderPanel.add(fontSizeLabel);
+        sliderPanel.add(fontSizeSlider);
+        sliderPanel.add(convsPanel);
+        sliderPanel.add(savePanel, BorderLayout.WEST);
+
+
+
+        // Panel for holding the query panel and dropdown menu
         JPanel queryPanel = new JPanel();
         queryPanel.setLayout(new BorderLayout());
         queryPanel.add(queryTextArea, BorderLayout.CENTER);
         queryPanel.add(sendButton, BorderLayout.EAST);
 
-// Panel for holding the dropdown menu
-        JPanel dropdownPanel = new JPanel();
-        dropdownPanel.add(dropdownMenu);
 
-// Panel for holding the query panel and dropdown panel
+
+
+        // Panel for holding the dropdown menu
+        JPanel dropdownPanel = new JPanel();
+        dropdownPanel.add(modelsCombo);
+
+        // Panel for holding the query panel and dropdown panel
         JPanel inputPanel = new JPanel();
         inputPanel.setLayout(new BorderLayout());
         inputPanel.add(queryPanel, BorderLayout.CENTER);
@@ -124,22 +255,29 @@ public class ApplicationView implements View {
         inputPanel.add(progressBar, BorderLayout.SOUTH);
         inputPanel.add(sliderPanel, BorderLayout.NORTH);
 
-        // Create a GridBagConstraints instance
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.weightx = 1.0;
-        gbc.weighty = 1.0;
-        gbc.insets = new Insets(10, 10, 10, 10);
-
         frame.getContentPane().add(scrollPane, BorderLayout.CENTER);
         frame.getContentPane().add(inputPanel, BorderLayout.SOUTH);
         frame.pack();
         frame.setVisible(true);
 
+        saveButton.addActionListener(e -> {
+            String convName = saveTextField.getText();
+            if (convName.isEmpty()) {
+                JOptionPane.showMessageDialog(frame, "Bitte gib einen Namen für die Konversation ein.\n");
+                return;
+            }
+            if(manager.saveConversationAs(convName)) {
+                conversationTextArea.append("Konversation wurde gespeichert \n_______ \n");
+                convsCombo.addItem(convName);
+                convsCombo.setSelectedItem(convName);
+            } else {
+                JOptionPane.showMessageDialog(frame, "Bitte führe erst eine Konversation.\n");
+            }
+        });
+
         // Set focus on the query text field
         SwingUtilities.invokeLater(() -> queryTextArea.requestFocusInWindow());
+
         // Send message on button click
         sendButton.addActionListener(e -> {
             // Execute the sending of the message in a background thread
@@ -158,35 +296,11 @@ public class ApplicationView implements View {
                 }
             }
         });
-
         frame.setMinimumSize(new Dimension(WIDTH, HEIGHT)); // Set the minimum size of the frame
         frame.pack(); // Automatically sizes the frame based on the components' preferred sizes
         frame.setVisible(true);
-
-
-        // DocumentListener to dynamically adjust preferred size
-//        conversationTextArea.getDocument().addDocumentListener(new DocumentListener() {
-//            @Override
-//            public void insertUpdate(DocumentEvent e) {
-//                adjustWindowSize();
-//            }
-//
-//            @Override
-//            public void removeUpdate(DocumentEvent e) {
-//                adjustWindowSize();
-//            }
-//
-//            @Override
-//            public void changedUpdate(DocumentEvent e) {
-//                adjustWindowSize();
-//            }
-//
-//            private void adjustWindowSize() {
-//                conversationTextArea.setPreferredSize(conversationTextArea.getPreferredSize());
-//                frame.pack();
-//            }
-//        });
     }
+
 
 
     private void sendMessage() {
@@ -200,12 +314,16 @@ public class ApplicationView implements View {
         // Create a background thread for sending the request
         Thread thread = new Thread(() -> {
             if (!query.isEmpty()) {
-                conversationTextArea.append("You: \n ");
+                conversationTextArea.append(Role.USER.alias(false) + ": \n ");
                 conversationTextArea.append(query + "\n");
                 queryTextArea.setText("");
 
                 try {
                     var response = manager.callGPT(query);
+                    if (response.isEmpty()) {
+                        conversationTextArea.append("ERROR: model could not be reached\n");
+                        return;
+                    }
                     response.ifPresent(s -> {
                         // Add line breaks to the response if it exceeds the conversation text area width
                         int textAreaWidth = conversationTextArea.getWidth();
@@ -219,9 +337,10 @@ public class ApplicationView implements View {
                             conversationTextArea.append("_______ \nJan-GPT: \n ");
                             conversationTextArea.append(wrappedResponse + "\n_______ \n");
                             conversationTextArea.setCaretPosition(conversationTextArea.getDocument().getLength());
+                            // Set focus on the query text field
+                            SwingUtilities.invokeLater(() -> queryTextArea.requestFocusInWindow());
                         });
                     });
-
                     System.out.println(response);
 
                 } catch (GPTPort.MissingAPIKeyException ex) {
