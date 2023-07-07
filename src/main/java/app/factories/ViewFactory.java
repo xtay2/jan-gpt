@@ -3,7 +3,7 @@ package main.java.app.factories;
 
 import main.java.app.managers.frontend.BasicViewManager;
 import main.java.app.managers.frontend.ViewManager;
-import main.java.app.views.ApplicationView;
+import main.java.app.views.appview.ApplicationView;
 import main.java.app.views.ConsoleView;
 import main.java.app.views.View;
 

@@ -1,4 +1,4 @@
-package main.java.app.views;
+package main.java.app.views.appview;
 
 import main.java.app.managers.frontend.ViewManager;
 
