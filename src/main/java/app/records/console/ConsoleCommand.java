@@ -1,10 +1,7 @@
 package app.records.console;
 
 import app.managers.frontend.ViewManager;
-import app.records.console.conv.DeleteConversationCommand;
-import app.records.console.conv.GetConversationsCommand;
-import app.records.console.conv.LoadConversationCommand;
-import app.records.console.conv.SaveConversationCommand;
+import app.records.console.conv.*;
 import app.records.console.misc.ExitCommand;
 import app.records.console.misc.HelpCommand;
 import app.records.console.model.ChangeModelCommand;
@@ -61,6 +58,7 @@ public abstract class ConsoleCommand {
                 new GetConversationsCommand(),
                 new LoadConversationCommand(),
                 new DeleteConversationCommand(),
+                new ClearConversationCommand(),
 
                 // Misc
                 new ExitCommand()
