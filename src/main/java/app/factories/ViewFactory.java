@@ -1,6 +1,11 @@
 package main.java.app.factories;
 
 
+import app.managers.frontend.BasicViewManager;
+import app.managers.frontend.ViewManager;
+import app.views.ApplicationView;
+import app.views.ConsoleView;
+import app.views.View;
 import main.java.app.managers.frontend.BasicViewManager;
 import main.java.app.managers.frontend.ViewManager;
 import main.java.app.views.appview.ApplicationView;

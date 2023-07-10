@@ -1,6 +1,5 @@
 package main.java.app.views.appview;
 
-import main.java.app.managers.frontend.ViewManager;
 
 import javax.swing.*;
 import java.awt.*;

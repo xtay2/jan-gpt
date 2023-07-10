@@ -1,8 +1,8 @@
-package main.java.app.records.console.misc;
+package app.records.console.misc;
 
-import main.java.app.managers.backend.GPTPort;
-import main.java.app.managers.frontend.ViewManager;
-import main.java.app.records.console.ConsoleCommand;
+import app.managers.backend.GPTPort;
+import app.managers.frontend.ViewManager;
+import app.records.console.ConsoleCommand;
 
 import java.util.function.Consumer;
 

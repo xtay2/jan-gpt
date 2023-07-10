@@ -1,7 +1,7 @@
-package main.java.app.records.console.model;
+package app.records.console.model;
 
-import main.java.app.managers.frontend.ViewManager;
-import main.java.app.records.console.ConsoleCommand;
+import app.managers.frontend.ViewManager;
+import app.records.console.ConsoleCommand;
 
 import java.util.function.Consumer;
 

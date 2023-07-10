@@ -1,7 +1,7 @@
 package main.java.app.managers.backend;
 
+import app.records.Message;
 import com.google.gson.Gson;
-import main.java.app.records.Message;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,10 +26,11 @@ public interface ConversationManager {
     }
 
     static boolean saveConversation(String conversationName, List<Message> messages) {
-        if (conversationName == null || conversationName.isBlank() || messages == null || messages.isEmpty()) return false;
+        if (conversationName == null || conversationName.isBlank() || messages == null || messages.isEmpty())
+            return false;
         try {
             var path = conversationPath(conversationName);
-            if (Files.exists(path)) return false; // TODO: ask user if he wants to overwrite existing conversation the new one is longer
+            if (Files.exists(path)) return false;
             Files.createDirectories(path.getParent());
             Files.write(path, new Gson().toJson(messages).getBytes());
             return true;
