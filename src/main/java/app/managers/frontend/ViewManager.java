@@ -51,6 +51,9 @@ public interface ViewManager {
     /** Load a conversation from a file. */
     Optional<List<Message>> loadConversation(String name);
 
+    /** Clear the current conversation. */
+    void clearConversation();
+
     /** Delete a conversation-file. */
     boolean deleteConversation(String name);
 }
