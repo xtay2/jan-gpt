@@ -1,13 +1,13 @@
-package main.java.app.views;
+package app.views;
 
-import main.java.app.managers.backend.GPTPort;
-import main.java.app.managers.frontend.ViewManager;
-import main.java.app.records.GPTModel;
+import app.managers.backend.GPTPort;
+import app.managers.frontend.ViewManager;
+import app.records.GPTModel;
 
 import javax.swing.*;
-import java.awt.event.*;
 import java.awt.*;
-import javax.swing.JProgressBar;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 /**
  * @author Dennis Woithe

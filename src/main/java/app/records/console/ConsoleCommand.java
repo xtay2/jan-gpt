@@ -1,15 +1,15 @@
-package main.java.app.records.console;
+package app.records.console;
 
-import main.java.app.managers.frontend.ViewManager;
-import main.java.app.records.console.conv.DeleteConversationCommand;
-import main.java.app.records.console.conv.GetConversationsCommand;
-import main.java.app.records.console.conv.LoadConversationCommand;
-import main.java.app.records.console.conv.SaveConversationCommand;
-import main.java.app.records.console.misc.ExitCommand;
-import main.java.app.records.console.misc.HelpCommand;
-import main.java.app.records.console.model.ChangeModelCommand;
-import main.java.app.records.console.model.GetCurrentModelCommand;
-import main.java.app.records.console.model.GetModelsCommand;
+import app.managers.frontend.ViewManager;
+import app.records.console.conv.DeleteConversationCommand;
+import app.records.console.conv.GetConversationsCommand;
+import app.records.console.conv.LoadConversationCommand;
+import app.records.console.conv.SaveConversationCommand;
+import app.records.console.misc.ExitCommand;
+import app.records.console.misc.HelpCommand;
+import app.records.console.model.ChangeModelCommand;
+import app.records.console.model.GetCurrentModelCommand;
+import app.records.console.model.GetModelsCommand;
 
 import java.util.LinkedHashSet;
 import java.util.List;

@@ -1,11 +1,11 @@
-package main.java.app.factories;
+package app.factories;
 
 
-import main.java.app.managers.frontend.BasicViewManager;
-import main.java.app.managers.frontend.ViewManager;
-import main.java.app.views.ApplicationView;
-import main.java.app.views.ConsoleView;
-import main.java.app.views.View;
+import app.managers.frontend.BasicViewManager;
+import app.managers.frontend.ViewManager;
+import app.views.ApplicationView;
+import app.views.ConsoleView;
+import app.views.View;
 
 /**
  * @author Dennis Woithe

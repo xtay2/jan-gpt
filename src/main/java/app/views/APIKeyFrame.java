@@ -1,12 +1,9 @@
-package main.java.app.views;
+package app.views;
 
-import main.java.app.managers.frontend.ViewManager;
+import app.managers.frontend.ViewManager;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.function.Consumer;
 
 /**
  * @author A.Mukhamedov

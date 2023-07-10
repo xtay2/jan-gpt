@@ -1,9 +1,8 @@
-package main.java.app;
+package app;
 
-import main.java.app.factories.ViewFactory;
+import app.factories.ViewFactory;
 
 import java.io.File;
-import java.io.IOException;
 
 /**
  * @author Dennis Woithe
@@ -17,7 +16,7 @@ public class Main {
      *
      * @param args One argument specifying the view-type to use.
      */
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         if (args.length != 1)
             throw new IllegalArgumentException("Please provide a view-type as argument." + "\n" +
                     "Please use one of the following: console, application");

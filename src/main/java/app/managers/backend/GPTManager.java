@@ -1,13 +1,13 @@
-package main.java.app.managers.backend;
+package app.managers.backend;
 
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import main.java.app.records.GPTModel;
-import main.java.app.records.Message;
-import main.java.app.records.Role;
+import app.records.GPTModel;
+import app.records.Message;
+import app.records.Role;
 
 import java.net.URI;
 import java.net.http.HttpClient;

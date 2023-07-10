@@ -1,10 +1,10 @@
-package main.java.app.views;
+package app.views;
 
-import main.java.app.managers.frontend.ViewManager;
-import main.java.app.records.Role;
-import main.java.app.records.console.ConsoleCommand;
-import main.java.app.records.console.misc.PromptCommand;
-import main.java.app.util.ANSI;
+import app.managers.frontend.ViewManager;
+import app.records.Role;
+import app.records.console.ConsoleCommand;
+import app.records.console.misc.PromptCommand;
+import app.util.ANSI;
 
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
