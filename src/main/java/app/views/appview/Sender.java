@@ -47,7 +47,7 @@ public class Sender {
                         // Update the UI on the EDT
                         SwingUtilities.invokeLater(() -> {
                             app.progressBar.setIndeterminate(false);
-                            app.chatArea.append("_______ \nJan-GPT: \n ");
+                            app.chatArea.append("\nJan-GPT: \n ");
                             app.chatArea.append(wrappedResponse + "\n_______ \n");
                             app.chatArea.setCaretPosition(app.chatArea.getDocument().getLength());
                             // Set focus on the query text field
@@ -66,9 +66,7 @@ public class Sender {
             }
 
             // Enable UI components after the request is completed
-            SwingUtilities.invokeLater(() -> {
-                app.queryArea.setEnabled(true);
-            });
+            SwingUtilities.invokeLater(() -> app.queryArea.setEnabled(true));
         });
 
         // Start the background thread

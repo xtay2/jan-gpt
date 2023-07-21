@@ -8,11 +8,16 @@ import javax.swing.*;
  */
 public class QueryArea extends JTextArea {
 
-    public QueryArea() {
+    public ApplicationView app = new ApplicationView();
+
+    public QueryArea(ApplicationView app) {
         super();
         setLineWrap(true);
         setWrapStyleWord(true);
         setEditable(true);
         setPreferredSize(new java.awt.Dimension(1000, 100));
+        addKeyListener(new EnterKeyPressedToSend(app));
+        // Add the document listener to resize dynamically
+        getDocument().addDocumentListener(new ResizeQueryAreaToFitText(app));
     }
 }

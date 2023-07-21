@@ -3,6 +3,8 @@ package main.java.app.views.appview;
 import main.java.app.managers.frontend.ViewManager;
 import main.java.app.records.GPTModel;
 import main.java.app.views.View;
+import javax.swing.JViewport;
+import javax.swing.SwingUtilities;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,17 +22,19 @@ public class ApplicationView implements View {
     public ChatArea chatArea;
     public Sender sender;
     public JProgressBar progressBar;
-    public ChatName chatName;
+    public ChatName newChatNameField;
     public JButton saveButton;
-    public JScrollPane scrollPane;
+    public JScrollPane scrollableChatArea;
+    public JScrollPane scrollableQueryArea;
     public SavedChats dropdownSavedChats;
     public GPTModels dropdownGPTModels;
     public JLabel enterToSend;
-
-    public
-
-    int HEIGHT = 500;
-    int WIDTH = 1000;
+    public JPanel mainPanel;
+    public JPanel queryPanel;
+    public JPanel chatPanel;
+    public JPanel oldChatsPanel;
+    public int HEIGHT = 500;
+    public int WIDTH = 1000;
 
 
     /**
@@ -41,7 +45,7 @@ public class ApplicationView implements View {
         if (manager.hasAPIKey())
             createMainFrame(manager);
         else //  manager.setAPIKey("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");
-            new APIKeyFrame(manager, () -> createMainFrame(manager));
+            new main.java.app.views.appview.APIKeyFrame(manager, () -> createMainFrame(manager));
 
     }
 
@@ -52,21 +56,21 @@ public class ApplicationView implements View {
         manager.setGPTModel(GPTModel.getNewest().orElseThrow());
 
         mainFrame = new MainFrame(this);
-        queryArea = new QueryArea();
-        queryArea.addKeyListener(new EnterKeyPressedToSend(this));
-        enterToSend = new JLabel("Schreibe deine Frage hier und drücke Enter zum Absenden!");
+        queryArea = new QueryArea(this);
+
+        enterToSend = new JLabel("Enter zum Absenden");
         chatArea = new ChatArea();
-        chatArea.addMouseListener(new ChatAreaClickedFocusQueryArea(this));
-        chatArea.getDocument().addDocumentListener(new ResizeChatAreaToFitText(this));
+        //chatArea.addMouseListener(new ChatAreaClickedFocusQueryArea(this));
+        //chatArea.getDocument().addDocumentListener(new ResizeChatAreaToFitText(this));
         sender = new Sender(this);
         progressBar = new JProgressBar();
         progressBar.setIndeterminate(false);
-        chatName = new ChatName();
+        newChatNameField = new ChatName();
         saveButton = new JButton("Konversation speichern");
         saveButton.addActionListener(e -> {
-            String convName = chatName.getText();
+            String convName = newChatNameField.getText();
             if (convName.isEmpty()) {
-                JOptionPane.showMessageDialog(mainFrame, "Bitte gib einen Namen für die Konversation ein.\n");
+                JOptionPane.showMessageDialog(mainFrame, "Bitte gib links vom Button einen Namen ein.\n");
                 return;
             }
             if(manager.saveConversationAs(convName)) {
@@ -77,7 +81,7 @@ public class ApplicationView implements View {
                 JOptionPane.showMessageDialog(mainFrame, "Bitte führe erst eine Konversation.\n");
             }
         });
-        scrollPane = new JScrollPane(chatArea);
+
         dropdownSavedChats = new SavedChats(this);
         dropdownSavedChats.addActionListener(e -> {
             String convName = (String) dropdownSavedChats.getSelectedItem();
@@ -95,6 +99,7 @@ public class ApplicationView implements View {
             // Set focus on the query text field
             SwingUtilities.invokeLater(() -> queryArea.requestFocusInWindow());
         });
+
         dropdownGPTModels = new GPTModels(this);
         dropdownGPTModels.addActionListener(e -> {
             String modelName = (String) dropdownGPTModels.getSelectedItem();
@@ -106,73 +111,44 @@ public class ApplicationView implements View {
             SwingUtilities.invokeLater(() -> queryArea.requestFocusInWindow());
         });
 
+        scrollableChatArea = new JScrollPane(chatArea);
+        scrollableChatArea.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollableChatArea.getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE);
+
+        scrollableQueryArea = new JScrollPane(queryArea);
+        scrollableQueryArea.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollableQueryArea.getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE);
+
+        // Panel for holding the new chat name text field, the save button and the saved chats dropdown menu
+        oldChatsPanel = new JPanel(new BorderLayout());
+        oldChatsPanel.add(newChatNameField, BorderLayout.CENTER);
+        oldChatsPanel.add(saveButton, BorderLayout.EAST);
+        oldChatsPanel.add(dropdownSavedChats, BorderLayout.WEST);
+
+        // Panel for holding the scrollable chat area and the old chats panel
+        chatPanel = new JPanel(new BorderLayout());
+        chatPanel.add(scrollableChatArea, BorderLayout.CENTER);
+        chatPanel.add(oldChatsPanel, BorderLayout.SOUTH);
 
 
+        // Panel for holding the query area, gpt models dropdown menu, enter to send message and the progress bar
+        queryPanel = new JPanel(new BorderLayout());
+        queryPanel.add(scrollableQueryArea, BorderLayout.NORTH);
+        queryPanel.add(enterToSend, BorderLayout.WEST);
+        queryPanel.add(dropdownGPTModels, BorderLayout.EAST);
+        queryPanel.add(progressBar, BorderLayout.CENTER);
 
+        // Panel for holding the query panel and the chat panel
+        mainPanel = new JPanel(new BorderLayout());
+        mainPanel.add(queryPanel, BorderLayout.SOUTH);
+        mainPanel.add(chatPanel, BorderLayout.CENTER);
 
-
-//
-//        JPanel savePanel = new JPanel(new BorderLayout());
-//        savePanel.add(chatName, BorderLayout.CENTER);
-//        savePanel.add(saveButton, BorderLayout.EAST);
-//
-//        // Panel for holding the font size slider
-//        JPanel midPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-//        midPanel.add(dropdownSavedChats);
-//        midPanel.add(savePanel, BorderLayout.WEST);
-//
-//        // Panel for holding the query panel and dropdown menu
-//        JPanel bottomPanel = new JPanel(new BorderLayout());
-//        bottomPanel.add(queryArea, BorderLayout.CENTER);
-//        bottomPanel.add(enterToSend, BorderLayout.NORTH);
-//
-//        // Panel for holding the query panel and dropdown panel
-//        JPanel mainPanel = new JPanel(new BorderLayout());
-//        mainPanel.add(bottomPanel, BorderLayout.CENTER);
-//        mainPanel.add(dropdownGPTModels, BorderLayout.EAST);
-//        mainPanel.add(progressBar, BorderLayout.SOUTH);
-//        mainPanel.add(midPanel, BorderLayout.NORTH);
-
-
-        JPanel mainPanel = new JPanel(new BorderLayout());
-        JPanel topPanel = new JPanel(new BorderLayout());
-        JPanel midPanel = new JPanel(new FlowLayout());
-        JPanel bottomPanel = new JPanel(new BorderLayout());
-
-        topPanel.add(chatArea, BorderLayout.NORTH);
-
-        midPanel.add(dropdownSavedChats);
-        midPanel.add(chatName);
-        midPanel.add(saveButton);
-        midPanel.add(dropdownGPTModels);
-
-        bottomPanel.add(queryArea, BorderLayout.SOUTH);
-        bottomPanel.add(progressBar, BorderLayout.NORTH);
-
-        mainPanel.add(topPanel, BorderLayout.NORTH);
-        mainPanel.add(midPanel, BorderLayout.CENTER);
-        mainPanel.add(bottomPanel, BorderLayout.SOUTH);
-
-        mainFrame.getContentPane().add(scrollPane, BorderLayout.CENTER);
-        mainFrame.getContentPane().add(mainPanel, BorderLayout.SOUTH);
+        mainFrame.getContentPane().add(mainPanel);
         mainFrame.setMinimumSize(new Dimension(WIDTH, HEIGHT));
         mainFrame.pack();
         mainFrame.setVisible(true);
 
-
-
         // Set focus on the query text field
         SwingUtilities.invokeLater(() -> queryArea.requestFocusInWindow());
-
-
-
     }
-
-
-
-
-
-
-
-
 }

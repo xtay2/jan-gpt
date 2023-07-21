@@ -1,7 +1,6 @@
 package main.java.app.views.appview;
 
 import javax.swing.*;
-import java.awt.*;
 
 /**
  * This class is used to show the conversation history.
@@ -9,7 +8,6 @@ import java.awt.*;
  * @author A.Mukhamedov
  */
 public class ChatArea extends JTextArea {
-
 
     public ChatArea() {
         super();

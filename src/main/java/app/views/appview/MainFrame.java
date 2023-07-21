@@ -9,11 +9,9 @@ import java.awt.*;
  * @author A.Mukhamedov
  */
 public class MainFrame extends javax.swing.JFrame{
-    private final ApplicationView app;
 
     public MainFrame(ApplicationView app) {
         super(app.manager.getGPTModel().map(m -> m.modelName).orElse("Kein Modell geladen"));
-        this.app = app;
         setBounds(100, 100, WIDTH, HEIGHT);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         getContentPane().setLayout(new BorderLayout());
@@ -21,10 +19,6 @@ public class MainFrame extends javax.swing.JFrame{
     }
 }
 
-
-//
-//
-//
 //        JPanel savePanel = new JPanel(new BorderLayout());
 //        savePanel.add(chatName, BorderLayout.CENTER);
 //        savePanel.add(saveButton, BorderLayout.EAST);
