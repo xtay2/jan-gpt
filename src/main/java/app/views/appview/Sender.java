@@ -27,7 +27,11 @@ public class Sender {
 
         // Create a background thread for sending the request
         Thread thread = new Thread(() -> {
-            if (!query.isEmpty()) {
+            if (query.length()<3) {
+                app.enterToSend.setText("Gib erst eine Nachricht ein!");
+                app.queryArea.setText(""); //TODO: \n entfernen (bug?)
+                return;
+            } else {
                 app.chatArea.append(Role.USER.alias(false) + ": \n ");
                 app.chatArea.append(query + "\n");
                 app.queryArea.setText("");

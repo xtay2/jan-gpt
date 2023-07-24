@@ -11,12 +11,12 @@ import java.util.Vector;
  * @author A.Mukhamedov
  */
 public class SavedChats extends JComboBox<String> {
-    public static final String NEW_CONV = "Neue Konversation";
+    public static final String NEW_CHAT = "Neuer Chat";
 
     public SavedChats(ApplicationView app) {
         super();
         var chats = new Vector<>(app.manager.getConversations().orElse(Collections.emptyList()));
-        chats.add(0, NEW_CONV);
+        chats.add(0, NEW_CHAT);
         setModel(new DefaultComboBoxModel<>(chats));
         // Set preferred size for the dropdown menu
         Dimension dropdownSize = new Dimension(150, 30);

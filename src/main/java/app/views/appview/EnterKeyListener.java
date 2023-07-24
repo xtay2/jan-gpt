@@ -5,11 +5,11 @@ import javax.swing.*;
 /**
  * @author A.Mukhamedov
  */
-public class EnterKeyPressedToSend extends java.awt.event.KeyAdapter {
+public class EnterKeyListener extends java.awt.event.KeyAdapter {
 
     private final ApplicationView app;
 
-    public EnterKeyPressedToSend(ApplicationView app) {
+    public EnterKeyListener(ApplicationView app) {
         this.app = app;
     }
 
@@ -22,6 +22,7 @@ public class EnterKeyPressedToSend extends java.awt.event.KeyAdapter {
         // If the user presses enter without text, do nothing
         if (e.getKeyCode() == java.awt.event.KeyEvent.VK_ENTER && app.queryArea.getText().trim().isEmpty()) {
             app.enterToSend.setText("Gib erst eine Nachricht ein!");
+            app.queryArea.setText("");
             return;
         }
 
