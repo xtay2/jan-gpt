@@ -22,17 +22,17 @@ public class ApplicationView implements View {
     public ChatArea chatArea;
     public Sender sender;
     public JProgressBar progressBar;
-    public ChatName newChatNameField;
+    public ChatName currentChat;
     public JButton saveButton;
     public JScrollPane scrollableChatArea;
     public JScrollPane scrollableQueryArea;
     public SavedChats dropdownSavedChats;
     public GPTModels dropdownGPTModels;
     public JLabel enterToSend;
-    public JPanel mainPanel;
-    public JPanel queryPanel;
-    public JPanel chatPanel;
-    public JPanel oldChatsPanel;
+    public MainPanel mainPanel;
+    public QueryPanel queryPanel;
+    public ChatPanel chatPanel;
+    public OldChatsPanel oldChatsPanel;
     public FontChangeListener fontChangeListener;
     public int HEIGHT = 500;
     public int WIDTH = 1000;
@@ -68,18 +68,18 @@ public class ApplicationView implements View {
         sender = new Sender(this);
         progressBar = new JProgressBar();
         progressBar.setIndeterminate(false);
-        newChatNameField = new ChatName();
+        currentChat = new ChatName();
         saveButton = new JButton("Konversation speichern");
         saveButton.addActionListener(e -> {
-            String convName = newChatNameField.getText();
-            if (convName.isEmpty()) {
+            String name = currentChat.getText();
+            if (name.isEmpty()) {
                 JOptionPane.showMessageDialog(mainFrame, "Bitte gib links vom Button einen Namen ein.\n");
                 return;
             }
-            if(manager.saveConversationAs(convName)) {
+            if(manager.saveConversationAs(name)) {
                 chatArea.append("Konversation wurde gespeichert \n_______ \n");
-                dropdownSavedChats.addItem(convName);
-                dropdownSavedChats.setSelectedItem(convName);
+                dropdownSavedChats.addItem(name);
+                dropdownSavedChats.setSelectedItem(name);
             } else {
                 JOptionPane.showMessageDialog(mainFrame, "Bitte führe erst eine Konversation.\n");
             }
@@ -122,29 +122,11 @@ public class ApplicationView implements View {
         scrollableQueryArea.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollableQueryArea.getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE);
 
-        // Panel for holding the new chat name text field, the save button and the saved chats dropdown menu
-        oldChatsPanel = new JPanel(new BorderLayout());
-        oldChatsPanel.add(newChatNameField, BorderLayout.CENTER);
-        oldChatsPanel.add(saveButton, BorderLayout.EAST);
-        oldChatsPanel.add(dropdownSavedChats, BorderLayout.WEST);
+        oldChatsPanel = new OldChatsPanel(currentChat, saveButton, dropdownSavedChats);
+        chatPanel = new ChatPanel(chatArea, oldChatsPanel);
+        queryPanel = new QueryPanel(queryArea, enterToSend, dropdownGPTModels, progressBar);
+        mainPanel = new MainPanel(queryPanel, chatPanel);
 
-        // Panel for holding the scrollable chat area and the old chats panel
-        chatPanel = new JPanel(new BorderLayout());
-        chatPanel.add(scrollableChatArea, BorderLayout.CENTER);
-        chatPanel.add(oldChatsPanel, BorderLayout.SOUTH);
-
-
-        // Panel for holding the query area, gpt models dropdown menu, enter to send message and the progress bar
-        queryPanel = new JPanel(new BorderLayout());
-        queryPanel.add(scrollableQueryArea, BorderLayout.NORTH);
-        queryPanel.add(enterToSend, BorderLayout.WEST);
-        queryPanel.add(dropdownGPTModels, BorderLayout.EAST);
-        queryPanel.add(progressBar, BorderLayout.CENTER);
-
-        // Panel for holding the query panel and the chat panel
-        mainPanel = new JPanel(new BorderLayout());
-        mainPanel.add(queryPanel, BorderLayout.SOUTH);
-        mainPanel.add(chatPanel, BorderLayout.CENTER);
 
         mainFrame.getContentPane().add(mainPanel);
         mainFrame.setMinimumSize(new Dimension(WIDTH, HEIGHT));

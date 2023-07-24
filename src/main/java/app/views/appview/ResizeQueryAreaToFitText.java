@@ -35,7 +35,6 @@ public class ResizeQueryAreaToFitText implements DocumentListener {
     }
 
     private void resizeQueryArea() {
-       // System.out.println("resizeQueryArea");
         int width = app.scrollableQueryArea.getWidth();
         int preferredHeight = app.queryArea.getPreferredSize().height;
         int actualHeight = app.scrollableQueryArea.getPreferredSize().height;
