@@ -1,4 +1,4 @@
-package main.java.app;
+package main.java;
 
 import main.java.app.factories.ViewFactory;
 

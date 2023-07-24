@@ -33,6 +33,7 @@ public class ApplicationView implements View {
     public JPanel queryPanel;
     public JPanel chatPanel;
     public JPanel oldChatsPanel;
+    public FontChangeListener fontChangeListener;
     public int HEIGHT = 500;
     public int WIDTH = 1000;
 
@@ -44,7 +45,7 @@ public class ApplicationView implements View {
     public void start(ViewManager manager) {
         if (manager.hasAPIKey())
             createMainFrame(manager);
-        else //  manager.setAPIKey("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");
+        else  // manager.setAPIKey("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");
             new main.java.app.views.appview.APIKeyFrame(manager, () -> createMainFrame(manager));
 
     }
@@ -57,9 +58,11 @@ public class ApplicationView implements View {
 
         mainFrame = new MainFrame(this);
         queryArea = new QueryArea(this);
-
         enterToSend = new JLabel("Enter zum Absenden");
+        // Attach the FontChangeListener to the chatArea
         chatArea = new ChatArea();
+        fontChangeListener = new FontChangeListener(chatArea);
+        chatArea.addMouseWheelListener(fontChangeListener);
         //chatArea.addMouseListener(new ChatAreaClickedFocusQueryArea(this));
         //chatArea.getDocument().addDocumentListener(new ResizeChatAreaToFitText(this));
         sender = new Sender(this);

@@ -21,6 +21,7 @@ C:\Users\ArtjomMukhamedov\Documents\Arbeit\Trinext\jan-gpt\src\main\java\app\vie
 C:\Users\ArtjomMukhamedov\Documents\Arbeit\Trinext\jan-gpt\src\main\java\app\records\console\misc\ExitCommand.java
 C:\Users\ArtjomMukhamedov\Documents\Arbeit\Trinext\jan-gpt\src\main\java\app\views\appview\MainFrame.java
 C:\Users\ArtjomMukhamedov\Documents\Arbeit\Trinext\jan-gpt\src\main\java\app\records\console\ConsoleCommand.java
+C:\Users\ArtjomMukhamedov\Documents\Arbeit\Trinext\jan-gpt\src\main\java\Main.java
 C:\Users\ArtjomMukhamedov\Documents\Arbeit\Trinext\jan-gpt\src\main\java\app\records\console\conv\DeleteConversationCommand.java
 C:\Users\ArtjomMukhamedov\Documents\Arbeit\Trinext\jan-gpt\src\main\java\app\views\appview\EnterKeyPressedToSend.java
 C:\Users\ArtjomMukhamedov\Documents\Arbeit\Trinext\jan-gpt\src\main\java\app\records\console\model\GetModelsCommand.java
@@ -36,4 +37,3 @@ C:\Users\ArtjomMukhamedov\Documents\Arbeit\Trinext\jan-gpt\src\main\java\app\vie
 C:\Users\ArtjomMukhamedov\Documents\Arbeit\Trinext\jan-gpt\src\main\java\app\views\appview\ChatAreaClickedFocusQueryArea.java
 C:\Users\ArtjomMukhamedov\Documents\Arbeit\Trinext\jan-gpt\src\main\java\app\views\appview\SavedChats.java
 C:\Users\ArtjomMukhamedov\Documents\Arbeit\Trinext\jan-gpt\src\main\java\app\managers\backend\ConversationManager.java
-C:\Users\ArtjomMukhamedov\Documents\Arbeit\Trinext\jan-gpt\src\main\java\app\Main.java

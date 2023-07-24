@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static main.java.app.Main.BASE_DATA_PATH;
+import static main.java.Main.BASE_DATA_PATH;
 
 /**
  * @author Dennis Woithe

@@ -1,11 +1,10 @@
 package main.java.app.managers.backend;
 
-import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
 
-import static main.java.app.Main.BASE_DATA_PATH;
+import static main.java.Main.BASE_DATA_PATH;
 
 /**
  * @author Dennis Woithe
