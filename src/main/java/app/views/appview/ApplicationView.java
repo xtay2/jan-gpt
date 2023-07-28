@@ -15,26 +15,28 @@ public class ApplicationView implements View {
 
     public ViewManager manager;
     public MainFrame mainFrame;
-    public QueryArea queryArea;
-    public ChatArea chatArea;
+    public TextQueryArea queryArea;
+    public TextChatArea chatArea;
     public Sender sender;
     public JProgressBar progressBar;
-    public ChatName currentChat;
+    public TextChatName saveNameField;
     public JButton saveButton;
     public JButton deleteButton;
     public JScrollPane scrollableChatArea;
     public JScrollPane scrollableQueryArea;
-    public SavedChats dropdownSavedChats;
-    public GPTModels dropdownGPTModels;
+    public DropdownSavedChats dropdownSavedChats;
+    public DropdownGPTModels dropdownGPTModels;
     public JLabel enterToSend;
-    public MainPanel mainPanel;
-    public QueryPanel queryPanel;
-    public ChatPanel currentChatPanel;
-    public OldChatsPanel oldChatsPanel;
-    public ButtonsPanel buttons;
-    public MouseScrollListener mouseScrollListener;
-    public int HEIGHT = 500;
-    public int WIDTH = 1000;
+    public PanelMain mainPanel;
+    public PanelQuery queryPanel;
+    public PanelChat chatPanel;
+    public PanelNames panelNames;
+    public PanelLeftSide leftSidePanel;
+    public PanelRightSide rightSidePanel;
+    public PanelCenter centerPanel;
+    public ListenerMouseScroll mouseScrollListener;
+    public int HEIGHT = 700, WIDTH = 1400;
+    public int minHEIGHT = 500, minWIDTH = 1000;
 
 
     /**
@@ -54,31 +56,31 @@ public class ApplicationView implements View {
         manager.setGPTModel(GPTModel.getNewest().orElseThrow());
 
         mainFrame = new MainFrame(this);
-        chatArea = new ChatArea();
-        queryArea = new QueryArea(this);
-        mouseScrollListener = new MouseScrollListener(chatArea, queryArea);
+        chatArea = new TextChatArea();
+        queryArea = new TextQueryArea(this);
+        mouseScrollListener = new ListenerMouseScroll(chatArea, queryArea);
         queryArea.addMouseWheelListener(mouseScrollListener);
         chatArea.addMouseWheelListener(mouseScrollListener);
         enterToSend = new JLabel("Enter zum Absenden");
         sender = new Sender(this);
         progressBar = new JProgressBar();
         progressBar.setIndeterminate(false);
-        currentChat = new ChatName();
+        saveNameField = new TextChatName();
 
         deleteButton = new JButton("Alle löschen");
-        DeleteChatsButtonListener deleteButtonListener = new DeleteChatsButtonListener(this);
+        ListenerDeleteChatsButton deleteButtonListener = new ListenerDeleteChatsButton(this);
         deleteButton.addActionListener(deleteButtonListener);
 
         saveButton = new JButton("Chat speichern");
-        SaveButtonListener saveButtonListener = new SaveButtonListener(this);
+        ListenerSaveButton saveButtonListener = new ListenerSaveButton(this);
         saveButton.addActionListener(saveButtonListener);
 
-        dropdownSavedChats = new SavedChats(this);
-        SavedChatsDropdownListener savedChatsListener = new SavedChatsDropdownListener(this);
+        dropdownSavedChats = new DropdownSavedChats(this);
+        ListenerSavedChatsDropdown savedChatsListener = new ListenerSavedChatsDropdown(this);
         dropdownSavedChats.addActionListener(savedChatsListener);
 
-        dropdownGPTModels = new GPTModels(this);
-        GPTModelsDropdownListener gptModelsListener = new GPTModelsDropdownListener(this);
+        dropdownGPTModels = new DropdownGPTModels(this);
+        ListenerGPTModelsDropdown gptModelsListener = new ListenerGPTModelsDropdown(this);
         dropdownGPTModels.addActionListener(gptModelsListener);
 
         scrollableChatArea = new JScrollPane(chatArea);
@@ -91,14 +93,17 @@ public class ApplicationView implements View {
         scrollableQueryArea.getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE);
         scrollableQueryArea.setWheelScrollingEnabled(true);
 
-        buttons = new ButtonsPanel(saveButton, deleteButton);
-        oldChatsPanel = new OldChatsPanel(currentChat, buttons, dropdownSavedChats);
-        currentChatPanel = new ChatPanel(chatArea, oldChatsPanel);
-        queryPanel = new QueryPanel(queryArea, enterToSend, dropdownGPTModels, progressBar);
-        mainPanel = new MainPanel(queryPanel, currentChatPanel);
+        leftSidePanel = new PanelLeftSide(dropdownSavedChats, deleteButton);
+        rightSidePanel = new PanelRightSide(dropdownGPTModels);
+        centerPanel = new PanelCenter(saveNameField, saveButton);
+        panelNames = new PanelNames(leftSidePanel, centerPanel, rightSidePanel);
+        chatPanel = new PanelChat(chatArea, panelNames);
+        queryPanel = new PanelQuery(queryArea, enterToSend, progressBar);
+        mainPanel = new PanelMain(queryPanel, chatPanel);
 
         mainFrame.getContentPane().add(mainPanel);
-        mainFrame.setMinimumSize(new Dimension(WIDTH, HEIGHT));
+        mainFrame.setPreferredSize(new Dimension(WIDTH, HEIGHT));
+        mainFrame.setMinimumSize(new Dimension(minWIDTH, minHEIGHT));
         mainFrame.pack();
         mainFrame.setVisible(true);
         mainFrame = new MainFrame(this);

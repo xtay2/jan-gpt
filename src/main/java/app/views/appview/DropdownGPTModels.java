@@ -7,9 +7,9 @@ import javax.swing.*;
 /**
  * @author A.Mukhamedov
  */
-public class GPTModels extends JComboBox<String> {
+public class DropdownGPTModels extends JComboBox<String> {
 
-    public GPTModels(ApplicationView app) {
+    public DropdownGPTModels(ApplicationView app) {
         super();
         String[] models = GPTModel.values().toArray(String[]::new);
         setModel(new DefaultComboBoxModel<>(models));

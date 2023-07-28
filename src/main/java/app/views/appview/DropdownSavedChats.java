@@ -10,10 +10,10 @@ import java.util.Vector;
  *
  * @author A.Mukhamedov
  */
-public class SavedChats extends JComboBox<String> {
+public class DropdownSavedChats extends JComboBox<String> {
     public static final String NEW_CHAT = "Neuer Chat";
 
-    public SavedChats(ApplicationView app) {
+    public DropdownSavedChats(ApplicationView app) {
         super();
         var chats = new Vector<>(app.manager.getConversations().orElse(Collections.emptyList()));
         chats.add(0, NEW_CHAT);

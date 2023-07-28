@@ -7,9 +7,9 @@ import javax.swing.*;
  *
  * @author A.Mukhamedov
  */
-public class ChatArea extends JTextArea {
+public class TextChatArea extends JTextArea {
 
-    public ChatArea() {
+    public TextChatArea() {
         super();
         setEditable(false);
         setLineWrap(true);

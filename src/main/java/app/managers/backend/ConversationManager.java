@@ -26,11 +26,10 @@ public interface ConversationManager {
     }
 
     static boolean saveConversation(String conversationName, List<Message> messages) {
-        if (conversationName == null || conversationName.isBlank() || messages == null || messages.isEmpty())
-            return false;
+        if (conversationName == null || conversationName.isBlank() || messages == null || messages.isEmpty()) return false;
         try {
             var path = conversationPath(conversationName);
-            if (Files.exists(path)) return false;
+            if (Files.exists(path)) return false; // TODO: ask user if he wants to overwrite existing conversation the new one is longer
             Files.createDirectories(path.getParent());
             Files.write(path, new Gson().toJson(messages).getBytes());
             return true;

@@ -9,19 +9,19 @@ import java.awt.event.ActionListener;
 
 
 
-public class DeleteChatsButtonListener implements ActionListener {
+public class ListenerDeleteChatsButton implements ActionListener {
     private final ApplicationView app;
 
-    public DeleteChatsButtonListener(ApplicationView app) {
+    public ListenerDeleteChatsButton(ApplicationView app) {
         this.app = app;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         int choice = JOptionPane.showConfirmDialog(app.mainFrame,
-                "Sind Sie sicher, dass Sie alle Chats löschen möchten?", "Bestätigung", JOptionPane.YES_NO_OPTION);
+                "Sicher, dass du alle Chats löschen möchtest?", "Bestätigung", JOptionPane.YES_NO_OPTION);
         if (choice == JOptionPane.YES_OPTION) {
-            if (app.manager.getConversations().isPresent() && app.manager.getConversations().get().size() < 2) {
+            if (app.manager.getConversations().isPresent() && app.manager.getConversations().get().size() < 1) {
                 JOptionPane.showMessageDialog(app.mainFrame, "Es gibt keine Chats zum Löschen.");
                 return;
             }
@@ -30,7 +30,7 @@ public class DeleteChatsButtonListener implements ActionListener {
             }
             app.dropdownSavedChats.removeAllItems();
             app.chatArea.setText("");
-            app.dropdownSavedChats.addItem(SavedChats.NEW_CHAT);
+            app.dropdownSavedChats.addItem(DropdownSavedChats.NEW_CHAT);
         }
     }
 }

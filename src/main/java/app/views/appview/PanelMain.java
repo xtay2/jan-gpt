@@ -6,8 +6,8 @@ import java.awt.*;
 /**
  * @author A.Mukhamedov
  */
-public class MainPanel extends JPanel {
-    public MainPanel(QueryPanel queryPanel, ChatPanel chatPanel) {
+public class PanelMain extends JPanel {
+    public PanelMain(PanelQuery queryPanel, PanelChat chatPanel) {
         setLayout(new BorderLayout());
         add(queryPanel, BorderLayout.SOUTH);
         add(chatPanel, BorderLayout.CENTER);

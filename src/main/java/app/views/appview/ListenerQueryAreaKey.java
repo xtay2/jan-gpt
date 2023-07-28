@@ -3,18 +3,23 @@ package main.java.app.views.appview;
 import javax.swing.*;
 
 /**
- * @author A.Mukhamedov
+ * Author: A.Mukhamedov
  */
-public class EnterKeyListener extends java.awt.event.KeyAdapter {
+public class ListenerQueryAreaKey extends java.awt.event.KeyAdapter {
 
     private final ApplicationView app;
 
-    public EnterKeyListener(ApplicationView app) {
+    public ListenerQueryAreaKey(ApplicationView app) {
         this.app = app;
     }
 
     @Override
     public void keyPressed(java.awt.event.KeyEvent e) {
+
+        if (e.getKeyCode() == java.awt.event.KeyEvent.VK_ENTER && !e.isShiftDown() && app.queryArea.getText().trim().isEmpty()) {
+            return;
+        }
+
         if (e.getKeyCode() == java.awt.event.KeyEvent.VK_ENTER && e.isShiftDown() && !app.queryArea.getText().trim().isEmpty()) {
             app.queryArea.append("\n");
             return;

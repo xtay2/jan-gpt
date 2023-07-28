@@ -8,12 +8,12 @@ import java.awt.event.*;
  */
 
 
-public class MouseScrollListener implements MouseWheelListener {
+public class ListenerMouseScroll implements MouseWheelListener {
 
-    private final ChatArea chatArea;
-    private final QueryArea queryArea;
+    private final TextChatArea chatArea;
+    private final TextQueryArea queryArea; // TODO: implement queryArea scroll
 
-    public MouseScrollListener(ChatArea chatArea, QueryArea queryArea) {
+    public ListenerMouseScroll(TextChatArea chatArea, TextQueryArea queryArea) {
         this.chatArea = chatArea;
         this.queryArea = queryArea;
     }
@@ -35,7 +35,7 @@ public class MouseScrollListener implements MouseWheelListener {
     }
 
     // Helper method to get the enclosing JScrollPane of the ChatArea
-    private JScrollPane getScrollPane(ChatArea chatArea) {
+    private JScrollPane getScrollPane(TextChatArea chatArea) {
         if (chatArea.getParent() instanceof JViewport && chatArea.getParent().getParent() instanceof JScrollPane) {
             return (JScrollPane) chatArea.getParent().getParent();
         }

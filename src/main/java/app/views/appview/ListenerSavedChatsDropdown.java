@@ -9,11 +9,11 @@ import java.util.stream.Collectors;
  */
 
 
-public class SavedChatsDropdownListener implements ActionListener {
-    private final ApplicationView applicationView;
+public class ListenerSavedChatsDropdown implements ActionListener {
+    private final ApplicationView app;
 
-    public SavedChatsDropdownListener(ApplicationView applicationView) {
-        this.applicationView = applicationView;
+    public ListenerSavedChatsDropdown(ApplicationView app) {
+        this.app = app;
     }
 
     @Override
@@ -22,19 +22,21 @@ public class SavedChatsDropdownListener implements ActionListener {
         JComboBox<String> dropdownSavedChats = (JComboBox<String>) e.getSource();
         String convName = (String) dropdownSavedChats.getSelectedItem();
 
-        if (SavedChats.NEW_CHAT.equals(convName)) {
-            applicationView.manager.newConversation();
-            applicationView.chatArea.setText("Jan-GPT: \nHallo! Was kann ich für dich tun? \n_______ \n");
+        if (DropdownSavedChats.NEW_CHAT.equals(convName)) {
+            app.manager.newConversation();
+            app.chatArea.setText("Jan-GPT: \nHallo! Was kann ich für dich tun? \n_______ \n");
+            app.saveNameField.setText("");
+
         } else {
-            var conv = applicationView.manager.loadConversation(convName);
-            applicationView.chatArea.setText(conv.map(messages ->
+            var conv = app.manager.loadConversation(convName);
+            app.chatArea.setText(conv.map(messages ->
                     messages.stream().map(msg -> msg.role().alias(false) + ": " + msg.content() + "\n")
                             .collect(Collectors.joining())
             ).orElse("Chat konnte nicht geladen werden \n"));
         }
 
         // Set focus on the query text field
-        SwingUtilities.invokeLater(() -> applicationView.queryArea.requestFocusInWindow());
+        SwingUtilities.invokeLater(() -> app.queryArea.requestFocusInWindow());
     }
 
 

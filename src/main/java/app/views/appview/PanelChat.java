@@ -6,10 +6,10 @@ import java.awt.*;
 /**
  * @author A.Mukhamedov
  */
-public class ChatPanel extends JPanel {
-    public ChatPanel(ChatArea chatArea, OldChatsPanel oldChatsPanel) {
+public class PanelChat extends JPanel {
+    public PanelChat(TextChatArea chatArea, PanelNames centerPanel) {
         setLayout(new BorderLayout());
         add(new JScrollPane(chatArea), BorderLayout.CENTER);
-        add(oldChatsPanel, BorderLayout.SOUTH);
+        add(centerPanel, BorderLayout.SOUTH);
     }
 }
