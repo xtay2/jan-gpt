@@ -1,35 +1,32 @@
-name: Generate Javadocs
+name: Generate Javadoc and Publish
 
 on:
   push:
     branches:
-      - main
-  pull_request:
-    branches:
-      - main
+      - main  # Adjust this to your main branch name
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      - name: Set up Java JDK
-        uses: actions/setup-java@v2
-        with:
-          java-version: '19'
-          distribution: 'adopt'
+    - name: Set up JDK
+      uses: actions/setup-java@v2
+      with:
+        java-version: '19'
+        distribution: 'adopt'
 
-      - name: Build with Gradle
-        run: ./gradlew build
+    - name: Build with Maven
+      run: mvn package
 
-      - name: Generate Javadocs
-        run: ./gradlew javadoc
+    - name: Generate Javadoc
+      run: mvn javadoc:javadoc
 
-      - name: Deploy Javadocs to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build/docs/javadoc
+    - name: Deploy Javadoc to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./target/site/apidocs
