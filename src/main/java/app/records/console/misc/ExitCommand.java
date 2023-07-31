@@ -14,7 +14,7 @@ public class ExitCommand extends ConsoleCommand {
         super(
                 "exit",
                 "Beendet das Programm.",
-                CommandGroup.MISC
+                ConsoleCommand.CommandGroup.MISC
         );
     }
 

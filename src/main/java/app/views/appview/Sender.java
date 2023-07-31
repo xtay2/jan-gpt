@@ -1,7 +1,7 @@
-package main.java.app.views.appview;
+package app.views.appview;
 
-import main.java.app.managers.backend.GPTPort;
-import main.java.app.records.Role;
+import app.managers.backend.GPTPort;
+import app.records.Role;
 
 import javax.swing.*;
 import java.awt.*;

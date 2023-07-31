@@ -1,13 +1,11 @@
-package main.java.app.views.appview;
+package app.views.appview;
 
+
+import app.managers.frontend.ViewManager;
 
 import javax.swing.*;
 import java.awt.*;
 
-/**
- * @author A.Mukhamedov
- */
-// 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
 
 public class APIKeyFrame extends JFrame {
 

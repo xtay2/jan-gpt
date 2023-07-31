@@ -1,6 +1,6 @@
-package main.java.app.views.appview;
+package app.views.appview;
 
-import main.java.app.records.GPTModel;
+import app.records.GPTModel;
 
 import javax.swing.*;
 
@@ -14,6 +14,5 @@ public class DropdownGPTModels extends JComboBox<String> {
         String[] models = GPTModel.values().toArray(String[]::new);
         setModel(new DefaultComboBoxModel<>(models));
         app.manager.getGPTModel().ifPresent(model -> this.setSelectedItem(model.modelName));
-
     }
 }

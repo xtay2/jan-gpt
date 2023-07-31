@@ -1,6 +1,5 @@
 package app.managers.backend;
 
-
 import app.records.GPTModel;
 import app.records.Message;
 

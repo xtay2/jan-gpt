@@ -1,11 +1,10 @@
-package main.java.app.views.appview;
+package app.views.appview;
 
-import main.java.app.managers.frontend.ViewManager;
-import main.java.app.records.GPTModel;
-import main.java.app.views.View;
+import app.managers.frontend.ViewManager;
+import app.records.GPTModel;
+import app.views.View;
 
 import javax.swing.*;
-import javax.swing.JProgressBar;
 import java.awt.*;
 
 /**
@@ -47,8 +46,7 @@ public class ApplicationView implements View {
         if (manager.hasAPIKey())
             buildMainFrame(manager);
         else  // manager.setAPIKey("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");
-            new main.java.app.views.appview.APIKeyFrame(manager, () -> buildMainFrame(manager));
-
+            new APIKeyFrame(manager, () -> buildMainFrame(manager));
     }
 
     private void buildMainFrame(ViewManager manager) {
@@ -109,5 +107,3 @@ public class ApplicationView implements View {
         mainFrame = new MainFrame(this);
     }
 }
-
-

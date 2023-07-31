@@ -1,9 +1,13 @@
-package main.java.app.views.appview;
+package app.views.appview;
+
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
+
 /**
  * This class is responsible for changing the font size of the chat area.
+ *
  * @author A.Mukhamedov
  */
 

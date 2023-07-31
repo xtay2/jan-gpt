@@ -1,4 +1,4 @@
-package main.java.app.managers.backend;
+package app.managers.backend;
 
 import app.records.Message;
 import com.google.gson.Gson;
@@ -12,7 +12,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static main.java.Main.BASE_DATA_PATH;
+import static app.Main.BASE_DATA_PATH;
+
 
 /**
  * @author Dennis Woithe

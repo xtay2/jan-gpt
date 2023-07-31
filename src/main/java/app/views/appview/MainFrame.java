@@ -1,4 +1,4 @@
-package main.java.app.views.appview;
+package app.views.appview;
 
 import javax.swing.*;
 import java.awt.*;
@@ -67,4 +67,3 @@ public class MainFrame extends javax.swing.JFrame{
 
     }
 }
-

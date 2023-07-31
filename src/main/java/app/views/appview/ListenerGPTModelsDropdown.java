@@ -1,5 +1,5 @@
-package main.java.app.views.appview;
-import main.java.app.records.GPTModel;
+package app.views.appview;
+import app.records.GPTModel;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
