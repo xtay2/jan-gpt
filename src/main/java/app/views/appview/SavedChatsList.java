@@ -20,8 +20,8 @@ public class SavedChatsList extends JList<String> {
         // Set preferred size for the list
         Dimension listSize = new Dimension(150, 100);
         setPreferredSize(listSize);
-        setMaximumSize(listSize);
-        setMinimumSize(listSize);
+//        setMaximumSize(listSize);
+//        setMinimumSize(listSize);
         ListenerSavedChatsList savedChatsListListener = new ListenerSavedChatsList(app);
         addListSelectionListener(savedChatsListListener);
 

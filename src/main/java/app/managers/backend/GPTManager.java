@@ -12,6 +12,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -20,6 +21,8 @@ import java.util.Optional;
  * @author Dennis Woithe
  */
 public class GPTManager implements GPTPort {
+
+    private static final int TIMEOUT_SEC = 60;
 
     private static final URI GPT_CHAT_URI = URI.create("https://api.openai.com/v1/chat/completions"), GPT_MODEL_URI = URI.create("https://api.openai.com/v1/models");
 
@@ -48,6 +51,7 @@ public class GPTManager implements GPTPort {
                 .POST(HttpRequest.BodyPublishers.ofString(buildPromptRequestBody(model).toString()))
                 .header("Authorization", "Bearer " + apiKey)
                 .header("Content-Type", "application/json")
+                .timeout(Duration.ofSeconds(TIMEOUT_SEC))
                 .build();
         // RECEIVE RESPONSE
         try {
@@ -79,6 +83,7 @@ public class GPTManager implements GPTPort {
                     .uri(GPT_MODEL_URI)
                     .GET()
                     .header("Authorization", "Bearer " + apiKey)
+                    .timeout(Duration.ofSeconds(TIMEOUT_SEC))
                     .build(), HttpResponse.BodyHandlers.ofString()).statusCode() == 200;
         } catch (Exception e) {
             return false;

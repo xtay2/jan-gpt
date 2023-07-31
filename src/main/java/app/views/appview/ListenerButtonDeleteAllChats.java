@@ -9,10 +9,10 @@ import java.awt.event.ActionListener;
 
 
 
-public class ListenerDeleteChatsButton implements ActionListener {
+public class ListenerButtonDeleteAllChats implements ActionListener {
     private final ApplicationView app;
 
-    public ListenerDeleteChatsButton(ApplicationView app) {
+    public ListenerButtonDeleteAllChats(ApplicationView app) {
         this.app = app;
     }
 
@@ -33,4 +33,6 @@ public class ListenerDeleteChatsButton implements ActionListener {
             app.savedChatsList.setSelectedValue(SavedChatsList.NEW_CHAT, true); // Select the "New Chat" option
         }
     }
+
+
 }

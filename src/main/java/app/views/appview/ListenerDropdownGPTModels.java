@@ -10,10 +10,10 @@ import java.awt.event.ActionListener;
 
 
 
-public class ListenerGPTModelsDropdown implements ActionListener {
+public class ListenerDropdownGPTModels implements ActionListener {
     private final ApplicationView applicationView;
 
-    public ListenerGPTModelsDropdown(ApplicationView applicationView) {
+    public ListenerDropdownGPTModels(ApplicationView applicationView) {
         this.applicationView = applicationView;
     }
 

@@ -7,8 +7,10 @@ import java.awt.*;
  * @author A.Mukhamedov
  */
 public class PanelRightSide extends JPanel{
-        public PanelRightSide(DropdownGPTModels dropdownGPTModels) {
+
+        public PanelRightSide(PanelChat chatPanel, PanelQuery queryPanel) {
             setLayout(new BorderLayout());
-            add(dropdownGPTModels, BorderLayout.CENTER);
+            add(chatPanel, BorderLayout.CENTER);
+            add(queryPanel, BorderLayout.SOUTH);
         }
 }

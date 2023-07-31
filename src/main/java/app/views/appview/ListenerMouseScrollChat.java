@@ -11,22 +11,22 @@ import java.awt.event.MouseWheelListener;
  * @author A.Mukhamedov
  */
 
-
-public class ListenerMouseScroll implements MouseWheelListener {
+public class ListenerMouseScrollChat implements MouseWheelListener {
 
     private final TextChatArea chatArea;
-    private final TextQueryArea queryArea; // TODO: implement queryArea scroll
+    private static final int MIN_FONT_SIZE = 10;
+    private static final int MAX_FONT_SIZE = 40;
 
-    public ListenerMouseScroll(TextChatArea chatArea, TextQueryArea queryArea) {
+    public ListenerMouseScrollChat(TextChatArea chatArea) {
         this.chatArea = chatArea;
-        this.queryArea = queryArea;
     }
-
 
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
         if (e.isControlDown()) {
-            chatArea.setFont(new Font(chatArea.getFont().getName(), chatArea.getFont().getStyle(), chatArea.getFont().getSize() - (2 * e.getWheelRotation())));
+            int newFontSize = chatArea.getFont().getSize() - (2 * e.getWheelRotation());
+            newFontSize = Math.max(MIN_FONT_SIZE, Math.min(newFontSize, MAX_FONT_SIZE));
+            chatArea.setFont(new Font(chatArea.getFont().getName(), chatArea.getFont().getStyle(), newFontSize));
         } else {
             // Scroll the ChatArea when control key is not pressed
             JScrollPane scrollPane = getScrollPane(chatArea);

@@ -7,10 +7,9 @@ import java.awt.*;
  * @author A.Mukhamedov
  */
 public class PanelMain extends JPanel {
-    public PanelMain(SavedChatsList savedChatsList, PanelQuery queryPanel, PanelChat chatPanel) {
+    public PanelMain(PanelLeftSide leftSidePanel, PanelRightSide rightSidePanel) {
         setLayout(new BorderLayout());
-        add(savedChatsList, BorderLayout.WEST);
-        add(queryPanel, BorderLayout.SOUTH);
-        add(chatPanel, BorderLayout.CENTER);
+        add(leftSidePanel, BorderLayout.WEST);
+        add(rightSidePanel, BorderLayout.CENTER);
     }
 }

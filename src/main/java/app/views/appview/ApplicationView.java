@@ -20,21 +20,19 @@ public class ApplicationView implements View {
     public JProgressBar progressBar;
     public TextChatName saveNameField;
     public JButton saveButton;
-    public JButton deleteButton;
+    public JButton deleteAllButton;
+    public JButton deleteSelectedButton;
     public JScrollPane scrollableChatArea;
     public JScrollPane scrollableQueryArea;
-//    public DropdownSavedChats dropdownSavedChats;
-    public SavedChatsList savedChatsList; // Replace DropdownSavedChats with SavedChatsList
+    public SavedChatsList savedChatsList;
     public DropdownGPTModels dropdownGPTModels;
-    public JLabel enterToSend;
+    public JLabel savedChatsLabel;
     public PanelMain mainPanel;
     public PanelQuery queryPanel;
     public PanelChat chatPanel;
-    public PanelNames panelNames;
     public PanelLeftSide leftSidePanel;
     public PanelRightSide rightSidePanel;
-    public PanelCenter centerPanel;
-    public ListenerMouseScroll mouseScrollListener;
+    public PanelButtons buttonsPanel;
     public int HEIGHT = 700, WIDTH = 1400;
     public int minHEIGHT = 500, minWIDTH = 1000;
 
@@ -57,33 +55,22 @@ public class ApplicationView implements View {
         mainFrame = new MainFrame(this);
         chatArea = new TextChatArea();
         queryArea = new TextQueryArea(this);
-        mouseScrollListener = new ListenerMouseScroll(chatArea, queryArea);
-        queryArea.addMouseWheelListener(mouseScrollListener);
-        chatArea.addMouseWheelListener(mouseScrollListener);
-        enterToSend = new JLabel("Enter zum Absenden");
+        savedChatsLabel = new JLabel("Gespeicherte Chats:");
         sender = new Sender(this);
         progressBar = new JProgressBar();
         progressBar.setIndeterminate(false);
         saveNameField = new TextChatName();
-
-        deleteButton = new JButton("Alle löschen");
-        ListenerDeleteChatsButton deleteButtonListener = new ListenerDeleteChatsButton(this);
-        deleteButton.addActionListener(deleteButtonListener);
-
-        saveButton = new JButton("Chat speichern");
-        ListenerSaveButton saveButtonListener = new ListenerSaveButton(this);
-        saveButton.addActionListener(saveButtonListener);
-
-
         savedChatsList = new SavedChatsList(this);
-
-
-//        dropdownSavedChats = new DropdownSavedChats(this);
-
-
         dropdownGPTModels = new DropdownGPTModels(this);
-        ListenerGPTModelsDropdown gptModelsListener = new ListenerGPTModelsDropdown(this);
-        dropdownGPTModels.addActionListener(gptModelsListener);
+        saveButton = new JButton("Chat speichern");
+        ListenerButtonSaveChat saveButtonListener = new ListenerButtonSaveChat(this);
+        saveButton.addActionListener(saveButtonListener);
+        deleteSelectedButton = new JButton("Chat löschen");
+        ListenerButtonDeleteChat deleteSelectedButtonListener = new ListenerButtonDeleteChat(this);
+        deleteSelectedButton.addActionListener(deleteSelectedButtonListener);
+        deleteAllButton = new JButton("Alle löschen");
+        ListenerButtonDeleteAllChats deleteAllButtonListener = new ListenerButtonDeleteAllChats(this);
+        deleteAllButton.addActionListener(deleteAllButtonListener);
 
         scrollableChatArea = new JScrollPane(chatArea);
         scrollableChatArea.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -94,14 +81,16 @@ public class ApplicationView implements View {
         scrollableQueryArea.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollableQueryArea.getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE);
         scrollableQueryArea.setWheelScrollingEnabled(true);
+        scrollableQueryArea.setPreferredSize(new Dimension(1000, 150));
 
-        leftSidePanel = new PanelLeftSide(deleteButton);
-        rightSidePanel = new PanelRightSide(dropdownGPTModels);
-        centerPanel = new PanelCenter(saveNameField, saveButton);
-        panelNames = new PanelNames(leftSidePanel, centerPanel, rightSidePanel);
-        chatPanel = new PanelChat(chatArea, panelNames);
-        queryPanel = new PanelQuery(queryArea, enterToSend, progressBar);
-        mainPanel = new PanelMain(savedChatsList, queryPanel, chatPanel);
+        buttonsPanel = new PanelButtons(saveNameField, saveButton, deleteSelectedButton, deleteAllButton, dropdownGPTModels);
+        leftSidePanel = new PanelLeftSide(savedChatsLabel, savedChatsList, buttonsPanel);
+
+        chatPanel = new PanelChat(chatArea);
+        queryPanel = new PanelQuery(scrollableQueryArea, progressBar);
+        rightSidePanel = new PanelRightSide(chatPanel, queryPanel);
+
+        mainPanel = new PanelMain(leftSidePanel, rightSidePanel);
 
         mainFrame.getContentPane().add(mainPanel);
         mainFrame.setPreferredSize(new Dimension(WIDTH, HEIGHT));
@@ -109,5 +98,6 @@ public class ApplicationView implements View {
         mainFrame.pack();
         mainFrame.setVisible(true);
         mainFrame = new MainFrame(this);
+        queryArea.requestFocus();
     }
 }

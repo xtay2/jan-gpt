@@ -23,7 +23,7 @@ public class ListenerSavedChatsList implements ListSelectionListener {
         String convName = savedChatsList.getSelectedValue();
         if (convName == null) return;
 
-        if (convName.equals(DropdownSavedChats.NEW_CHAT)) {
+        if (convName.equals(SavedChatsList.NEW_CHAT)) {
             app.manager.newConversation();
             app.chatArea.setText("Jan-GPT: \nHallo! Was kann ich für dich tun? \n_______ \n");
             app.saveNameField.setText("");

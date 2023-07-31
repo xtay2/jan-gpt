@@ -8,12 +8,13 @@ import javax.swing.*;
  * @author A.Mukhamedov
  */
 public class TextChatArea extends JTextArea {
-
     public TextChatArea() {
         super();
         setEditable(false);
         setLineWrap(true);
         setWrapStyleWord(true);
         setText("Jan-GPT: \nHallo! Was kann ich für dich tun? \n_______ \n");
+        ListenerMouseScrollChat mouseScrollListener = new ListenerMouseScrollChat(this);
+        addMouseWheelListener(mouseScrollListener);
     }
 }
