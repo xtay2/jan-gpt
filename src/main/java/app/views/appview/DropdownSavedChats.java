@@ -12,7 +12,6 @@ import java.util.Vector;
  */
 public class DropdownSavedChats extends JComboBox<String> {
     public static final String NEW_CHAT = "Neuer Chat";
-
     public DropdownSavedChats(ApplicationView app) {
         super();
         var chats = new Vector<>(app.manager.getConversations().orElse(Collections.emptyList()));
@@ -23,6 +22,8 @@ public class DropdownSavedChats extends JComboBox<String> {
         setPreferredSize(dropdownSize);
         setMaximumSize(dropdownSize);
         setMinimumSize(dropdownSize);
+        ListenerSavedChatsDropdown savedChatsListener = new ListenerSavedChatsDropdown(app);
+        addActionListener(savedChatsListener);
     }
 
 }

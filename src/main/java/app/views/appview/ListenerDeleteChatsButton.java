@@ -28,9 +28,9 @@ public class ListenerDeleteChatsButton implements ActionListener {
             for (String name : app.manager.getConversations().get()) {
                 app.manager.deleteConversation(name);
             }
-            app.dropdownSavedChats.removeAllItems();
+            app.savedChatsList.setListData(new String[]{SavedChatsList.NEW_CHAT}); // Set data for the new list
             app.chatArea.setText("");
-            app.dropdownSavedChats.addItem(DropdownSavedChats.NEW_CHAT);
+            app.savedChatsList.setSelectedValue(SavedChatsList.NEW_CHAT, true); // Select the "New Chat" option
         }
     }
 }

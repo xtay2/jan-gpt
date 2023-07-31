@@ -3,11 +3,13 @@ package app.views.appview;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Vector;
 
 /**
  * @author A.Mukhamedov
  */
-
 
 
 public class ListenerSaveButton implements ActionListener {
@@ -27,8 +29,10 @@ public class ListenerSaveButton implements ActionListener {
 
         if (app.manager.saveConversationAs(name)) {
             app.saveNameField.setText("Chat wurde gespeichert!");
-            app.dropdownSavedChats.addItem(name);
-            app.dropdownSavedChats.setSelectedItem(name);
+            String[] conversationsArray = app.manager.getConversations().orElse(new ArrayList<>(0)).toArray(new String[0]);
+            Vector<String> conversationsVector = new Vector<>(Arrays.asList(conversationsArray));
+            app.savedChatsList.setListData(conversationsVector); // Update the list data
+            app.savedChatsList.setSelectedValue(name, true); // Select the saved chat in the list
         } else {
             JOptionPane.showMessageDialog(app.mainFrame, "Bitte führe erst eine Konversation.\n");
         }

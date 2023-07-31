@@ -23,7 +23,8 @@ public class ApplicationView implements View {
     public JButton deleteButton;
     public JScrollPane scrollableChatArea;
     public JScrollPane scrollableQueryArea;
-    public DropdownSavedChats dropdownSavedChats;
+//    public DropdownSavedChats dropdownSavedChats;
+    public SavedChatsList savedChatsList; // Replace DropdownSavedChats with SavedChatsList
     public DropdownGPTModels dropdownGPTModels;
     public JLabel enterToSend;
     public PanelMain mainPanel;
@@ -45,7 +46,7 @@ public class ApplicationView implements View {
     public void start(ViewManager manager) {
         if (manager.hasAPIKey())
             buildMainFrame(manager);
-        else  // manager.setAPIKey("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");
+        else
             new APIKeyFrame(manager, () -> buildMainFrame(manager));
     }
 
@@ -73,9 +74,12 @@ public class ApplicationView implements View {
         ListenerSaveButton saveButtonListener = new ListenerSaveButton(this);
         saveButton.addActionListener(saveButtonListener);
 
-        dropdownSavedChats = new DropdownSavedChats(this);
-        ListenerSavedChatsDropdown savedChatsListener = new ListenerSavedChatsDropdown(this);
-        dropdownSavedChats.addActionListener(savedChatsListener);
+
+        savedChatsList = new SavedChatsList(this);
+
+
+//        dropdownSavedChats = new DropdownSavedChats(this);
+
 
         dropdownGPTModels = new DropdownGPTModels(this);
         ListenerGPTModelsDropdown gptModelsListener = new ListenerGPTModelsDropdown(this);
@@ -91,13 +95,13 @@ public class ApplicationView implements View {
         scrollableQueryArea.getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE);
         scrollableQueryArea.setWheelScrollingEnabled(true);
 
-        leftSidePanel = new PanelLeftSide(dropdownSavedChats, deleteButton);
+        leftSidePanel = new PanelLeftSide(deleteButton);
         rightSidePanel = new PanelRightSide(dropdownGPTModels);
         centerPanel = new PanelCenter(saveNameField, saveButton);
         panelNames = new PanelNames(leftSidePanel, centerPanel, rightSidePanel);
         chatPanel = new PanelChat(chatArea, panelNames);
         queryPanel = new PanelQuery(queryArea, enterToSend, progressBar);
-        mainPanel = new PanelMain(queryPanel, chatPanel);
+        mainPanel = new PanelMain(savedChatsList, queryPanel, chatPanel);
 
         mainFrame.getContentPane().add(mainPanel);
         mainFrame.setPreferredSize(new Dimension(WIDTH, HEIGHT));
