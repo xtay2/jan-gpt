@@ -1,13 +1,36 @@
-image: maven:latest
+name: Maven Javadoc Deployment
 
-pages:
-  stage: deploy
-  script:
-    - mvn javadoc:aggregate # Generate Javadocs
-    - mkdir public          # GitLab Pages requires your site to be in a 'public' directory
-    - cp -r target/site/apidocs/* public  # Copy Javadocs to the 'public' directory
-  artifacts:
-    paths:
-      - public
-  only:
-    - main   # You can specify the branches you want this job to run on, this example uses main branch
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Java with Maven
+        uses: actions/setup-java@v2
+        with:
+          java-version: '19'
+
+      - name: Build and Generate Javadocs
+        run: |
+          mvn javadoc:aggregate
+          mkdir public
+          cp -r target/site/apidocs/* public
+
+      - name: Deploy to GitHub Pages
+        run: |
+          git config --global user.name "${GITHUB_ACTOR}"
+          git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+          git checkout gh-pages || git checkout --orphan gh-pages
+          git rm -rf .
+          mv public/* .
+          git add .
+          git commit -m "Update Javadocs [skip ci]"
+          git push -u origin gh-pages
