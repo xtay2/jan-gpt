@@ -1,4 +1,4 @@
-package main.java.app.util;
+package app.util;
 
 /**
  * @author A.Mukhamedov

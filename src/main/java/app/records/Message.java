@@ -1,4 +1,4 @@
-package main.java.app.records;
+package app.records;
 
 import com.google.gson.JsonObject;
 

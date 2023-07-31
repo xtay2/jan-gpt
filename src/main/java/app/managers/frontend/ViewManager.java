@@ -1,8 +1,9 @@
-package main.java.app.managers.frontend;
+package app.managers.frontend;
 
-import main.java.app.managers.backend.GPTPort;
-import main.java.app.records.GPTModel;
-import main.java.app.records.Message;
+
+import app.managers.backend.GPTPort;
+import app.records.GPTModel;
+import app.records.Message;
 
 import java.util.List;
 import java.util.Optional;
@@ -51,6 +52,10 @@ public interface ViewManager {
     /** Load a conversation from a file. */
     Optional<List<Message>> loadConversation(String name);
 
+    /** Start a new conversation. */
+    void newConversation();
+
     /** Delete a conversation-file. */
     boolean deleteConversation(String name);
+
 }

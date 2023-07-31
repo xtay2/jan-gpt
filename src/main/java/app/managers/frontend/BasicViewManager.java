@@ -1,11 +1,12 @@
-package main.java.app.managers.frontend;
+package app.managers.frontend;
 
-import main.java.app.managers.backend.ApiKeyManager;
-import main.java.app.managers.backend.ConversationManager;
-import main.java.app.managers.backend.GPTPort;
-import main.java.app.records.GPTModel;
-import main.java.app.records.Message;
+import app.managers.backend.ApiKeyManager;
+import app.managers.backend.ConversationManager;
+import app.managers.backend.GPTPort;
+import app.records.GPTModel;
+import app.records.Message;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -72,6 +73,11 @@ public class BasicViewManager implements ViewManager {
         var conv = ConversationManager.loadConversation(name);
         conv.ifPresent(gptPort::setMessages);
         return conv;
+    }
+
+    @Override
+    public void newConversation() {
+        gptPort.setMessages(new ArrayList<>());
     }
 
     @Override

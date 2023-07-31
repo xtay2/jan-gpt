@@ -1,6 +1,6 @@
-package main.java.app.records;
+package app.records;
 
-import main.java.app.util.ANSI;
+import app.util.ANSI;
 
 /**
  * @author Dennis Woithe
