@@ -25,17 +25,15 @@ public class ListenerSavedChatsList implements ListSelectionListener {
 
         if (convName.equals(SavedChatsList.NEW_CHAT)) {
             app.manager.newConversation();
-            app.chatArea.setText("Jan-GPT: \nHallo! Was kann ich für dich tun? \n_______ \n");
+            app.chatArea.setText("Jan-GPT: \nHallo! Was kann ich für dich tun? \n");
             app.saveNameField.setText("");
         } else {
             var conv = app.manager.loadConversation(convName);
             app.chatArea.setText(conv.map(messages ->
-                    messages.stream().map(msg -> msg.role().alias(false) + ": " + msg.content() + "\n")
+                    messages.stream().map(msg -> msg.role().alias(false) + ": " + msg.content() + "\n\n")
                             .collect(Collectors.joining())
             ).orElse("Chat konnte nicht geladen werden \n"));
         }
-
-        // Set focus on the query text field
         SwingUtilities.invokeLater(() -> app.queryArea.requestFocusInWindow());
     }
 }

@@ -13,11 +13,11 @@ import java.awt.event.MouseWheelListener;
 
 public class ListenerMouseScrollChat implements MouseWheelListener {
 
-    private final TextChatArea chatArea;
+    private final TextAreaChat chatArea;
     private static final int MIN_FONT_SIZE = 10;
     private static final int MAX_FONT_SIZE = 40;
 
-    public ListenerMouseScrollChat(TextChatArea chatArea) {
+    public ListenerMouseScrollChat(TextAreaChat chatArea) {
         this.chatArea = chatArea;
     }
 
@@ -39,7 +39,7 @@ public class ListenerMouseScrollChat implements MouseWheelListener {
     }
 
     // Helper method to get the enclosing JScrollPane of the ChatArea
-    private JScrollPane getScrollPane(TextChatArea chatArea) {
+    private JScrollPane getScrollPane(TextAreaChat chatArea) {
         if (chatArea.getParent() instanceof JViewport && chatArea.getParent().getParent() instanceof JScrollPane) {
             return (JScrollPane) chatArea.getParent().getParent();
         }

@@ -6,8 +6,10 @@ import javax.swing.*;
  * This class is used to show the query.
  * @author A.Mukhamedov
  */
-public class TextQueryArea extends JTextArea {
-    public TextQueryArea(ApplicationView app) {
+public class TextAreaQuery extends JTextArea {
+
+
+    public TextAreaQuery(ApplicationView app) {
         super();
         setEditable(true);
         setLineWrap(true);

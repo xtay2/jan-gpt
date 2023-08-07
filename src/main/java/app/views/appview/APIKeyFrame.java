@@ -11,13 +11,13 @@ public class APIKeyFrame extends JFrame {
 
     public APIKeyFrame(ViewManager manager, Runnable createMainFrame) {
 
-        setTitle("Enter API Key");
+        setTitle("API Key eingeben");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
         setLayout(new FlowLayout());
 
         var apiKeyField = new JTextField(20);
-        var submitButton = new JButton("Submit");
+        var submitButton = new JButton("weiter");
         var errorLabel = new JLabel("Invalider API key");
 
         errorLabel.setVerticalAlignment(JLabel.BOTTOM);
@@ -31,14 +31,12 @@ public class APIKeyFrame extends JFrame {
                 // Pass the API key to the main application or perform any other required actions
                 // For this example, we simply print the API key
 
-                while(!manager.hasAPIKey()) {
                     if (manager.setAPIKey(apiKey)) {
                         setVisible(false); // Hide the API key frame
                         createMainFrame.run();
-                        return;
+                    } else {
+                        errorLabel.setVisible(true);
                     }
-                    errorLabel.setVisible(true);
-                }
             }
         });
 

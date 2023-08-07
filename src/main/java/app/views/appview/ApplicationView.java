@@ -14,11 +14,11 @@ public class ApplicationView implements View {
 
     public ViewManager manager;
     public MainFrame mainFrame;
-    public TextQueryArea queryArea;
-    public TextChatArea chatArea;
+    public TextAreaQuery queryArea;
+    public TextAreaChat chatArea;
     public Sender sender;
     public JProgressBar progressBar;
-    public TextChatName saveNameField;
+    public TextFieldChatName saveNameField;
     public JButton saveButton;
     public JButton deleteAllButton;
     public JButton deleteSelectedButton;
@@ -33,6 +33,8 @@ public class ApplicationView implements View {
     public PanelLeftSide leftSidePanel;
     public PanelRightSide rightSidePanel;
     public PanelButtons buttonsPanel;
+    public PanelLeftSideBottom tooltipPanel;
+    public JLabel tooltip;
     public int HEIGHT = 700, WIDTH = 1400;
     public int minHEIGHT = 500, minWIDTH = 1000;
 
@@ -53,13 +55,13 @@ public class ApplicationView implements View {
         manager.setGPTModel(GPTModel.getNewest().orElseThrow());
 
         mainFrame = new MainFrame(this);
-        chatArea = new TextChatArea();
-        queryArea = new TextQueryArea(this);
+        chatArea = new TextAreaChat();
+        queryArea = new TextAreaQuery(this);
         savedChatsLabel = new JLabel("Gespeicherte Chats:");
         sender = new Sender(this);
         progressBar = new JProgressBar();
         progressBar.setIndeterminate(false);
-        saveNameField = new TextChatName();
+        saveNameField = new TextFieldChatName();
         savedChatsList = new SavedChatsList(this);
         dropdownGPTModels = new DropdownGPTModels(this);
         saveButton = new JButton("Chat speichern");
@@ -72,6 +74,25 @@ public class ApplicationView implements View {
         ListenerButtonDeleteAllChats deleteAllButtonListener = new ListenerButtonDeleteAllChats(this);
         deleteAllButton.addActionListener(deleteAllButtonListener);
 
+//      tooltip = new JLabel("ⓘ");
+        tooltip = new JLabel("♿");
+        Font customFont = new Font("Segoe UI Symbol", Font.PLAIN, 18); // a font that supports the "ⓘ" symbol
+        tooltip.setFont(customFont);
+        tooltip.setVisible(true);
+        tooltip.setToolTipText("<html>" +
+                "↑ : letzte Frage <br/>" +
+                "↓ : nächste Frage <br/>" +
+                "↵ : Frage absenden <br/>" +
+                "␛ : Frage löschen <br/>" +
+                "⇧ + ↵ : neue Zeile <br/>" +
+                "Strg + s : Frage speichern <br/>" +
+                "Strg + ⇕ : Schriftgröße ändern <br/>" +
+                "</html>");
+        // Set the initial delay for the tooltip in milliseconds (default is 500 ms)
+        ToolTipManager.sharedInstance().setInitialDelay(100); // 1000 ms = 1 second
+        // Set the dismiss delay for the tooltip in milliseconds (default is 4,000 ms)
+        ToolTipManager.sharedInstance().setDismissDelay(10000); // 3000 ms = 3 seconds
+
         scrollableChatArea = new JScrollPane(chatArea);
         scrollableChatArea.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollableChatArea.getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE);
@@ -83,7 +104,8 @@ public class ApplicationView implements View {
         scrollableQueryArea.setWheelScrollingEnabled(true);
         scrollableQueryArea.setPreferredSize(new Dimension(1000, 150));
 
-        buttonsPanel = new PanelButtons(saveNameField, saveButton, deleteSelectedButton, deleteAllButton, dropdownGPTModels);
+        tooltipPanel = new PanelLeftSideBottom(tooltip, dropdownGPTModels);
+        buttonsPanel = new PanelButtons(saveNameField, saveButton, deleteSelectedButton, deleteAllButton, tooltipPanel);
         leftSidePanel = new PanelLeftSide(savedChatsLabel, savedChatsList, buttonsPanel);
 
         chatPanel = new PanelChat(chatArea);

@@ -6,8 +6,8 @@ import java.awt.*;
 /**
  * @author A.Mukhamedov
  */
-public class TextChatName extends JTextField {
-    public TextChatName() {
+public class TextFieldChatName extends JTextField {
+    public TextFieldChatName() {
         super();
         setEditable(true);
         setPreferredSize(new Dimension(100, 30));

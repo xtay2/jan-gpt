@@ -8,7 +8,7 @@ import java.awt.*;
  */
 
 public class PanelButtons extends JPanel {
-    public PanelButtons(TextChatName saveNameField, JButton saveButton, JButton deleteSelectedButton, JButton deleteAllButton, DropdownGPTModels dropdownGPTModels){
+    public PanelButtons(TextFieldChatName saveNameField, JButton saveButton, JButton deleteSelectedButton, JButton deleteAllButton, PanelLeftSideBottom tooltipPanel) {
         setLayout(new GridBagLayout());
 
         GridBagConstraints constraints = new GridBagConstraints();
@@ -43,7 +43,7 @@ public class PanelButtons extends JPanel {
         constraints.gridx = 0; // Column 0
         constraints.gridy = 4; // Row 1
         constraints.gridwidth = 1; // Span 1 column
-        add(dropdownGPTModels, constraints);
+        add(tooltipPanel, constraints);
 
 
 

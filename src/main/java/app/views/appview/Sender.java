@@ -30,8 +30,7 @@ public class Sender {
         // Create a background thread for sending the request
         Thread thread = new Thread(() -> {
 
-            app.chatArea.append(Role.USER.alias(false) + ": \n ");
-            app.chatArea.append(query + "\n");
+            app.chatArea.writeMsg(Role.USER, query);
             app.queryArea.setText("");
 
             try {
@@ -49,15 +48,13 @@ public class Sender {
                     // Update the UI on the EDT
                     SwingUtilities.invokeLater(() -> {
                         app.progressBar.setIndeterminate(false);
-                        app.chatArea.append("\nJan-GPT: \n ");
-                        app.chatArea.append(wrappedResponse + "\n_______ \n");
+                        app.chatArea.writeMsg(Role.ASSISTANT, wrappedResponse);
                         app.chatArea.setCaretPosition(app.chatArea.getDocument().getLength());
                         // Set focus on the query text field
                         SwingUtilities.invokeLater(() -> app.queryArea.requestFocusInWindow());
                     });
                 });
                 System.out.println(response);
-
             } catch (GPTPort.MissingAPIKeyException ex) {
                 System.err.println("API key is missing.");
                 throw new RuntimeException(ex);
@@ -74,4 +71,5 @@ public class Sender {
         // Start the background thread
         thread.start();
     }
+
 }
