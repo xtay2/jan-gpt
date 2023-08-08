@@ -30,7 +30,7 @@ public class ListenerKeyPressedQuery extends java.awt.event.KeyAdapter {
                 app.queryArea.insert("\n", app.queryArea.getCaretPosition());
             else { // Execute the sending of the message in a background thread
                 prompts.add(app.queryArea.getText());
-                SwingUtilities.invokeLater(app.sender::sendMessage);
+                SwingUtilities.invokeLater(app.senderAndReceiver::sendMessage);
             }
             // Prevents a new line from being added
             e.consume();

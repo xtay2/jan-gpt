@@ -11,11 +11,11 @@ import java.awt.*;
  * <p>
  * This class is responsible for sending the user's query to the GPT-3 API and displaying the response.
  */
-public class Sender {
+public class SenderAndReceiver {
 
     private final ApplicationView app;
 
-    public Sender(ApplicationView app) {
+    public SenderAndReceiver(ApplicationView app) {
         this.app = app;
     }
 
@@ -43,7 +43,7 @@ public class Sender {
                     // Add line breaks to the response if it exceeds the conversation text area width
                     int textAreaWidth = app.chatArea.getWidth();
                     FontMetrics fontMetrics = app.chatArea.getFontMetrics(app.chatArea.getFont());
-                    String wrappedResponse = Wrapper.wrapText(s, textAreaWidth, fontMetrics);
+                    String wrappedResponse = app.wrapper.wrapText(s, textAreaWidth, fontMetrics);
 
                     // Update the UI on the EDT
                     SwingUtilities.invokeLater(() -> {
@@ -62,14 +62,10 @@ public class Sender {
                 System.err.println("Model is missing.");
                 throw new RuntimeException(ex);
             }
-
-
             // Enable UI components after the request is completed
             SwingUtilities.invokeLater(() -> app.queryArea.setEnabled(true));
         });
-
         // Start the background thread
         thread.start();
     }
-
 }

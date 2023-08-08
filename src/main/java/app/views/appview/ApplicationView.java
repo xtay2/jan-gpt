@@ -6,6 +6,7 @@ import app.views.View;
 
 import javax.swing.*;
 import java.awt.*;
+import java.nio.file.Watchable;
 
 /**
  * @author Dennis Woithe
@@ -16,12 +17,13 @@ public class ApplicationView implements View {
     public MainFrame mainFrame;
     public TextAreaQuery queryArea;
     public TextAreaChat chatArea;
-    public Sender sender;
+    public SenderAndReceiver senderAndReceiver;
     public JProgressBar progressBar;
     public TextFieldChatName saveNameField;
     public JButton saveButton;
     public JButton deleteAllButton;
     public JButton deleteSelectedButton;
+    public JButton copyCodeButton;
     public JScrollPane scrollableChatArea;
     public JScrollPane scrollableQueryArea;
     public SavedChatsList savedChatsList;
@@ -34,7 +36,9 @@ public class ApplicationView implements View {
     public PanelRightSide rightSidePanel;
     public PanelButtons buttonsPanel;
     public PanelLeftSideBottom tooltipPanel;
-    public JLabel tooltip;
+    public PanelProgress progressPanel;
+    public Tooltip tooltip;
+    public Wrapper wrapper;
     public int HEIGHT = 700, WIDTH = 1400;
     public int minHEIGHT = 500, minWIDTH = 1000;
 
@@ -58,40 +62,24 @@ public class ApplicationView implements View {
         chatArea = new TextAreaChat();
         queryArea = new TextAreaQuery(this);
         savedChatsLabel = new JLabel("Gespeicherte Chats:");
-        sender = new Sender(this);
+        senderAndReceiver = new SenderAndReceiver(this);
         progressBar = new JProgressBar();
         progressBar.setIndeterminate(false);
         saveNameField = new TextFieldChatName();
         savedChatsList = new SavedChatsList(this);
         dropdownGPTModels = new DropdownGPTModels(this);
         saveButton = new JButton("Chat speichern");
-        ListenerButtonSaveChat saveButtonListener = new ListenerButtonSaveChat(this);
-        saveButton.addActionListener(saveButtonListener);
+        saveButton.addActionListener(new ListenerButtonSaveChat(this));
         deleteSelectedButton = new JButton("Chat löschen");
-        ListenerButtonDeleteChat deleteSelectedButtonListener = new ListenerButtonDeleteChat(this);
-        deleteSelectedButton.addActionListener(deleteSelectedButtonListener);
+        deleteSelectedButton.addActionListener(new ListenerButtonDeleteChat(this));
         deleteAllButton = new JButton("Alle löschen");
-        ListenerButtonDeleteAllChats deleteAllButtonListener = new ListenerButtonDeleteAllChats(this);
-        deleteAllButton.addActionListener(deleteAllButtonListener);
-
+        deleteAllButton.addActionListener(new ListenerButtonDeleteAllChats(this));
+        tooltip = new Tooltip(" ♿");
 //      tooltip = new JLabel("ⓘ");
-        tooltip = new JLabel("♿");
-        Font customFont = new Font("Segoe UI Symbol", Font.PLAIN, 18); // a font that supports the "ⓘ" symbol
-        tooltip.setFont(customFont);
-        tooltip.setVisible(true);
-        tooltip.setToolTipText("<html>" +
-                "↑ : letzte Frage <br/>" +
-                "↓ : nächste Frage <br/>" +
-                "↵ : Frage absenden <br/>" +
-                "␛ : Frage löschen <br/>" +
-                "⇧ + ↵ : neue Zeile <br/>" +
-                "Strg + s : Frage speichern <br/>" +
-                "Strg + ⇕ : Schriftgröße ändern <br/>" +
-                "</html>");
-        // Set the initial delay for the tooltip in milliseconds (default is 500 ms)
-        ToolTipManager.sharedInstance().setInitialDelay(100); // 1000 ms = 1 second
-        // Set the dismiss delay for the tooltip in milliseconds (default is 4,000 ms)
-        ToolTipManager.sharedInstance().setDismissDelay(10000); // 3000 ms = 3 seconds
+        copyCodeButton = new JButton("Code kopieren");
+        copyCodeButton.setVisible(false);
+        wrapper = new Wrapper(this);
+
 
         scrollableChatArea = new JScrollPane(chatArea);
         scrollableChatArea.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -107,11 +95,10 @@ public class ApplicationView implements View {
         tooltipPanel = new PanelLeftSideBottom(tooltip, dropdownGPTModels);
         buttonsPanel = new PanelButtons(saveNameField, saveButton, deleteSelectedButton, deleteAllButton, tooltipPanel);
         leftSidePanel = new PanelLeftSide(savedChatsLabel, savedChatsList, buttonsPanel);
-
         chatPanel = new PanelChat(chatArea);
-        queryPanel = new PanelQuery(scrollableQueryArea, progressBar);
+        progressPanel = new PanelProgress(copyCodeButton, progressBar);
+        queryPanel = new PanelQuery(scrollableQueryArea, progressPanel);
         rightSidePanel = new PanelRightSide(chatPanel, queryPanel);
-
         mainPanel = new PanelMain(leftSidePanel, rightSidePanel);
 
         mainFrame.getContentPane().add(mainPanel);

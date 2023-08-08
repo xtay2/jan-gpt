@@ -27,9 +27,7 @@ public class TextAreaChat extends JTextArea {
             }
         });
     }
-
     public void writeMsg(Role role, String msg) {
         append(role.alias(false) + ":\n" + msg + "\n\n");
     }
-
 }
