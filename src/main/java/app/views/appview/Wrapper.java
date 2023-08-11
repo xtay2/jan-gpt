@@ -1,5 +1,10 @@
 package app.views.appview;
 
+import javax.swing.*;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
@@ -13,59 +18,58 @@ import java.util.regex.Pattern;
  * This class is used to wrap text in the message area.
  */
 public class Wrapper {
-    private final ApplicationView app;
-    private final String codeRegex = "```\\w+\n(.*?)```";
-    private String lastCode ="";
+    public StyledDocument styledDocument;
+    public SimpleAttributeSet codeStyle;
+    public SimpleAttributeSet copyButton;
+
     public Wrapper(ApplicationView app) {
-        this.app = app;
+        styledDocument = app.chatPane.getStyledDocument();
+        codeStyle = new SimpleAttributeSet();
+        copyButton = new SimpleAttributeSet();
+        StyleConstants.setForeground(codeStyle, Color.BLUE);
     }
+    
+    public void format(String response) {
 
-    public String wrapText(String response) {
-
+        String codeRegex = "```\\w+\n(.*?)```";
         Pattern codePattern = Pattern.compile(codeRegex, Pattern.DOTALL);
         Matcher matcher = codePattern.matcher(response);
 
-        StringBuilder wrappedText = new StringBuilder();
-
+        int startPos = 0;
         try {
-            int currentIndex = 0;
+            styledDocument.insertString(styledDocument.getLength(), "Jan-GPT:\n", null);
             while (matcher.find()) {
-                String normalText = response.substring(currentIndex, matcher.start());
-                wrappedText.append(normalText);
+                int matchStart = matcher.start();
+                int matchEnd = matcher.end();
+                styledDocument.insertString(styledDocument.getLength(), response.substring(startPos, matchStart), null);
+                styledDocument.insertString(styledDocument.getLength(), "\n", null);
+                String code = matcher.group(1).trim();
+                styledDocument.insertString(styledDocument.getLength(), code, codeStyle);
 
-                String codeSnippet = matcher.group(1);
-                if (!codeSnippet.isEmpty()) {
-                    lastCode = codeSnippet;
-                    app.copyButton.setVisible(true);
-                }
-                lastCode = codeSnippet;
-                wrappedText.append("\n").append(createCodeBox(codeSnippet)).append("\n");
+                JButton copyCodeButton = getjButton(code);
+                StyleConstants.setComponent(copyButton, copyCodeButton);
+                styledDocument.insertString(styledDocument.getLength(), "\n", null);
+                styledDocument.insertString(styledDocument.getLength(), " ", copyButton);
 
-                currentIndex = matcher.end();
+                startPos = matchEnd;
             }
+            if (startPos < response.length()) {
+                styledDocument.insertString(styledDocument.getLength(), response.substring(startPos), null);
+            }
+            styledDocument.insertString(styledDocument.getLength(), "\n\n", null);
 
-            String remainingText = response.substring(currentIndex);
-            wrappedText.append(remainingText);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (BadLocationException ignored) {
         }
-        app.copyButton.addActionListener(e -> {
-            StringSelection selection = new StringSelection(lastCode);
+    }
+
+    private static JButton getjButton(String code) {
+        JButton copyCodeButton = new JButton("Code kopieren");
+        copyCodeButton.addActionListener(e -> {
             Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+            StringSelection selection = new StringSelection(code);
             clipboard.setContents(selection, null);
-            app.copyButton.setVisible(false);
         });
-        return wrappedText.toString();
+        return copyCodeButton;
     }
 
-    private static String createCodeBox(String codeSnippet) {
-        String[] lines = codeSnippet.split("\n");
-        StringBuilder codeBox = new StringBuilder();
-        codeBox.append("┌──────────────────────────────────────────────────────────────────────────────────────────────────────────┐\n");
-        for (String line : lines) {
-            codeBox.append(" ").append(line).append("\n");
-        }
-        codeBox.append("└──────────────────────────────────────────────────────────────────────────────────────────────────────────┘");
-        return codeBox.toString();
-    }
 }

@@ -8,7 +8,7 @@ import java.awt.*;
  */
 
 public class PanelButtons extends JPanel {
-    public PanelButtons(JButton copyButton, TextFieldChatName saveNameField, JButton saveButton, JButton deleteSelectedButton, JButton deleteAllButton, PanelLeftSideBottom tooltipPanel) {
+    public PanelButtons(TextFieldChatName saveNameField, JButton saveButton, JButton deleteSelectedButton, JButton deleteAllButton, PanelLeftSideBottom tooltipPanel) {
         setLayout(new GridBagLayout());
 
         GridBagConstraints constraints = new GridBagConstraints();
@@ -16,11 +16,7 @@ public class PanelButtons extends JPanel {
         constraints.insets = new Insets(5, 5, 5, 5); // Add some padding between buttons
 
 
-        // Add Copy Code Button
-        constraints.gridx = 0; // Column 0
-        constraints.gridy = 0; // Row 0
-        constraints.gridwidth = 1; // Span 1 columns
-        add(copyButton, constraints);
+
         
         // Add Save Name Field
         constraints.gridx = 0; // Column 0

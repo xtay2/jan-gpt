@@ -1,6 +1,8 @@
 package app.views.appview;
 
 
+import app.records.Role;
+
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -25,11 +27,11 @@ public class ListenerSavedChatsList implements ListSelectionListener {
 
         if (convName.equals(SavedChatsList.NEW_CHAT)) {
             app.manager.newConversation();
-            app.chatArea.setText("Jan-GPT: \nHallo! Was kann ich für dich tun? \n");
+            app.chatPane.writeMsg(Role.ASSISTANT, "Hallo, ich bin Ihr Assistent. Wie kann ich Ihnen helfen?");
             app.saveNameField.setText("");
         } else {
             var conv = app.manager.loadConversation(convName);
-            app.chatArea.setText(conv.map(messages ->
+            app.chatPane.setText(conv.map(messages ->
                     messages.stream().map(msg -> msg.role().alias(false) + ": " + msg.content() + "\n\n")
                             .collect(Collectors.joining())
             ).orElse("Chat konnte nicht geladen werden \n"));

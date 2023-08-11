@@ -21,7 +21,7 @@ public class ListenerButtonDeleteAllChats implements ActionListener {
         int choice = JOptionPane.showConfirmDialog(app.mainFrame,
                 "Sicher, dass du alle Chats löschen möchtest?", "Bestätigung", JOptionPane.YES_NO_OPTION);
         if (choice == JOptionPane.YES_OPTION) {
-            if (app.manager.getConversations().isPresent() && app.manager.getConversations().get().size() < 1) {
+            if (app.manager.getConversations().isPresent() && app.manager.getConversations().get().isEmpty()) {
                 JOptionPane.showMessageDialog(app.mainFrame, "Es gibt keine Chats zum Löschen.");
                 return;
             }
@@ -29,7 +29,7 @@ public class ListenerButtonDeleteAllChats implements ActionListener {
                 app.manager.deleteConversation(name);
             }
             app.savedChatsList.setListData(new String[]{SavedChatsList.NEW_CHAT}); // Set data for the new list
-            app.chatArea.setText("");
+            app.chatPane.setText("");
             app.savedChatsList.setSelectedValue(SavedChatsList.NEW_CHAT, true); // Select the "New Chat" option
         }
     }

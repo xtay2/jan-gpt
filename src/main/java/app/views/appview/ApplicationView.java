@@ -15,14 +15,13 @@ public class ApplicationView implements View {
     public ViewManager manager;
     public MainFrame mainFrame;
     public TextAreaQuery queryArea;
-    public TextAreaChat chatArea;
+    public TextPaneChat chatPane;
     public SenderAndReceiver senderAndReceiver;
     public JProgressBar progressBar;
     public TextFieldChatName saveNameField;
     public JButton saveButton;
     public JButton deleteAllButton;
     public JButton deleteSelectedButton;
-    public JButton copyButton;
     public JScrollPane scrollableChatArea;
     public JScrollPane scrollableQueryArea;
     public SavedChatsList savedChatsList;
@@ -58,7 +57,7 @@ public class ApplicationView implements View {
         manager.setGPTModel(GPTModel.getNewest().orElseThrow());
 
         mainFrame = new MainFrame(this);
-        chatArea = new TextAreaChat();
+        chatPane = new TextPaneChat();
         queryArea = new TextAreaQuery(this);
         savedChatsLabel = new JLabel("Gespeicherte Chats:");
         senderAndReceiver = new SenderAndReceiver(this);
@@ -73,13 +72,11 @@ public class ApplicationView implements View {
         deleteSelectedButton.addActionListener(new ListenerButtonDeleteChat(this));
         deleteAllButton = new JButton("Alle löschen");
         deleteAllButton.addActionListener(new ListenerButtonDeleteAllChats(this));
-        tooltip = new Tooltip(" ♿");
-//      tooltip = new JLabel("ⓘ");
-        copyButton = new JButton("Code kopieren");
-        copyButton.setVisible(false);
+//      tooltip = new Tooltip(" ♿");
+        tooltip = new Tooltip(" ⓘ");
         wrapper = new Wrapper(this);
 
-        scrollableChatArea = new JScrollPane(chatArea);
+        scrollableChatArea = new JScrollPane(chatPane);
         scrollableChatArea.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollableChatArea.getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE);
         scrollableChatArea.setWheelScrollingEnabled(true);
@@ -91,9 +88,9 @@ public class ApplicationView implements View {
         scrollableQueryArea.setPreferredSize(new Dimension(1000, 150));
 
         tooltipPanel = new PanelLeftSideBottom(tooltip, dropdownGPTModels);
-        buttonsPanel = new PanelButtons(copyButton, saveNameField, saveButton, deleteSelectedButton, deleteAllButton, tooltipPanel);
+        buttonsPanel = new PanelButtons(saveNameField, saveButton, deleteSelectedButton, deleteAllButton, tooltipPanel);
         leftSidePanel = new PanelLeftSide(savedChatsLabel, savedChatsList, buttonsPanel);
-        chatPanel = new PanelChat(chatArea);
+        chatPanel = new PanelChat(chatPane);
         progressPanel = new PanelProgress(progressBar);
         queryPanel = new PanelQuery(scrollableQueryArea, progressPanel);
         rightSidePanel = new PanelRightSide(chatPanel, queryPanel);

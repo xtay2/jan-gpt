@@ -26,7 +26,7 @@ public class ListenerButtonDeleteChat implements ActionListener {
             chats.add(0, SavedChatsList.NEW_CHAT);
             app.savedChatsList.setListData(chats);
             app.savedChatsList.setSelectedValue(SavedChatsList.NEW_CHAT, true);
-            app.chatArea.setText("");
+            app.chatPane.setText("");
         }
     }
 }

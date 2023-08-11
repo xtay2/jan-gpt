@@ -4,7 +4,6 @@ import app.managers.backend.GPTPort;
 import app.records.Role;
 
 import javax.swing.*;
-import java.awt.*;
 
 /**
  * @author A.Mukhamedov
@@ -30,27 +29,20 @@ public class SenderAndReceiver {
         // Create a background thread for sending the request
         Thread thread = new Thread(() -> {
 
-            app.chatArea.writeMsg(Role.USER, query);
+            app.chatPane.writeMsg(Role.USER, query);
             app.queryArea.setText("");
 
             try {
                 var response = app.manager.callGPT(query);
                 if (response.isEmpty()) {
-                    app.chatArea.append("ERROR: model could not be reached\n");
+                    app.chatPane.writeMsg( Role.ASSISTANT, "ERROR: model could not be reached\n");
                     return;
                 }
                 response.ifPresent(s -> {
-                    // Add line breaks to the response if it exceeds the conversation text area width
-                    int textAreaWidth = app.chatArea.getWidth();
-                    FontMetrics fontMetrics = app.chatArea.getFontMetrics(app.chatArea.getFont());
-                    String wrappedResponse = app.wrapper.wrapText(s);
-
-                    // Update the UI on the EDT
+                    app.wrapper.format(s);
                     SwingUtilities.invokeLater(() -> {
                         app.progressBar.setIndeterminate(false);
-                        app.chatArea.writeMsg(Role.ASSISTANT, wrappedResponse);
-                        app.chatArea.setCaretPosition(app.chatArea.getDocument().getLength());
-                        // Set focus on the query text field
+                        app.chatPane.setCaretPosition(app.chatPane.getDocument().getLength());
                         SwingUtilities.invokeLater(() -> app.queryArea.requestFocusInWindow());
                     });
                 });

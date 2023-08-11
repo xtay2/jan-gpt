@@ -13,11 +13,11 @@ import java.awt.event.MouseWheelListener;
 
 public class ListenerMouseScrollChat implements MouseWheelListener {
 
-    private final TextAreaChat chatArea;
+    private final TextPaneChat chatArea;
     private static final int MIN_FONT_SIZE = 10;
     private static final int MAX_FONT_SIZE = 40;
 
-    public ListenerMouseScrollChat(TextAreaChat chatArea) {
+    public ListenerMouseScrollChat(TextPaneChat chatArea) {
         this.chatArea = chatArea;
     }
 
@@ -31,7 +31,7 @@ public class ListenerMouseScrollChat implements MouseWheelListener {
             // Scroll the ChatArea when control key is not pressed
             JScrollPane scrollPane = getScrollPane(chatArea);
             if (scrollPane != null) {
-                int scrollAmount = e.getWheelRotation() * 15; // You can adjust the scrolling speed here
+                int scrollAmount = e.getWheelRotation() * 45; // You can adjust the scrolling speed here
                 int currentValue = scrollPane.getVerticalScrollBar().getValue();
                 scrollPane.getVerticalScrollBar().setValue(currentValue + scrollAmount);
             }
@@ -39,7 +39,7 @@ public class ListenerMouseScrollChat implements MouseWheelListener {
     }
 
     // Helper method to get the enclosing JScrollPane of the ChatArea
-    private JScrollPane getScrollPane(TextAreaChat chatArea) {
+    private JScrollPane getScrollPane(TextPaneChat chatArea) {
         if (chatArea.getParent() instanceof JViewport && chatArea.getParent().getParent() instanceof JScrollPane) {
             return (JScrollPane) chatArea.getParent().getParent();
         }
