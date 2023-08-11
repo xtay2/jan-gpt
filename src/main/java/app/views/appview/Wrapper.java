@@ -3,8 +3,7 @@ package app.views.appview;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -15,90 +14,58 @@ import java.util.regex.Pattern;
  */
 public class Wrapper {
     private final ApplicationView app;
-//    private boolean isCode = false;
-
+    private final String codeRegex = "```\\w+\n(.*?)```";
+    private String lastCode ="";
     public Wrapper(ApplicationView app) {
         this.app = app;
     }
 
-    public String wrapText(String text, int width, FontMetrics fontMetrics) {
+    public String wrapText(String response) {
 
-        Pattern codeSnippetPattern = Pattern.compile("```\\w+\n(.*?)```", Pattern.DOTALL);
-        Matcher matcher = codeSnippetPattern.matcher(text);
+        Pattern codePattern = Pattern.compile(codeRegex, Pattern.DOTALL);
+        Matcher matcher = codePattern.matcher(response);
 
         StringBuilder wrappedText = new StringBuilder();
-
-//        int lineWidth = 0;
-//
-//        for (String word : text.split(" ")) {
-//            int wordWidth = fontMetrics.stringWidth(word + " ");
-//            if (lineWidth + wordWidth > width) {
-//                wrappedText.append("\n");
-//                lineWidth = 0;
-//            }
-//            wrappedText.append(word).append(" ");
-//            lineWidth += wordWidth;
-//        }
 
         try {
             int currentIndex = 0;
             while (matcher.find()) {
-                String normalText = text.substring(currentIndex, matcher.start());
+                String normalText = response.substring(currentIndex, matcher.start());
                 wrappedText.append(normalText);
 
                 String codeSnippet = matcher.group(1);
                 if (!codeSnippet.isEmpty()) {
-                    app.copyCodeButton.setVisible(true);
+                    lastCode = codeSnippet;
+                    app.copyButton.setVisible(true);
                 }
+                lastCode = codeSnippet;
                 wrappedText.append("\n").append(createCodeBox(codeSnippet)).append("\n");
 
                 currentIndex = matcher.end();
             }
 
-            String remainingText = text.substring(currentIndex);
+            String remainingText = response.substring(currentIndex);
             wrappedText.append(remainingText);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        app.copyCodeButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                copyToClipboard(getCodeFromText(text));
-                //TODO: bug? copiert immer nurt den ersten codeblock
-                //TODO: Jan möchte auch Tabelle kopieren. wie?
-                app.copyCodeButton.setVisible(false);
-
-            }
+        app.copyButton.addActionListener(e -> {
+            StringSelection selection = new StringSelection(lastCode);
+            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+            clipboard.setContents(selection, null);
+            app.copyButton.setVisible(false);
         });
-
         return wrappedText.toString();
-    }
-
-    private String getCodeFromText(String text) {
-        Pattern codeSnippetPattern = Pattern.compile("```\\w+\n(.*?)```", Pattern.DOTALL);
-        Matcher matcher = codeSnippetPattern.matcher(text);
-        if (matcher.find()) {
-            return matcher.group(1);
-        }
-        return "";
     }
 
     private static String createCodeBox(String codeSnippet) {
         String[] lines = codeSnippet.split("\n");
         StringBuilder codeBox = new StringBuilder();
-
-        codeBox.append("┌────────────────────────────────────────────────────────────────────────────────────────────────────┐\n");
+        codeBox.append("┌──────────────────────────────────────────────────────────────────────────────────────────────────────────┐\n");
         for (String line : lines) {
             codeBox.append(" ").append(line).append("\n");
         }
-        codeBox.append("└────────────────────────────────────────────────────────────────────────────────────────────────────┘");
-
+        codeBox.append("└──────────────────────────────────────────────────────────────────────────────────────────────────────────┘");
         return codeBox.toString();
-    }
-
-    private static void copyToClipboard(String text) {
-        StringSelection selection = new StringSelection(text);
-        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-        clipboard.setContents(selection, null);
     }
 }

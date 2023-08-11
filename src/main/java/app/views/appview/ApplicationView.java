@@ -6,7 +6,6 @@ import app.views.View;
 
 import javax.swing.*;
 import java.awt.*;
-import java.nio.file.Watchable;
 
 /**
  * @author Dennis Woithe
@@ -23,7 +22,7 @@ public class ApplicationView implements View {
     public JButton saveButton;
     public JButton deleteAllButton;
     public JButton deleteSelectedButton;
-    public JButton copyCodeButton;
+    public JButton copyButton;
     public JScrollPane scrollableChatArea;
     public JScrollPane scrollableQueryArea;
     public SavedChatsList savedChatsList;
@@ -76,10 +75,9 @@ public class ApplicationView implements View {
         deleteAllButton.addActionListener(new ListenerButtonDeleteAllChats(this));
         tooltip = new Tooltip(" ♿");
 //      tooltip = new JLabel("ⓘ");
-        copyCodeButton = new JButton("Code kopieren");
-        copyCodeButton.setVisible(false);
+        copyButton = new JButton("Code kopieren");
+        copyButton.setVisible(false);
         wrapper = new Wrapper(this);
-
 
         scrollableChatArea = new JScrollPane(chatArea);
         scrollableChatArea.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -93,10 +91,10 @@ public class ApplicationView implements View {
         scrollableQueryArea.setPreferredSize(new Dimension(1000, 150));
 
         tooltipPanel = new PanelLeftSideBottom(tooltip, dropdownGPTModels);
-        buttonsPanel = new PanelButtons(saveNameField, saveButton, deleteSelectedButton, deleteAllButton, tooltipPanel);
+        buttonsPanel = new PanelButtons(copyButton, saveNameField, saveButton, deleteSelectedButton, deleteAllButton, tooltipPanel);
         leftSidePanel = new PanelLeftSide(savedChatsLabel, savedChatsList, buttonsPanel);
         chatPanel = new PanelChat(chatArea);
-        progressPanel = new PanelProgress(copyCodeButton, progressBar);
+        progressPanel = new PanelProgress(progressBar);
         queryPanel = new PanelQuery(scrollableQueryArea, progressPanel);
         rightSidePanel = new PanelRightSide(chatPanel, queryPanel);
         mainPanel = new PanelMain(leftSidePanel, rightSidePanel);

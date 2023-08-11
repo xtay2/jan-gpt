@@ -43,7 +43,7 @@ public class SenderAndReceiver {
                     // Add line breaks to the response if it exceeds the conversation text area width
                     int textAreaWidth = app.chatArea.getWidth();
                     FontMetrics fontMetrics = app.chatArea.getFontMetrics(app.chatArea.getFont());
-                    String wrappedResponse = app.wrapper.wrapText(s, textAreaWidth, fontMetrics);
+                    String wrappedResponse = app.wrapper.wrapText(s);
 
                     // Update the UI on the EDT
                     SwingUtilities.invokeLater(() -> {
