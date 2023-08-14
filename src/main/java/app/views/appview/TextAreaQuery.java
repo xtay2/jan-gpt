@@ -8,12 +8,12 @@ import javax.swing.*;
  */
 public class TextAreaQuery extends JTextArea {
 
-
     public TextAreaQuery(ApplicationView app) {
         super();
         setEditable(true);
         setLineWrap(true);
         setWrapStyleWord(true);
         addKeyListener(new ListenerKeyPressedQuery(app));
+
     }
 }

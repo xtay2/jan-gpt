@@ -18,15 +18,18 @@ import java.util.regex.Pattern;
  * This class is used to wrap text in the message area.
  */
 public class Wrapper {
-    public StyledDocument styledDocument;
-    public SimpleAttributeSet codeStyle;
+    public StyledDocument document;
+    public SimpleAttributeSet code;
     public SimpleAttributeSet copyButton;
 
     public Wrapper(ApplicationView app) {
-        styledDocument = app.chatPane.getStyledDocument();
-        codeStyle = new SimpleAttributeSet();
+        document = app.chatPane.getStyledDocument();
+        code = new SimpleAttributeSet();
         copyButton = new SimpleAttributeSet();
-        StyleConstants.setForeground(codeStyle, Color.BLUE);
+        StyleConstants.setForeground(code, Color.BLUE);
+        StyleConstants.setFontFamily(code, "Consolas");
+        StyleConstants.setFontSize(code, 12);
+//        StyleConstants.setBackground(codeStyle, new Color(240, 240, 240));
     }
     
     public void format(String response) {
@@ -37,26 +40,26 @@ public class Wrapper {
 
         int startPos = 0;
         try {
-            styledDocument.insertString(styledDocument.getLength(), "Jan-GPT:\n", null);
+            document.insertString(document.getLength(), "Jan-GPT:\n", null);
             while (matcher.find()) {
                 int matchStart = matcher.start();
                 int matchEnd = matcher.end();
-                styledDocument.insertString(styledDocument.getLength(), response.substring(startPos, matchStart), null);
-                styledDocument.insertString(styledDocument.getLength(), "\n", null);
+                document.insertString(document.getLength(), response.substring(startPos, matchStart), null);
+                document.insertString(document.getLength(), "\n", null);
                 String code = matcher.group(1).trim();
-                styledDocument.insertString(styledDocument.getLength(), code, codeStyle);
+                document.insertString(document.getLength(), code, this.code);
 
                 JButton copyCodeButton = getjButton(code);
                 StyleConstants.setComponent(copyButton, copyCodeButton);
-                styledDocument.insertString(styledDocument.getLength(), "\n", null);
-                styledDocument.insertString(styledDocument.getLength(), " ", copyButton);
+                document.insertString(document.getLength(), "\n", null);
+                document.insertString(document.getLength(), " ", copyButton);
 
                 startPos = matchEnd;
             }
             if (startPos < response.length()) {
-                styledDocument.insertString(styledDocument.getLength(), response.substring(startPos), null);
+                document.insertString(document.getLength(), response.substring(startPos), null);
             }
-            styledDocument.insertString(styledDocument.getLength(), "\n\n", null);
+            document.insertString(document.getLength(), "\n\n", null);
 
         } catch (BadLocationException ignored) {
         }
