@@ -21,16 +21,16 @@ public class SenderAndReceiver {
     void sendMessage() {
         System.out.println("sendMessage");
         // Disable UI components to prevent multiple requests
-        app.queryArea.setEnabled(false);
+        app.queryPane.disableListener();
         app.progressBar.setIndeterminate(true);
 
-        String query = app.queryArea.getText();
+        String query = app.queryPane.getText();
 
         // Create a background thread for sending the request
         Thread thread = new Thread(() -> {
 
             app.chatPane.writeMsg(Role.USER, query);
-            app.queryArea.setText("");
+            app.queryPane.setText("");
 
             try {
                 var response = app.manager.callGPT(query);
@@ -43,7 +43,7 @@ public class SenderAndReceiver {
                     SwingUtilities.invokeLater(() -> {
                         app.progressBar.setIndeterminate(false);
                         app.chatPane.setCaretPosition(app.chatPane.getDocument().getLength());
-                        SwingUtilities.invokeLater(() -> app.queryArea.requestFocusInWindow());
+                        SwingUtilities.invokeLater(() -> app.queryPane.requestFocusInWindow());
                     });
                 });
                 System.out.println(response);
@@ -55,7 +55,7 @@ public class SenderAndReceiver {
                 throw new RuntimeException(ex);
             }
             // Enable UI components after the request is completed
-            SwingUtilities.invokeLater(() -> app.queryArea.setEnabled(true));
+            SwingUtilities.invokeLater(() -> app.queryPane.enableListener());
         });
         // Start the background thread
         thread.start();

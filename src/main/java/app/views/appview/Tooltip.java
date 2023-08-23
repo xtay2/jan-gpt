@@ -17,10 +17,11 @@ public class Tooltip extends JLabel {
                 "↑ : letzte Frage <br/>" +
                 "↓ : nächste Frage <br/>" +
                 "↵ : Frage absenden <br/>" +
-                "␛ : Frage löschen <br/>" +
                 "⇧ + ↵ : neue Zeile <br/>" +
                 "Strg + s : Frage speichern <br/>" +
+                "Strg + d : Frage löschen <br/>" +
                 "Strg + ⇕ : Schriftgröße ändern <br/>" +
+                "␛ : Feld leeren <br/>" +
                 "</html>");
         // Set the initial delay for the tooltip in milliseconds (default is 500 ms)
         ToolTipManager.sharedInstance().setInitialDelay(100);

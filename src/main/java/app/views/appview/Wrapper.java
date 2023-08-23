@@ -61,8 +61,7 @@ public class Wrapper {
             }
             document.insertString(document.getLength(), "\n\n", null);
 
-        } catch (BadLocationException ignored) {
-        }
+        } catch (BadLocationException ignored) {}
     }
 
     private static JButton getjButton(String code) {

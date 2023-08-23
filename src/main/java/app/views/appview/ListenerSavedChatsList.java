@@ -27,15 +27,18 @@ public class ListenerSavedChatsList implements ListSelectionListener {
 
         if (convName.equals(SavedChatsList.NEW_CHAT)) {
             app.manager.newConversation();
+            app.chatPane.setText("");
             app.chatPane.writeMsg(Role.ASSISTANT, "Hallo, ich bin Ihr Assistent. Wie kann ich Ihnen helfen?");
             app.saveNameField.setText("");
         } else {
             var conv = app.manager.loadConversation(convName);
-            app.chatPane.setText(conv.map(messages ->
-                    messages.stream().map(msg -> msg.role().alias(false) + ": " + msg.content() + "\n\n")
-                            .collect(Collectors.joining())
-            ).orElse("Chat konnte nicht geladen werden \n"));
+            app.chatPane.setText(conv.map(messages -> messages
+                        .stream()
+                        .map(msg -> msg.role().alias(false) + ":</b><br>" + msg.content() + "<br>"+ "<br>")
+                        .collect(Collectors.joining("\n"))
+                                          ).orElse("Chat konnte nicht geladen werden \n")
+                                );
         }
-        SwingUtilities.invokeLater(() -> app.queryArea.requestFocusInWindow());
+        SwingUtilities.invokeLater(() -> app.queryPane.requestFocusInWindow());
     }
 }
