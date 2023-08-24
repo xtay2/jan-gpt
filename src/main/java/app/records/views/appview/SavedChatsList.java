@@ -1,5 +1,7 @@
 package app.records.views.appview;
 
+import app.records.Role;
+
 import javax.swing.*;
 import java.awt.*;
 import java.text.SimpleDateFormat;
@@ -16,11 +18,12 @@ public class SavedChatsList extends JList<String> {
     public Vector<String> chats;
 
     private final ApplicationView app;
+
     public SavedChatsList(ApplicationView app) {
         super();
         this.app = app;
         chats = new Vector<>(app.manager.getConversations().orElse(Collections.emptyList()));
-        if(!chats.contains(NEW_CHAT))
+        if (!chats.contains(NEW_CHAT))
             chats.add(0, NEW_CHAT);
         setListData(chats);
         Dimension listSize = new Dimension(150, 100);
@@ -33,19 +36,40 @@ public class SavedChatsList extends JList<String> {
         if (chats.contains(app.currentChatName)) {
             app.manager.deleteConversation(app.currentChatName);
             app.manager.saveConversationAs(app.currentChatName);
-        } else if( app.currentChatNameBox.getText().isBlank() && app.currentChatName.isEmpty()) {
+        } else if (app.currentChatNameBox.getText().isBlank() && app.currentChatName.isEmpty()) {
             var namelessChat = "Chat vom " + new SimpleDateFormat("yy-MM-dd").format(new Date()) + " um " + new SimpleDateFormat("HH-mm-ss").format(new Date());
             app.manager.saveConversationAs(namelessChat);
             updateList();
             app.currentChatName = namelessChat;
         }
-        System.out.println("SavedChatsList concurrentlyUpdateList() called");
     }
 
-    public void updateList(){
+    public void updateList() {
         chats = new Vector<>(app.manager.getConversations().orElse(Collections.emptyList()));
-        if(!chats.contains(NEW_CHAT))
+        if (!chats.contains(NEW_CHAT))
             chats.add(0, NEW_CHAT);
         setListData(chats);
+    }
+
+    // loads a conversation of type Optional<List<Message>> from the manager and displays it in the chat pane
+    public void updateChatPane(String convName) {
+
+        if (convName.equals(SavedChatsList.NEW_CHAT)) {
+            app.manager.newConversation();
+            app.chatPane.setText("");
+            app.currentChatName = "";
+            app.currentChatNameBox.setText("");
+            app.chatPane.writeMsg(Role.ASSISTANT, "Hallo, ich bin Ihr Assistent. Wie kann ich Ihnen helfen?");
+        } else {
+            app.mainFrame.setTitle(convName);
+            app.currentChatName = convName;
+            app.chatPane.setText("");
+            app.manager.loadConversation(convName).ifPresent(messages -> messages
+                    .stream()
+                    .map(msg -> msg.role().alias(false) + ":\n" + msg.content() + "\n")
+                    .forEach(app.wrapper::formatCode)
+            );
+        }
+        SwingUtilities.invokeLater(() -> app.queryPane.requestFocusInWindow());
     }
 }

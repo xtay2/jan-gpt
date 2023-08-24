@@ -29,10 +29,11 @@ public class Wrapper {
         StyleConstants.setForeground(code, Color.BLUE);
         StyleConstants.setFontFamily(code, "Consolas");
         StyleConstants.setFontSize(code, 12);
-//        StyleConstants.setBackground(codeStyle, new Color(240, 240, 240));
     }
-    
-    public void format(String response) {
+
+
+    // takes a response and formats code withing ``` ``` tags in blue and adds a button to copy the code to the clipboard
+    public void formatCode(String response) {
 
         String codeRegex = "```\\w+\n(.*?)```";
         Pattern codePattern = Pattern.compile(codeRegex, Pattern.DOTALL);
@@ -40,7 +41,6 @@ public class Wrapper {
 
         int startPos = 0;
         try {
-            document.insertString(document.getLength(), "Jan-GPT:\n", null);
             while (matcher.find()) {
                 int matchStart = matcher.start();
                 int matchEnd = matcher.end();
@@ -61,7 +61,7 @@ public class Wrapper {
             }
             document.insertString(document.getLength(), "\n\n", null);
 
-        } catch (BadLocationException ignored) {}
+        } catch (BadLocationException e) {throw new AssertionError(e);}
     }
 
     private static JButton getjButton(String code) {

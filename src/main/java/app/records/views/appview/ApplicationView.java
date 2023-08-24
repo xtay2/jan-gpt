@@ -16,8 +16,10 @@ public class ApplicationView implements View {
     public MainFrame mainFrame;
     public TextPaneQuery queryPane;
     public TextPaneChat chatPane;
+    public JTextArea unformattedChat;
     public SenderAndReceiver senderAndReceiver;
     public JProgressBar progressBar;
+
     public SaveCurrentChatNameField currentChatNameBox;
     public String currentChatName;
     public JButton saveButton;
@@ -59,6 +61,8 @@ public class ApplicationView implements View {
 
         mainFrame = new MainFrame(this);
         chatPane = new TextPaneChat();
+        unformattedChat = new JTextArea();
+        chatPane.addMouseWheelListener(new ListenerMouseScrollChat(this));
         queryPane = new TextPaneQuery(this);
         queryPane.initHint();
         savedChatsLabel = new JLabel("Gespeicherte Chats:", SwingConstants.CENTER);

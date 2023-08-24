@@ -2,8 +2,6 @@ package app.records.views.appview;
 
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
-import javax.swing.text.StyleConstants;
-import java.awt.*;
 import java.awt.event.KeyEvent;
 
 
@@ -18,20 +16,13 @@ public class ListenerKeyPressedQuery extends java.awt.event.KeyAdapter {
         this.app = app;
     }
 
-    public void startCycle(){
-        StyleConstants.setForeground(app.queryPane.color, Color.gray);
-        arrowMode = true;
-    }
-    public void stopCycle(){
-        StyleConstants.setForeground(app.queryPane.color, Color.black);
-        arrowMode = false;
-    }
 
     @Override
     public void keyPressed(KeyEvent e) {
         var str = app.queryPane.getText().replaceAll("\n", "").replaceAll("\t", "");
 
-        if (app.queryPane.getText().equals(app.queryPane.hint)) app.queryPane.clear();
+        if (app.queryPane.getText().equals(app.queryPane.hint))
+            app.queryPane.clear();
 
         // If the user presses enter without text, do nothing
         if (e.getKeyCode() == KeyEvent.VK_ENTER) {
@@ -55,16 +46,11 @@ public class ListenerKeyPressedQuery extends java.awt.event.KeyAdapter {
             e.consume();
         }
 
-        // continue to write in black color after cycling through prompts
-        if(e.getKeyCode() == KeyEvent.VK_LEFT || (app.queryPane.prompts.contains(app.queryPane.getText()) && e.getKeyCode() != KeyEvent.VK_UP && e.getKeyCode() != KeyEvent.VK_DOWN)){
-            var txt = app.queryPane.getText();
-            stopCycle();
-            app.queryPane.setText(txt);
-        }
-
         //clear query
         if(e.getKeyCode() == KeyEvent.VK_ESCAPE) app.queryPane.setText("");
 
+        // stop arrow mode if any char was typed
+        if(e.getKeyCode() != KeyEvent.CHAR_UNDEFINED) arrowMode = false;
 
         // if the user presses ctrl + s, save the current line to prompts
         if(e.getKeyCode() == 83 && e.isControlDown()) {
@@ -81,11 +67,12 @@ public class ListenerKeyPressedQuery extends java.awt.event.KeyAdapter {
         try {
             // cycling up through the prompts of current session
             if(app.queryPane.getText().isBlank() || app.queryPane.prompts.contains(app.queryPane.getText())) {
-                startCycle();
+                arrowMode = true;
+
             }
             if (e.getKeyCode() == KeyEvent.VK_UP) {
                 if (arrowMode && (app.queryPane.getText().isBlank() || app.queryPane.prompts.contains(app.queryPane.getText()))) {
-                    startCycle();
+                    arrowMode = true;
                     if (app.queryPane.getText().isBlank())
                         app.queryPane.setText(app.queryPane.prompts.get(app.queryPane.prompts.size() - 1));
                     else if (app.queryPane.prompts.contains(app.queryPane.getText()))
@@ -97,7 +84,7 @@ public class ListenerKeyPressedQuery extends java.awt.event.KeyAdapter {
         try {
             // cycling down through the prompts of current session
             if (arrowMode && (e.getKeyCode() == KeyEvent.VK_DOWN && !app.queryPane.prompts.isEmpty())) {
-                startCycle();
+                arrowMode = true;
                 if (app.queryPane.prompts.contains(app.queryPane.getText()))
                     app.queryPane.setText(app.queryPane.prompts.get(app.queryPane.prompts.indexOf(app.queryPane.getText()) + 1));
             }

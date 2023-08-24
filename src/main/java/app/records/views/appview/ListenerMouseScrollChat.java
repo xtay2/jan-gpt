@@ -1,36 +1,51 @@
 package app.records.views.appview;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
-import javax.swing.JTextPane;
-import javax.swing.text.Style;
-import javax.swing.text.StyleConstants;
 
 /**
+ * This class is responsible for changing the font size of the chat area.
+ *
  * @author A.Mukhamedov
  */
 
 public class ListenerMouseScrollChat implements MouseWheelListener {
-    private final JTextPane textPane;
 
-    public ListenerMouseScrollChat(JTextPane textPane) {
-        this.textPane = textPane;
+    private final ApplicationView app;
+    private static final int MIN_FONT_SIZE = 12;
+    private static final int MAX_FONT_SIZE = 30;
+
+
+    public ListenerMouseScrollChat(ApplicationView app) {
+        this.app = app;
     }
 
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
         if (e.isControlDown()) {
-            adjustFontSize(e.getWheelRotation());
+
+            int newFontSize = app.chatPane.getFont().getSize() - (2*e.getWheelRotation());
+            newFontSize = Math.max(MIN_FONT_SIZE, Math.min(newFontSize, MAX_FONT_SIZE));
+            var font = new Font(app.chatPane.getFont().getFamily(), app.chatPane.getFont().getStyle(), newFontSize);
+            app.chatPane.setFont(font);
+        } else {
+            // Scroll the ChatArea when control key is not pressed
+            JScrollPane scrollPane = getScrollPane(app.chatPane);
+            if (scrollPane != null) {
+                int scrollAmount = e.getWheelRotation() * 44; // You can adjust the scrolling speed here
+                int currentValue = scrollPane.getVerticalScrollBar().getValue();
+                scrollPane.getVerticalScrollBar().setValue(currentValue + scrollAmount);
+            }
         }
     }
 
-    private void adjustFontSize(int wheelRotation) {
-        Style style = textPane.addStyle("fontSizeStyle", null);
-        int fontSize = StyleConstants.getFontSize(style);
-        fontSize -= wheelRotation;
-
-        if (fontSize > 0) {
-            StyleConstants.setFontSize(style, fontSize);
-            textPane.getStyledDocument().setCharacterAttributes(0, textPane.getDocument().getLength(), style, false);
+    // Helper method to get the enclosing JScrollPane of the ChatArea
+    private JScrollPane getScrollPane(TextPaneChat chatPane) {
+        if (chatPane.getParent() instanceof JViewport && chatPane.getParent().getParent() instanceof JScrollPane) {
+            return (JScrollPane) chatPane.getParent().getParent();
         }
+        return null;
     }
 }

@@ -40,7 +40,7 @@ public class SenderAndReceiver {
                     return;
                 }
                 response.ifPresent(s -> {
-                    app.wrapper.format(s);
+                    app.wrapper.formatCode(s);
                     SwingUtilities.invokeLater(() -> {
                         app.progressBar.setIndeterminate(false);
                         app.chatPane.setCaretPosition(app.chatPane.getDocument().getLength());
