@@ -39,7 +39,7 @@ public class GPTManager implements GPTPort {
             throw new GPTPort.MissingAPIKeyException();
         if (model == null)
             throw new GPTPort.MissingModelException();
-        if (prompt == null)
+        if (prompt == null || prompt.isBlank())
             return Optional.empty();
         // PREPARE REQUEST
         messages.add(new Message(Role.USER, prompt));
