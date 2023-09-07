@@ -2,9 +2,9 @@ package app.factories;
 
 import app.managers.frontend.BasicViewManager;
 import app.managers.frontend.ViewManager;
-import app.views.ConsoleView;
-import app.views.View;
-import app.views.appview.ApplicationView;
+import app.records.views.ConsoleView;
+import app.records.views.View;
+import app.records.views.appview.ApplicationView;
 
 /**
  * @author Dennis Woithe
