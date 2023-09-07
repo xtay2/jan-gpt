@@ -1,17 +1,17 @@
 package app.managers.backend;
 
+import app.Main;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
-
-import static app.Main.BASE_DATA_PATH;
 
 /**
  * @author Dennis Woithe
  */
 public interface ApiKeyManager {
 
-    Path API_KEY_FILE_PATH = Path.of(BASE_DATA_PATH + "api_key.txt");
+    Path API_KEY_FILE_PATH = Path.of(Main.BASE_DATA_PATH + "api_key.txt");
 
     static boolean saveApiKey(String apiKey) {
         try {

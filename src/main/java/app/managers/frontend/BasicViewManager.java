@@ -76,7 +76,7 @@ public class BasicViewManager implements ViewManager {
     }
 
     @Override
-    public void clearConversation() {
+    public void newConversation() {
         gptPort.setMessages(new ArrayList<>());
     }
 

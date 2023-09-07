@@ -20,7 +20,7 @@ public class ClearConversationCommand extends ConsoleCommand {
 
     @Override
     public void apply(String input, Consumer<String> outStream, Consumer<String> errStream, ViewManager manager) {
-        manager.clearConversation();
+        manager.newConversation();
         outStream.accept("Ich habe den Kontext der aktuellen Konversation vergessen. Lass uns über etwas anderes reden!");
     }
 }

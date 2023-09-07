@@ -1,13 +1,11 @@
-package app.views;
+package app.views.appview;
+
 
 import app.managers.frontend.ViewManager;
 
 import javax.swing.*;
 import java.awt.*;
 
-/**
- * @author A.Mukhamedov
- */
 
 public class APIKeyFrame extends JFrame {
 
@@ -20,13 +18,11 @@ public class APIKeyFrame extends JFrame {
 
         var apiKeyField = new JTextField(20);
         var submitButton = new JButton("Submit");
-
         var errorLabel = new JLabel("Invalider API key");
+
         errorLabel.setVerticalAlignment(JLabel.BOTTOM);
         errorLabel.setForeground(Color.RED);
-        errorLabel.setVisible(true);
-        //TODO
-//        errorLabel.setVisible(false);
+        errorLabel.setVisible(false);
         submitButton.addActionListener(e -> {
 
             String apiKey = apiKeyField.getText();

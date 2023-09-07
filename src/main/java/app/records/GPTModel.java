@@ -1,8 +1,8 @@
 package app.records;
 
+import app.managers.backend.ApiKeyManager;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
-import app.managers.backend.ApiKeyManager;
 
 import java.net.URI;
 import java.net.http.HttpClient;

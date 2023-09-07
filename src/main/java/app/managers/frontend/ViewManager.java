@@ -1,5 +1,6 @@
 package app.managers.frontend;
 
+
 import app.managers.backend.GPTPort;
 import app.records.GPTModel;
 import app.records.Message;
@@ -51,9 +52,10 @@ public interface ViewManager {
     /** Load a conversation from a file. */
     Optional<List<Message>> loadConversation(String name);
 
-    /** Clear the current conversation. */
-    void clearConversation();
+    /** Start a new conversation. */
+    void newConversation();
 
     /** Delete a conversation-file. */
     boolean deleteConversation(String name);
+
 }
