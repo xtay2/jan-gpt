@@ -25,7 +25,7 @@ public class GPTManager implements GPTPort {
 
     private final List<Message> messages = new ArrayList<>();
 
-    private final HttpClient httpClient = HttpClient.newHttpClient();
+    public HttpClient httpClient = HttpClient.newHttpClient();
 
     private final String apiKey;
 
@@ -51,8 +51,11 @@ public class GPTManager implements GPTPort {
                 .build();
         // RECEIVE RESPONSE
         try {
-            var responseBody = httpClient.send(request, HttpResponse.BodyHandlers.ofString()).body();
-            var responseMsg = parseJsonResponse(responseBody.strip());
+            var response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() != 200) {
+                return Optional.empty();
+            }
+            var responseMsg = parseJsonResponse(response.body().strip());
             responseMsg.ifPresent(s -> messages.add(new Message(Role.ASSISTANT, s)));
             return responseMsg;
         } catch (Exception e) {

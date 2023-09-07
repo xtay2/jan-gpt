@@ -3,35 +3,34 @@ package app.managers.backend;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import app.records.GPTModel;
 import app.records.Message;
+import org.junit.Before;
 import org.junit.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import org.junit.runner.RunWith;
+import org.mockito.*;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.*;
 
-
+@RunWith(MockitoJUnitRunner.class)
 public class GPTManagerTest {
 
     @Mock
-    String mockApi = "mockedApiKey";
+    HttpClient httpClient;
 
     @Mock
-    GPTModel mockModel = GPTModel.getNewest().orElse(null);
-    @InjectMocks
-    GPTManager systemUnderTest = mock(GPTManager.class);
+    HttpResponse<String> httpResponse;
 
-    final URI GPT_CHAT_URI = URI.create("https://api.openai.com/v1/chat/completions"), GPT_MODEL_URI = URI.create("https://api.openai.com/v1/models");
-    final List<Message> messages = new ArrayList<>();
-    final HttpClient httpClient = HttpClient.newHttpClient();
     final String apiKey = "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";
 
     @Test
@@ -67,39 +66,98 @@ public class GPTManagerTest {
 
     @Test
     public void testCallGPT_whenPromptNull_thenReturnEmpty() throws GPTPort.MissingAPIKeyException, GPTPort.MissingModelException {
+
         GPTManager gptManager = new GPTManager(apiKey);
         GPTModel gptModel = GPTModel.getNewest().orElse(null);
+
         assertEquals(Optional.empty(), gptManager.callGPT(gptModel, null));
     }
 
     @Test
     public void testCallGPT_whenPromptEmpty_thenReturnEmpty() throws GPTPort.MissingAPIKeyException, GPTPort.MissingModelException {
+
         GPTManager gptManager = new GPTManager(apiKey);
         GPTModel gptModel = GPTModel.getNewest().orElse(null);
+
         assertEquals(Optional.empty(), gptManager.callGPT(gptModel, ""));
     }
 
     @Test
-    public void testCallGPT_happyPath_thenReturnResponseMessage() throws GPTPort.MissingAPIKeyException, GPTPort.MissingModelException, IOException, InterruptedException {
+    public void testCallGPT_whenSuccessfulRequest_thenReturnResponseMessage() throws GPTPort.MissingAPIKeyException, GPTPort.MissingModelException, IOException, InterruptedException {
 
         final Optional<String> EXPECTED_RESPONSE = Optional.of("0");
         final String PROMPT = "Antworte mit genau einer 0";
 
-        // Mockito TODO
-//        when(httpClient.send(any(), any()));
 
         GPTModel gptModel = GPTModel.getNewest().orElse(null);
         assert gptModel != null;
-
-        // Mockito TODO
-//        Optional<String> response = systemUnderTest.callGPT(gptModel, PROMPT);
-
         GPTManager gptManager = new GPTManager(apiKey);
+        gptManager.httpClient = httpClient;
+//        assertTrue(setPrivateField(gptManager, "httpClient", Mockito.mock(HttpClient.class)));
 
-        Optional<String> response = gptManager.callGPT(gptModel, PROMPT);
 
-        assertFalse(response.isEmpty());
-        assertNotNull(response);
-        assertEquals(EXPECTED_RESPONSE.get(), response.get());
+        final String responseMessage = "{\n" +
+                "  \"id\": \"chatcmpl-7w91w1VxzHcHIpfUKI6nej691Z6MP\",\n" +
+                "  \"object\": \"chat.completion\",\n" +
+                "  \"created\": 1694092092,\n" +
+                "  \"model\": \"gpt-4-0613\",\n" +
+                "  \"choices\": [\n" +
+                "    {\n" +
+                "      \"index\": 0,\n" +
+                "      \"message\": {\n" +
+                "        \"role\": \"assistant\",\n" +
+                "        \"content\": \"0\"\n" +
+                "      },\n" +
+                "      \"finish_reason\": \"stop\"\n" +
+                "    }\n" +
+                "  ],\n" +
+                "  \"usage\": {\n" +
+                "    \"prompt_tokens\": 15,\n" +
+                "    \"completion_tokens\": 1,\n" +
+                "    \"total_tokens\": 16\n" +
+                "  }\n" +
+                "}";
+
+
+        when(httpClient.send(any(HttpRequest.class), any(HttpResponse.BodyHandler.class))).thenReturn(httpResponse);
+        when(httpResponse.body()).thenReturn(responseMessage);
+
+        Optional<String> result = gptManager.callGPT(gptModel, PROMPT);
+        assertEquals(EXPECTED_RESPONSE.get(), result.get());
+
+        verify(httpClient, times(1)).send(any(HttpRequest.class), any(HttpResponse.BodyHandler.class));
+
     }
+
+    @Test
+    public void testCallGPT_whenStatus500_thenReturnOptionalEmpty() throws IOException, InterruptedException, GPTPort.MissingAPIKeyException, GPTPort.MissingModelException {
+
+        GPTModel gptModel = GPTModel.getNewest().orElse(null);
+        assert gptModel != null;
+        GPTManager gptManager = new GPTManager(apiKey);
+        gptManager.httpClient = httpClient;
+
+        when(httpResponse.statusCode()).thenReturn(500);
+        when(httpClient.send(any(HttpRequest.class), any(HttpResponse.BodyHandler.class))).thenReturn(httpResponse);
+
+        Optional<String> response = gptManager.callGPT(gptModel, "test-prompt");
+
+        assertEquals(Optional.empty(), response);
+    }
+
+
+//    static <T> boolean setPrivateField(T instance, String fieldName, Object value) {
+//        try {
+//            var cls = instance.getClass();
+//            var field = cls.getDeclaredField(fieldName);
+//            field.setAccessible(true);
+//            field.set(value, instance);
+//            return true;
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return false;
+//        }
+//    }
+
+
 }
