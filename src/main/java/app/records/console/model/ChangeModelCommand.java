@@ -13,7 +13,7 @@ public class ChangeModelCommand extends ConsoleCommand {
 
     public ChangeModelCommand() {
         super(
-                "set-model [model-nr]",
+                "set-model [model-name]",
                 "Setzt das Modell, das für die Generierung verwendet wird.",
                 CommandGroup.MODEL
         );

@@ -13,7 +13,7 @@ public class DeleteConversationCommand extends ConsoleCommand {
     public DeleteConversationCommand() {
         super(
                 "delete-conv [name]",
-                "Deletes the conversation with the given name",
+                "Löscht die Konversation mit dem angegebenen Namen.",
                 CommandGroup.CONVERSATION
         );
     }
