@@ -1,0 +1,26 @@
+name: Generate Javadoc and Publish
+
+on:
+  push:
+    branches:
+      - main  # Adjust this to your main branch name
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up JDK
+      uses: actions/setup-java@v2
+      with:
+        java-version: '19'
+        distribution: 'adopt'
+
+    - name: Build with Maven
+      run: mvn package
+
+    - name: Generate Javadoc
+      run: mvn javadoc:javadoc

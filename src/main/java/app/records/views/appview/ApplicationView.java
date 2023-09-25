@@ -19,7 +19,6 @@ public class ApplicationView implements View {
     public JTextArea unformattedChat;
     public SenderAndReceiver senderAndReceiver;
     public JProgressBar progressBar;
-
     public SaveCurrentChatNameField currentChatNameBox;
     public String currentChatName;
     public JButton saveButton;
