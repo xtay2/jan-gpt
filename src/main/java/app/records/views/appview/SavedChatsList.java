@@ -16,9 +16,7 @@ import java.util.Vector;
 public class SavedChatsList extends JList<String> {
     public static final String NEW_CHAT = "<Neuer Chat>";
     public Vector<String> chats;
-
     private final ApplicationView app;
-
     public SavedChatsList(ApplicationView app) {
         super();
         this.app = app;

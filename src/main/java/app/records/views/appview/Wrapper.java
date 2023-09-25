@@ -1,5 +1,7 @@
 package app.records.views.appview;
 
+import app.records.Role;
+
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.SimpleAttributeSet;
@@ -34,6 +36,9 @@ public class Wrapper {
 
     // takes a response and formats code withing ``` ``` tags in blue and adds a button to copy the code to the clipboard
     public void formatCode(String response) {
+        try {
+            document.insertString(document.getLength(), Role.ASSISTANT.alias(false)+":\n", null);
+        } catch (BadLocationException e) {throw new AssertionError(e);}
 
         String codeRegex = "```\\w+\n(.*?)```";
         Pattern codePattern = Pattern.compile(codeRegex, Pattern.DOTALL);

@@ -37,7 +37,7 @@ public class SenderAndReceiver {
                 if (response.isEmpty()) {
                     app.chatPane.writeMsg( Role.ASSISTANT, "ERROR: model could not be reached\n");
                     app.progressBar.setIndeterminate(false);
-                    return;
+//                    return;
                 }
                 response.ifPresent(s -> {
                     app.wrapper.formatCode(s);

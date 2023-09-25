@@ -25,6 +25,7 @@ public class ListenerDropdownGPTModels implements ActionListener {
         var model = GPTModel.valueOf(modelName);
         if (model.isEmpty()) return;
         app.manager.setGPTModel(model.get());
+
         // Set focus on the query text field
         SwingUtilities.invokeLater(() -> app.queryPane.requestFocusInWindow());
     }
