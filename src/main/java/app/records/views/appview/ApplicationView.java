@@ -3,6 +3,7 @@ package app.records.views.appview;
 import app.managers.frontend.ViewManager;
 import app.records.GPTModel;
 import app.records.views.View;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
@@ -54,7 +55,7 @@ public class ApplicationView implements View {
             new APIKeyFrame(manager, () -> buildMainFrame(manager));
     }
 
-    private void buildMainFrame(ViewManager manager) {
+    void buildMainFrame(@NotNull ViewManager manager) {
         this.manager = manager;
         manager.setGPTModel(GPTModel.getNewest().orElseThrow());
 
