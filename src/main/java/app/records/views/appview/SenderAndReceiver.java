@@ -35,9 +35,8 @@ public class SenderAndReceiver {
             try {
                 var response = app.manager.callGPT(query);
                 if (response.isEmpty()) {
-                    app.chatPane.writeMsg( Role.ASSISTANT, "ERROR: model could not be reached\n");
+                    app.chatPane.writeMsg( Role.ASSISTANT, "Timeout erreicht!\n");
                     app.progressBar.setIndeterminate(false);
-//                    return;
                 }
                 response.ifPresent(s -> {
                     app.wrapper.formatCode(s);

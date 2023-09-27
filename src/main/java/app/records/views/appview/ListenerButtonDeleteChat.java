@@ -18,6 +18,8 @@ public class ListenerButtonDeleteChat implements ActionListener {
     }
     @Override
     public void actionPerformed(ActionEvent e) {
+        if(app.currentChatName.isBlank()) return;
+
         int choice = JOptionPane.showConfirmDialog(app.mainFrame,
                 "Sicher, dass du den ausgewählten Chat löschen möchtest?", "Bestätigung", JOptionPane.YES_NO_OPTION);
         if (choice == JOptionPane.YES_OPTION) {

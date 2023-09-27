@@ -58,4 +58,5 @@ public interface ViewManager {
     /** Delete a conversation-file. */
     boolean deleteConversation(String name);
 
+    void setTimeoutSec(int timeout);
 }

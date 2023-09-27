@@ -37,9 +37,12 @@ public class ApplicationView implements View {
     public PanelRightSide rightSidePanel;
     public PanelButtons buttonsPanel;
     public PanelLeftSideBottom tooltipPanel;
-    public PanelProgress progressPanel;
-    public Tooltip tooltip;
+    public PanelTimeout timeoutPanel;
+    public Tooltip tooltipCommands;
+    public JLabel timeoutLabel;
     public Wrapper wrapper;
+    public JTextField timeoutTextField;
+
     public int HEIGHT = 700, WIDTH = 1400;
     public int minHEIGHT = 500, minWIDTH = 1000;
 
@@ -55,6 +58,7 @@ public class ApplicationView implements View {
             new APIKeyFrame(manager, () -> buildMainFrame(manager));
     }
 
+
     void buildMainFrame(@NotNull ViewManager manager) {
         this.manager = manager;
         manager.setGPTModel(GPTModel.getNewest().orElseThrow());
@@ -69,6 +73,11 @@ public class ApplicationView implements View {
         senderAndReceiver = new SenderAndReceiver(this);
         progressBar = new JProgressBar();
         progressBar.setIndeterminate(false);
+        timeoutTextField = new JTextField(String.valueOf(60));
+        timeoutTextField.addActionListener(new ListenerTimeoutText(this));
+        timeoutTextField.setEditable(true);
+        timeoutLabel = new JLabel("Maximale Wartezeit: ");
+        timeoutLabel.setToolTipText("Timeout nach " + 60 + " Sekunden");
         currentChatNameBox = new SaveCurrentChatNameField();
         savedChatsList = new SavedChatsList(this);
         dropdownGPTModels = new DropdownGPTModels(this);
@@ -78,8 +87,7 @@ public class ApplicationView implements View {
         deleteSelectedButton.addActionListener(new ListenerButtonDeleteChat(this));
         deleteAllButton = new JButton("Alle löschen");
         deleteAllButton.addActionListener(new ListenerButtonDeleteAllChats(this));
-        tooltip = new Tooltip(" ♿");
-      //  tooltip = new Tooltip(" ⓘ");
+        tooltipCommands = new Tooltip(" ♿");
         wrapper = new Wrapper(this);
         currentChatName = "";
 
@@ -94,12 +102,12 @@ public class ApplicationView implements View {
         scrollableQuery.setWheelScrollingEnabled(true);
         scrollableQuery.setPreferredSize(new Dimension(1000, 150));
 
-        tooltipPanel = new PanelLeftSideBottom(tooltip, dropdownGPTModels);
-        buttonsPanel = new PanelButtons(currentChatNameBox, saveButton, deleteSelectedButton, deleteAllButton, tooltipPanel);
+        timeoutPanel = new PanelTimeout(timeoutLabel, timeoutTextField);
+        tooltipPanel = new PanelLeftSideBottom(tooltipCommands, dropdownGPTModels);
+        buttonsPanel = new PanelButtons(timeoutPanel, currentChatNameBox, saveButton, deleteSelectedButton, deleteAllButton, tooltipPanel);
         leftSidePanel = new PanelLeftSide(savedChatsLabel, savedChatsList, buttonsPanel);
         chatPanel = new PanelChat(chatPane);
-        progressPanel = new PanelProgress(progressBar);
-        queryPanel = new PanelQuery(scrollableQuery, progressPanel);
+        queryPanel = new PanelQuery(scrollableQuery, progressBar);
         rightSidePanel = new PanelRightSide(chatPanel, queryPanel);
         mainPanel = new PanelMain(leftSidePanel, rightSidePanel);
 
@@ -112,5 +120,8 @@ public class ApplicationView implements View {
         mainFrame = new MainFrame(this);
         queryPane.requestFocus();
 
+    }
+    public void setTimeoutSec(int sec) {
+        manager.setTimeoutSec(sec);
     }
 }

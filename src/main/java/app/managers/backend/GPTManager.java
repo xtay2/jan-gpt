@@ -22,7 +22,7 @@ import java.util.Optional;
  */
 public class GPTManager implements GPTPort {
 
-    private static final int TIMEOUT_SEC = 60;
+    private Duration timeout = Duration.of(60, java.time.temporal.ChronoUnit.SECONDS);
 
     private static final URI GPT_CHAT_URI = URI.create("https://api.openai.com/v1/chat/completions"), GPT_MODEL_URI = URI.create("https://api.openai.com/v1/models");
 
@@ -34,6 +34,11 @@ public class GPTManager implements GPTPort {
 
     public GPTManager(String apiKey) {
         this.apiKey = apiKey;
+    }
+
+    @Override
+    public void setTimeoutSec(int sec) {
+        timeout = Duration.ofSeconds(sec);
     }
 
     @Override
@@ -51,7 +56,7 @@ public class GPTManager implements GPTPort {
                 .POST(HttpRequest.BodyPublishers.ofString(buildPromptRequestBody(model).toString()))
                 .header("Authorization", "Bearer " + apiKey)
                 .header("Content-Type", "application/json")
-                .timeout(Duration.ofSeconds(TIMEOUT_SEC))
+                .timeout(timeout)
                 .build();
         // RECEIVE RESPONSE
         try {
@@ -60,7 +65,6 @@ public class GPTManager implements GPTPort {
             responseMsg.ifPresent(s -> messages.add(new Message(Role.ASSISTANT, s)));
             return responseMsg;
         } catch (Exception e) {
-            e.printStackTrace();
             return Optional.empty();
         }
     }
@@ -83,7 +87,7 @@ public class GPTManager implements GPTPort {
                     .uri(GPT_MODEL_URI)
                     .GET()
                     .header("Authorization", "Bearer " + apiKey)
-                    .timeout(Duration.ofSeconds(TIMEOUT_SEC))
+                    .timeout(timeout)
                     .build(), HttpResponse.BodyHandlers.ofString()).statusCode() == 200;
         } catch (Exception e) {
             return false;

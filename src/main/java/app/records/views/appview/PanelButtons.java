@@ -8,16 +8,20 @@ import java.awt.*;
  */
 
 public class PanelButtons extends JPanel {
-    public PanelButtons(SaveCurrentChatNameField saveNameField, JButton saveButton, JButton deleteSelectedButton, JButton deleteAllButton, PanelLeftSideBottom tooltipPanel) {
+    public PanelButtons(PanelTimeout timeoutPanel, SaveCurrentChatNameField saveNameField, JButton saveButton, JButton deleteSelectedButton, JButton deleteAllButton, PanelLeftSideBottom tooltipPanel) {
         setLayout(new GridBagLayout());
 
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.fill = GridBagConstraints.HORIZONTAL; // Buttons will expand horizontally if there's extra space
-        constraints.insets = new Insets(5, 5, 5, 5); // Add some padding between buttons
+        constraints.insets = new Insets(2, 2, 2, 2); // Add some padding between buttons
 
 
+        // Add timeoutPanel
+        constraints.gridx = 0; // Column 0
+        constraints.gridy = 0; // Row 0
+        constraints.gridwidth = 1; // Span 1 columns
+        add(timeoutPanel, constraints);
 
-        
         // Add Save Name Field
         constraints.gridx = 0; // Column 0
         constraints.gridy = 1; // Row 1

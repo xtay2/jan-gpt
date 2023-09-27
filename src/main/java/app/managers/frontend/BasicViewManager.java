@@ -33,6 +33,11 @@ public class BasicViewManager implements ViewManager {
     }
 
     @Override
+    public void setTimeoutSec(int sec){
+        gptPort.setTimeoutSec(sec);
+    }
+
+    @Override
     public boolean setAPIKey(String apiKey) {
         gptPort = GPTPort.getInstance(apiKey);
         return gptPort.testConnection() && ApiKeyManager.saveApiKey(apiKey);

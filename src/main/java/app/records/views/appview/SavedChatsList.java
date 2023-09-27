@@ -58,14 +58,15 @@ public class SavedChatsList extends JList<String> {
             app.currentChatName = "";
             app.currentChatNameBox.setText("");
             app.chatPane.writeMsg(Role.ASSISTANT, "Hallo, ich bin Ihr Assistent. Wie kann ich Ihnen helfen?");
+
         } else {
             app.mainFrame.setTitle(convName);
             app.currentChatName = convName;
             app.chatPane.setText("");
             app.manager.loadConversation(convName).ifPresent(messages -> messages
                     .stream()
-                    .map(msg -> msg.role().alias(false) + ":\n" + msg.content() + "\n")
-                    .forEach(app.wrapper::formatCode)
+                    .map(msg -> msg.role() + ":\n" + msg.content() + "\n")
+                    .forEach(app.wrapper::formatLoadedChat)
             );
         }
         SwingUtilities.invokeLater(() -> app.queryPane.requestFocusInWindow());
