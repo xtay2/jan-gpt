@@ -1,5 +1,6 @@
 package app.records.views.appview;
 
+import app.Main;
 import app.managers.frontend.ViewManager;
 import app.records.GPTModel;
 import app.records.views.View;
@@ -7,6 +8,10 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
+import java.util.Optional;
 
 /**
  * @author Dennis Woithe
@@ -42,9 +47,11 @@ public class ApplicationView implements View {
     public JLabel timeoutLabel;
     public Wrapper wrapper;
     public JTextField timeoutTextField;
-
     public int HEIGHT = 700, WIDTH = 1400;
     public int minHEIGHT = 500, minWIDTH = 1000;
+
+    public Path PREFERRED_MODEL_FILE_PATH = Path.of(Main.BASE_DATA_PATH + "preferred_model.txt");
+
 
 
     /**
@@ -59,9 +66,38 @@ public class ApplicationView implements View {
     }
 
 
+    public void savePreferredModel(String model) {
+        try {
+            Files.createDirectories(PREFERRED_MODEL_FILE_PATH.getParent());
+            Files.writeString(PREFERRED_MODEL_FILE_PATH, model, StandardOpenOption.WRITE);
+        } catch (Exception e ) {
+            e.printStackTrace();
+        }
+    }
+
+    public Optional<String> getPreferredModel() {
+        try {
+            return Optional.of(Files.readString(PREFERRED_MODEL_FILE_PATH));
+        } catch (Exception e) {
+            return Optional.empty();
+        }
+    }
+
+    public void setPreferredModel(){
+        try{
+            getPreferredModel().ifPresentOrElse(
+                    manager::setGPTModel,
+                    () -> manager.setGPTModel(GPTModel.getNewest().orElseThrow())
+            );
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+
     void buildMainFrame(@NotNull ViewManager manager) {
         this.manager = manager;
-        manager.setGPTModel(GPTModel.getNewest().orElseThrow());
+        setPreferredModel();
 
         mainFrame = new MainFrame(this);
         chatPane = new TextPaneChat();

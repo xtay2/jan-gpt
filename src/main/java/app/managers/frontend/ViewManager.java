@@ -31,6 +31,13 @@ public interface ViewManager {
      *
      * @return false if null was passed or the version is not supported.
      */
+    boolean setGPTModel(String version);
+
+    /**
+     * Set the GPT version to use.
+     *
+     * @return false if null was passed or the version is not supported.
+     */
     boolean setGPTModel(GPTModel version);
 
     /**

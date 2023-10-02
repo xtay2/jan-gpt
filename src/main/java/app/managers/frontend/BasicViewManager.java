@@ -44,6 +44,11 @@ public class BasicViewManager implements ViewManager {
     }
 
     @Override
+    public boolean setGPTModel(String model) {
+        return GPTModel.valueOf(model).filter(this::setGPTModel).isPresent();
+    }
+
+    @Override
     public boolean setGPTModel(GPTModel model) {
         if (model == null)
             return false;
