@@ -24,9 +24,9 @@ public class ListenerDropdownGPTModels implements ActionListener {
         String modelName = (String) dropdownGPTModels.getSelectedItem();
         var model = GPTModel.valueOf(modelName);
         if (model.isEmpty()) return;
-//        app.manager.setGPTModel(model.get());
         app.savePreferredModel(model.get().modelName);
         app.setPreferredModel();
+
 
         // Set focus on the query text field
         SwingUtilities.invokeLater(() -> app.queryPane.requestFocusInWindow());

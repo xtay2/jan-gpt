@@ -69,7 +69,10 @@ public class ApplicationView implements View {
     public void savePreferredModel(String model) {
         try {
             Files.createDirectories(PREFERRED_MODEL_FILE_PATH.getParent());
+            Files.deleteIfExists(PREFERRED_MODEL_FILE_PATH);
+            Files.createFile(PREFERRED_MODEL_FILE_PATH);
             Files.writeString(PREFERRED_MODEL_FILE_PATH, model, StandardOpenOption.WRITE);
+            System.out.println("Preferred model saved: " + model);
         } catch (Exception e ) {
             e.printStackTrace();
         }
@@ -77,7 +80,8 @@ public class ApplicationView implements View {
 
     public Optional<String> getPreferredModel() {
         try {
-            return Optional.of(Files.readString(PREFERRED_MODEL_FILE_PATH));
+            System.out.println("Preferred model loaded: " + Files.readString(PREFERRED_MODEL_FILE_PATH));
+            return Optional.of((Files.readString(PREFERRED_MODEL_FILE_PATH)));
         } catch (Exception e) {
             return Optional.empty();
         }
@@ -86,8 +90,7 @@ public class ApplicationView implements View {
     public void setPreferredModel(){
         try{
             getPreferredModel().ifPresentOrElse(
-                    manager::setGPTModel,
-                    () -> manager.setGPTModel(GPTModel.getNewest().orElseThrow())
+                    manager::setGPTModel, () -> manager.setGPTModel(GPTModel.getNewest().orElseThrow())
             );
         }catch (Exception e){
             e.printStackTrace();
@@ -155,7 +158,6 @@ public class ApplicationView implements View {
         mainFrame.setVisible(true);
         mainFrame = new MainFrame(this);
         queryPane.requestFocus();
-
     }
     public void setTimeoutSec(int sec) {
         manager.setTimeoutSec(sec);
