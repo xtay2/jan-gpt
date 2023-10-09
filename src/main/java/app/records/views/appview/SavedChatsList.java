@@ -35,7 +35,7 @@ public class SavedChatsList extends JList<String> {
             app.manager.deleteConversation(app.currentChatName);
             app.manager.saveConversationAs(app.currentChatName);
         } else if (app.currentChatNameBox.getText().isBlank() && app.currentChatName.isEmpty()) {
-            var namelessChat = "Chat vom " + new SimpleDateFormat("yy-MM-dd").format(new Date()) + " um " + new SimpleDateFormat("HH-mm-ss").format(new Date());
+            var namelessChat = "Datum " + new SimpleDateFormat("MM-dd").format(new Date()) + " Uhrzeit " + new SimpleDateFormat("HH-mm").format(new Date());
             app.manager.saveConversationAs(namelessChat);
             updateList();
             app.currentChatName = namelessChat;

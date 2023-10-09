@@ -33,12 +33,15 @@ public class SenderAndReceiver {
             app.queryPane.setText("");
 
             try {
+                long startTime = System.currentTimeMillis();
                 var response = app.manager.callGPT(query);
                 if (response.isEmpty()) {
                     app.chatPane.writeMsg( Role.ASSISTANT, "Timeout erreicht!\n");
                     app.progressBar.setIndeterminate(false);
                 }
                 response.ifPresent(s -> {
+                    long endTime = System.currentTimeMillis();
+                    app.timeoutLabel.setText("Antwort nach " + (endTime - startTime) / 1000 + " Sekunden");
                     app.wrapper.formatCode(s);
                     SwingUtilities.invokeLater(() -> {
                         app.progressBar.setIndeterminate(false);

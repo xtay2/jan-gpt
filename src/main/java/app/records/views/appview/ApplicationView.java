@@ -66,24 +66,22 @@ public class ApplicationView implements View {
     }
 
 
-    public void savePreferredModel(String model) {
+    public void savePreferredModel(GPTModel model) {
         try {
             Files.createDirectories(PREFERRED_MODEL_FILE_PATH.getParent());
             Files.deleteIfExists(PREFERRED_MODEL_FILE_PATH);
             Files.createFile(PREFERRED_MODEL_FILE_PATH);
-            Files.writeString(PREFERRED_MODEL_FILE_PATH, model, StandardOpenOption.WRITE);
-            System.out.println("Preferred model saved: " + model);
+            Files.writeString(PREFERRED_MODEL_FILE_PATH, model.modelName, StandardOpenOption.WRITE);
         } catch (Exception e ) {
             e.printStackTrace();
         }
     }
 
-    public Optional<String> getPreferredModel() {
+    public Optional<GPTModel> getPreferredModel() {
         try {
-            System.out.println("Preferred model loaded: " + Files.readString(PREFERRED_MODEL_FILE_PATH));
-            return Optional.of((Files.readString(PREFERRED_MODEL_FILE_PATH)));
+            return GPTModel.valueOf(Files.readString(PREFERRED_MODEL_FILE_PATH));
         } catch (Exception e) {
-            return Optional.empty();
+            return GPTModel.getNewest();
         }
     }
 
@@ -115,7 +113,7 @@ public class ApplicationView implements View {
         timeoutTextField = new JTextField(String.valueOf(60));
         timeoutTextField.addActionListener(new ListenerTimeoutText(this));
         timeoutTextField.setEditable(true);
-        timeoutLabel = new JLabel("Maximale Wartezeit: ");
+        timeoutLabel = new JLabel("maximale Wartezeit: ");
         timeoutLabel.setToolTipText("Timeout nach " + 60 + " Sekunden");
         currentChatNameBox = new SaveCurrentChatNameField();
         savedChatsList = new SavedChatsList(this);

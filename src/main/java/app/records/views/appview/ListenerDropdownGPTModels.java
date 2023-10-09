@@ -24,7 +24,7 @@ public class ListenerDropdownGPTModels implements ActionListener {
         String modelName = (String) dropdownGPTModels.getSelectedItem();
         var model = GPTModel.valueOf(modelName);
         if (model.isEmpty()) return;
-        app.savePreferredModel(model.get().modelName);
+        app.savePreferredModel(model.get());
         app.setPreferredModel();
 
 

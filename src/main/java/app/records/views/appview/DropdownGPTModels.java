@@ -14,8 +14,7 @@ public class DropdownGPTModels extends JComboBox<String> {
         super();
         String[] models = GPTModel.values().toArray(String[]::new);
         setModel(new DefaultComboBoxModel<>(models));
-        System.out.println("DropdownGPTModels: " + app.getPreferredModel());
         addActionListener(new ListenerDropdownGPTModels(app));
-        setSelectedItem(app.getPreferredModel().orElseThrow());
+        app.getPreferredModel().ifPresent(gptModel -> setSelectedItem(gptModel.modelName));
     }
 }
