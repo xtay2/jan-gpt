@@ -37,7 +37,7 @@ public class Wrapper {
     // takes a response and formats code withing ``` ``` tags in blue and adds a button to copy the code to the clipboard
     public void formatCode(String response) {
 
-        String codeRegex = "```\\w+\n(.*?)```";
+        String codeRegex = "```(.*?)```";
         Pattern codePattern = Pattern.compile(codeRegex, Pattern.DOTALL);
         Matcher matcher = codePattern.matcher(response);
 
@@ -70,7 +70,7 @@ public class Wrapper {
 
     public void formatLoadedChat(String response) {
 
-        String codeRegex = "```\\w+\n(.*?)```";
+        String codeRegex = "```(.*?)```";
         Pattern codePattern = Pattern.compile(codeRegex, Pattern.DOTALL);
         Matcher matcher = codePattern.matcher(response);
 

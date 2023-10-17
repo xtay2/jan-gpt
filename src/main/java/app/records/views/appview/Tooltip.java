@@ -14,14 +14,17 @@ public class Tooltip extends JLabel {
         setFont(customFont);
         setVisible(true);
         setToolTipText("<html>" +
-                "↑ : letzte Frage <br/>" +
-                "↓ : nächste Frage <br/>" +
                 "↵ : Frage absenden <br/>" +
-                "⇧ + ↵ : neue Zeile <br/>" +
-                "Strg + s : Frage speichern <br/>" +
-                "Strg + d : Frage löschen <br/>" +
+                "⇧ + ↵ : Zeilenumbruch <br/>" +
                 "Strg + ⇕ : Schriftgröße ändern <br/>" +
-                "␛ : Feld leeren <br/>" +
+                "Strg + t : neuen Chat öffnen <br/>" +
+                "Strg + s : Frage im Eingabefeld merken <br/>" +
+                "Strg + d : Frage im Eingabefeld vergessen <br/>" +
+                "␛ : Eingabefeld leeren <br/>" +
+                "↑ : letzte gemerkte Frage einfügen <br/>" +
+                "↓ : nächste gemerkte Frage einfügen <br/>" +
+                "Entf : ausgewählte gespeicherte Chats löschen <br/>" +
+                "Strg + z : gelöschte Chats wiederherstellen <br/>" +
                 "</html>");
         // Set the initial delay for the tooltip in milliseconds (default is 500 ms)
         ToolTipManager.sharedInstance().setInitialDelay(100);

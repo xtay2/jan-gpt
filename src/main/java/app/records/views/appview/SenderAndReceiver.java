@@ -22,6 +22,7 @@ public class SenderAndReceiver {
         System.out.println("sendMessage");
         // Disable UI components to prevent multiple requests
         app.queryPane.disableListener();
+        app.timeoutLabel.setText("denke nach...");
         app.progressBar.setIndeterminate(true);
 
         String query = app.queryPane.getText();
