@@ -29,21 +29,19 @@ public class SenderAndReceiver {
 
         // Create a background thread for sending the request
         Thread thread = new Thread(() -> {
-
-            app.chatPane.writeMsg(Role.USER, query);
-            app.queryPane.setText("");
-
             try {
+                app.chatPane.writeMsg(query, Role.USER);
+                app.queryPane.setText("");
                 long startTime = System.currentTimeMillis();
                 var response = app.manager.callGPT(query);
                 if (response.isEmpty()) {
-                    app.chatPane.writeMsg( Role.ASSISTANT, "Timeout erreicht!\n");
+                    app.chatPane.writeMsg("Timeout erreicht!\n", Role.ASSISTANT);
                     app.progressBar.setIndeterminate(false);
                 }
                 response.ifPresent(s -> {
                     long endTime = System.currentTimeMillis();
                     app.timeoutLabel.setText("Antwort nach " + (endTime - startTime) / 1000 + " Sekunden");
-                    app.wrapper.formatCode(s);
+                    app.chatPane.writeMsg(s, Role.ASSISTANT);
                     SwingUtilities.invokeLater(() -> {
                         app.progressBar.setIndeterminate(false);
                         app.chatPane.setCaretPosition(app.chatPane.getDocument().getLength());
@@ -51,7 +49,6 @@ public class SenderAndReceiver {
                         app.savedChatsList.concurrentlyUpdateList();
                     });
                 });
-                System.out.println(response);
             } catch (GPTPort.MissingAPIKeyException ex) {
                 System.err.println("API key is missing.");
                 throw new RuntimeException(ex);

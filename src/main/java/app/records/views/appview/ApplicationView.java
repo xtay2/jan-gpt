@@ -45,7 +45,6 @@ public class ApplicationView implements View {
     public PanelTimeout timeoutPanel;
     public Tooltip tooltipCommands;
     public JLabel timeoutLabel;
-    public Wrapper wrapper;
     public JTextField timeoutTextField;
     public int HEIGHT = 700, WIDTH = 1400;
     public int minHEIGHT = 500, minWIDTH = 1000;
@@ -93,7 +92,6 @@ public class ApplicationView implements View {
         deleteAllButton = new JButton("Alle löschen");
         deleteAllButton.addActionListener(new ListenerButtonDeleteAllChats(this));
         tooltipCommands = new Tooltip(" ♿");
-        wrapper = new Wrapper(this);
         currentChatName = "";
 
 
@@ -133,7 +131,8 @@ public class ApplicationView implements View {
     public void setPreferredModel() {
         try {
             getPreferredModel().ifPresentOrElse(
-                    manager::setGPTModel, () -> manager.setGPTModel(GPTModel.getNewest().orElseThrow())
+                    manager::setGPTModel,
+                    () -> manager.setGPTModel(GPTModel.getNewest().orElseThrow())
             );
         } catch (Exception e) {
             e.printStackTrace();
