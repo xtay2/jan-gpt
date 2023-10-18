@@ -17,7 +17,6 @@ public class ListenerKeyPressedQuery extends java.awt.event.KeyAdapter {
 		this.app = app;
 	}
 	
-	
 	@Override
 	public void keyPressed (KeyEvent e) {
 		var str = app.queryPane.getText().replaceAll("\n", "").replaceAll("\t", "");
@@ -28,13 +27,12 @@ public class ListenerKeyPressedQuery extends java.awt.event.KeyAdapter {
 		// if any chats selected and use pressed delete, delete the selected chat(s)
 		if (e.getKeyCode() == KeyEvent.VK_DELETE) {
 			app.savedChatsList.flagChatsAsDeleted();
-			app.savedChatsList.openNewChatAndUpdateChatPane(SavedChatsList.NEW_CHAT);
 		}
+		
 		
 		// if the user presses ctrl + t open new chat
 		if (e.getKeyCode() == 84 && e.isControlDown()) {
-			app.savedChatsList.setSelectedValue(SavedChatsList.NEW_CHAT, true);
-			app.chatPane.setText("");
+			app.savedChatsList.setNewChat();
 			app.savedChatsList.openNewChatAndUpdateChatPane(SavedChatsList.NEW_CHAT);
 		}
 		
@@ -42,10 +40,12 @@ public class ListenerKeyPressedQuery extends java.awt.event.KeyAdapter {
 		
 		if (e.getKeyCode() == 90 && e.isControlDown()) {
 			app.savedChatsList.undoDelete();
+			e.consume();
+			return;
 		}
 		
 		// If the user presses enter without text, do nothing
-		if (e.getKeyCode() == KeyEvent.VK_ENTER) { // TODO: FIX: ab der 3. query wird diese doppelt gesendet
+		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 			if (str.isBlank() || str.equals(app.queryPane.hint)) {
 				e.consume();
 				return;

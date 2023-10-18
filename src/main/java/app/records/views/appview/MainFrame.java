@@ -19,7 +19,7 @@ public class MainFrame extends javax.swing.JFrame {
 		super(app.manager.getGPTModel().map(m -> m.modelName).orElse("Kein Modell geladen"));
 		this.app = app;
 		setBounds(100, 100, WIDTH, HEIGHT);
-		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		getContentPane().setLayout(new BorderLayout());
 		addWindowListener(new ListenerWindowClosing(app));
 		setResizable(true);
@@ -36,13 +36,12 @@ public class MainFrame extends javax.swing.JFrame {
 		
 		@Override
 		public void windowClosing (WindowEvent e) {
-		
+			app.savedChatsList.permaDeleteFlaggedChats();
+			
 		}
 		
 		@Override
 		public void windowClosed (WindowEvent e) {
-			app.savedChatsList.permaDeleteFlaggedChats();
-			System.exit(0);
 		}
 		
 		@Override

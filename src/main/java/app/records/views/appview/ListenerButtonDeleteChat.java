@@ -19,5 +19,4 @@ public class ListenerButtonDeleteChat implements ActionListener {
 		app.savedChatsList.flagChatsAsDeleted();
 	}
 	
-	
 }

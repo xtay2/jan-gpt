@@ -20,14 +20,17 @@ public class SavedChatsList extends JList<String> {
 	public SavedChatsList (ApplicationView app) {
 		super();
 		this.app = app;
+		addNewChat();
+		Dimension listSize = new Dimension(150, 100);
+		setPreferredSize(listSize);
+		addListSelectionListener(new ListenerClickedSavedChatsList(app));
+	}
+	
+	private void addNewChat () {
 		chats = new Vector<>(app.manager.getConversations().orElse(Collections.emptyList()));
 		if (!chats.contains(NEW_CHAT))
 			chats.add(0, NEW_CHAT);
 		setListData(chats);
-		Dimension listSize = new Dimension(150, 100);
-		setPreferredSize(listSize);
-		addListSelectionListener(new ListenerClickedSavedChatsList(app));
-		addKeyListener(new ListenerKeyPressedChats(app));
 	}
 	
 	public void concurrentlyUpdateList () {
@@ -44,21 +47,53 @@ public class SavedChatsList extends JList<String> {
 	
 	public void updateViewOfSavedChats () {
 		chats = new Vector<>(app.manager.getConversations().orElse(Collections.emptyList()));
-		chats.stream().map(chat -> flaggedAsDeleted.contains(chat) ? chats.remove(chat) : chat);
 		if (!chats.contains(NEW_CHAT)) chats.add(0, NEW_CHAT);
+		chats.removeAll(flaggedAsDeleted);
 		setListData(chats);
+	}
+	
+	public void flagChatsAsDeleted () {
+		if (app.currentChatName.isBlank()) return;
+		var selectedNames = getSelectedValuesList();
+		var choice = 0;
+		if (selectedNames.size() > 1)
+			choice = JOptionPane.showConfirmDialog(app.mainFrame, "Sicher, dass du die ausgewählten Chats löschen möchtest?", "Bestätigung", JOptionPane.YES_NO_OPTION);
+		else
+			choice = JOptionPane.showConfirmDialog(app.mainFrame, "Sicher, dass du den ausgewählten Chat löschen möchtest?", "Bestätigung", JOptionPane.YES_NO_OPTION);
+		
+		if (choice == JOptionPane.YES_OPTION) {
+			selectedNames.removeIf(name -> name.equals(NEW_CHAT));
+			selectedNames.forEach(flaggedAsDeleted::push);
+			System.out.println("flaggedAsDeleted:");
+			selectedNames.forEach(System.out::println);
+			updateViewOfSavedChats();
+			setNewChat();
+		}
+	}
+	
+	public void setNewChat () {
+		app.savedChatsList.setSelectedValue(SavedChatsList.NEW_CHAT, true);
+		app.chatPane.setText("");
+		app.chatPane.writeMsg(Role.ASSISTANT, "Hallo, ich bin Ihr Assistent. Wie kann ich Ihnen helfen?");
+	}
+	
+	public void undoDelete () {
+		if (flaggedAsDeleted.isEmpty()) return;
+		System.out.println("undoDeleted:");
+		System.out.println(flaggedAsDeleted.peek());
+		setSelectedValue(flaggedAsDeleted.peek(), true);
+		openNewChatAndUpdateChatPane(flaggedAsDeleted.pop());
+		updateViewOfSavedChats();
 	}
 	
 	// loads a conversation of type Optional<List<Message>> from the manager and displays it in the chat pane
 	public void openNewChatAndUpdateChatPane (String convName) {
-		
 		if (convName.equals(SavedChatsList.NEW_CHAT)) {
 			app.manager.newConversation();
 			app.chatPane.setText("");
 			app.currentChatName = "";
 			app.currentChatNameField.setText("");
 			app.chatPane.writeMsg(Role.ASSISTANT, "Hallo, ich bin Ihr Assistent. Wie kann ich Ihnen helfen?");
-			
 		} else {
 			app.mainFrame.setTitle(convName);
 			app.currentChatName = convName;
@@ -72,35 +107,7 @@ public class SavedChatsList extends JList<String> {
 		SwingUtilities.invokeLater(() -> app.queryPane.requestFocusInWindow());
 	}
 	
-	public void flagChatsAsDeleted () {
-		if (app.currentChatName.isBlank()) return;
-		var selectedNames = getSelectedValuesList();
-		var choice = 0;
-		if (selectedNames.size() > 1)
-			choice = JOptionPane.showConfirmDialog(app.mainFrame, "Sicher, dass du die ausgewählten Chats löschen möchtest?", "Bestätigung", JOptionPane.YES_NO_OPTION);
-		else
-			choice = JOptionPane.showConfirmDialog(app.mainFrame, "Sicher, dass du den ausgewählten Chat löschen möchtest?", "Bestätigung", JOptionPane.YES_NO_OPTION);
-		
-		if (choice == JOptionPane.YES_OPTION) {
-			selectedNames.forEach(flaggedAsDeleted::push);
-			System.out.println("flaggedAsDeleted:\n");
-			selectedNames.forEach(System.out::println);
-			
-			if (!chats.contains(SavedChatsList.NEW_CHAT))
-				chats.add(0, SavedChatsList.NEW_CHAT);
-			app.savedChatsList.setListData(chats);
-			app.savedChatsList.setSelectedValue(SavedChatsList.NEW_CHAT, true);
-			app.chatPane.setText("");
-		}
+	public void permaDeleteFlaggedChats () {
+		for (var chat : flaggedAsDeleted) app.manager.deleteConversation(chat);
 	}
-	
-	public void undoDelete () {
-		if (flaggedAsDeleted.isEmpty()) return;
-		var undeletedChat = flaggedAsDeleted.pop();
-		updateViewOfSavedChats();
-		// add deleted chats back to view
-		
-	}
-	
-	public void permaDeleteFlaggedChats () {for (var chat : flaggedAsDeleted) app.manager.deleteConversation(chat);}
 }
