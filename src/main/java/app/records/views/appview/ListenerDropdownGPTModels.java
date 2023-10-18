@@ -1,13 +1,14 @@
 package app.records.views.appview;
+
 import app.records.GPTModel;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 /**
  * @author A.Mukhamedov
  */
-
 
 
 public class ListenerDropdownGPTModels implements ActionListener {
@@ -24,7 +25,10 @@ public class ListenerDropdownGPTModels implements ActionListener {
         String modelName = (String) dropdownGPTModels.getSelectedItem();
         var model = GPTModel.valueOf(modelName);
         if (model.isEmpty()) return;
-        app.manager.setGPTModel(model.get());
+
+        app.setPreferredModel(model.get());
+        app.setPreferredModel();
+
         // Set focus on the query text field
         SwingUtilities.invokeLater(() -> app.queryPane.requestFocusInWindow());
     }

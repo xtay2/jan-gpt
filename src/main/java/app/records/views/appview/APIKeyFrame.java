@@ -5,8 +5,11 @@ import app.managers.frontend.ViewManager;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
 
 
 public class APIKeyFrame extends JFrame {
@@ -14,6 +17,20 @@ public class APIKeyFrame extends JFrame {
     JButton submitButton = new JButton("weiter");
     JLabel errorLabel = new JLabel("");
 
+
+    public void startApp(ViewManager manager, Runnable createMainFrame) {
+        String apiKey = apiKeyField.getText();
+
+        if (!apiKey.isEmpty()) {
+            if (manager.setAPIKey(apiKey)) {
+                setVisible(false);
+                createMainFrame.run();
+            } else {
+                System.out.println("Invalid API key");
+                errorLabel.setText("  Invalider API key");
+            }
+        }
+    }
     public APIKeyFrame(ViewManager manager, Runnable createMainFrame) {
 
         setTitle("API Key");
@@ -38,7 +55,7 @@ public class APIKeyFrame extends JFrame {
                         createMainFrame.run();
                     } else {
                         System.out.println("Invalid API key");
-                        errorLabel.setText("  Invalider API key");
+                        errorLabel.setText("Invalider API key");
                     }
             }
         });
@@ -47,24 +64,28 @@ public class APIKeyFrame extends JFrame {
             @Override
             public void keyPressed(KeyEvent e) {
 
-                if (e.getKeyCode() == KeyEvent.VK_ESCAPE)     System.exit(0);
-
-                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    String apiKey = apiKeyField.getText();
-
-                    if (!apiKey.isEmpty()) {
-                        if (manager.setAPIKey(apiKey)) {
-                            setVisible(false);
-                            createMainFrame.run();
-                        } else {
-                            System.out.println("Invalid API key");
-                            errorLabel.setText("  Invalider API key");
-                        }
+                //if ctrl was held and key V is pressed take string from clipboard and paste it into text field
+                if(e.isControlDown() && e.getKeyCode() == KeyEvent.VK_V) {
+                    String clipboard;
+                    try {
+                        clipboard = Toolkit.getDefaultToolkit()
+                                .getSystemClipboard()
+                                .getContents(null)
+                                .getTransferData(DataFlavor.stringFlavor)
+                                .toString();
+                    } catch (UnsupportedFlavorException | IOException ex) {
+                        throw new RuntimeException(ex);
                     }
+                    apiKeyField.setText(clipboard);
+                    startApp(manager, createMainFrame);
                 }
+
+                if (e.getKeyCode() == KeyEvent.VK_ESCAPE)   System.exit(0);
+
+                if (e.getKeyCode() == KeyEvent.VK_ENTER)    startApp(manager, createMainFrame);
+
             }
         });
-
 
         pack();
         setLocationRelativeTo(null); // Center the frame on the screen

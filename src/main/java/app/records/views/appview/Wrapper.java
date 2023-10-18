@@ -1,5 +1,7 @@
 package app.records.views.appview;
 
+import app.records.Role;
+
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.SimpleAttributeSet;
@@ -35,34 +37,26 @@ public class Wrapper {
     // takes a response and formats code withing ``` ``` tags in blue and adds a button to copy the code to the clipboard
     public void formatCode(String response) {
 
-        String codeRegex = "```\\w+\n(.*?)```";
+        String codeRegex = "```(.*?)```";
         Pattern codePattern = Pattern.compile(codeRegex, Pattern.DOTALL);
         Matcher matcher = codePattern.matcher(response);
 
         int startPos = 0;
         try {
-            while (matcher.find()) {
-                int matchStart = matcher.start();
-                int matchEnd = matcher.end();
-                document.insertString(document.getLength(), response.substring(startPos, matchStart), null);
-                document.insertString(document.getLength(), "\n", null);
-                String code = matcher.group(1).trim();
-                document.insertString(document.getLength(), code, this.code);
-
-                JButton copyCodeButton = getjButton(code);
-                StyleConstants.setComponent(copyButton, copyCodeButton);
-                document.insertString(document.getLength(), "\n", null);
-                document.insertString(document.getLength(), " ", copyButton);
-
-                startPos = matchEnd;
+            if(response.contains("```")) {
+                document.insertString(document.getLength(),Role.ASSISTANT.alias(false) + ":\n", null);
+                startPos = whileMatcherFind(response, matcher, startPos);
+            } else {
+                document.insertString(document.getLength(),Role.ASSISTANT.alias(false) + ":\n"+response, null);
             }
-            if (startPos < response.length()) {
-                document.insertString(document.getLength(), response.substring(startPos), null);
-            }
+                if (startPos < response.length()) {
+                    document.insertString(document.getLength(), response.substring(startPos), null);
+                }
             document.insertString(document.getLength(), "\n\n", null);
 
         } catch (BadLocationException e) {throw new AssertionError(e);}
     }
+
 
     private static JButton getjButton(String code) {
         JButton copyCodeButton = new JButton("Code kopieren");
@@ -74,4 +68,40 @@ public class Wrapper {
         return copyCodeButton;
     }
 
+    public void formatLoadedChat(String response) {
+
+        String codeRegex = "```(.*?)```";
+        Pattern codePattern = Pattern.compile(codeRegex, Pattern.DOTALL);
+        Matcher matcher = codePattern.matcher(response);
+
+        int startPos = 0;
+        try {
+            startPos = whileMatcherFind(response, matcher, startPos);
+
+            if (startPos < response.length()) {
+                document.insertString(document.getLength(), response.substring(startPos), null);
+            }
+            document.insertString(document.getLength(), "\n\n", null);
+
+        } catch (BadLocationException e) {throw new AssertionError(e);}
+    }
+
+    private int whileMatcherFind(String response, Matcher matcher, int startPos) throws BadLocationException {
+        while (matcher.find()) {
+            int matchStart = matcher.start();
+            int matchEnd = matcher.end();
+            document.insertString(document.getLength(), response.substring(startPos, matchStart), null);
+            document.insertString(document.getLength(), "\n", null);
+            String code = matcher.group(1).trim();
+            document.insertString(document.getLength(), code, this.code);
+
+            JButton copyCodeButton = getjButton(code);
+            StyleConstants.setComponent(copyButton, copyCodeButton);
+            document.insertString(document.getLength(), "\n", null);
+            document.insertString(document.getLength(), " ", copyButton);
+
+            startPos = matchEnd;
+        }
+        return startPos;
+    }
 }

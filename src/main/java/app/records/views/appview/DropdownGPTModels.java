@@ -9,12 +9,12 @@ import javax.swing.*;
  */
 public class DropdownGPTModels extends JComboBox<String> {
 
+
     public DropdownGPTModels(ApplicationView app) {
         super();
         String[] models = GPTModel.values().toArray(String[]::new);
         setModel(new DefaultComboBoxModel<>(models));
-        app.manager.getGPTModel().ifPresent(model -> this.setSelectedItem(model.modelName));
-        ListenerDropdownGPTModels gptModelsListener = new ListenerDropdownGPTModels(app);
-        addActionListener(gptModelsListener);
+        addActionListener(new ListenerDropdownGPTModels(app));
+        app.getPreferredModel().ifPresent(gptModel -> setSelectedItem(gptModel.modelName));
     }
 }

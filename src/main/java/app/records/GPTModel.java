@@ -42,8 +42,10 @@ public class GPTModel {
                                     HttpResponse.BodyHandlers.ofString()
                             ).body()
                     ).getAsJsonObject().getAsJsonArray("data").asList().stream().map(JsonElement::getAsJsonObject)
-                    .filter(jsonObject -> jsonObject.getAsJsonPrimitive("id").getAsString().startsWith("gpt"))
-                    .map(jObj -> new GPTModel(jObj.get("id").getAsString(), jObj.get("created").getAsLong())
+                    .filter(jsonObject -> {
+                        var modelName = jsonObject.getAsJsonPrimitive("id").getAsString();
+                        return modelName.startsWith("gpt") && !modelName.contains("instruct");
+                    }).map(jObj -> new GPTModel(jObj.get("id").getAsString(), jObj.get("created").getAsLong())
                     ).forEach(MODELS::add);
             return Optional.of(MODELS);
         } catch (Exception e) {
