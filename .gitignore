@@ -1,6 +1,8 @@
 ### IntelliJ IDEA ###
 out/
 target/
+.idea/
+
 !**/src/main/**/out/
 !**/src/test/**/out/
 
@@ -31,3 +33,4 @@ bin/
 
 ### Ressources ###
 /data
+/.idea
