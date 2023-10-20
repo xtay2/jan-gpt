@@ -7,16 +7,16 @@ import java.awt.event.ActionListener;
  * @author A.Mukhamedov
  */
 public class ListenerButtonDeleteChat implements ActionListener {
-	
-	private final ApplicationView app;
-	
-	public ListenerButtonDeleteChat (ApplicationView app) {
-		this.app = app;
-	}
-	
-	@Override
-	public void actionPerformed (ActionEvent e) {
-		app.savedChatsList.flagChatsAsDeleted();
-	}
-	
+
+    private final ApplicationView app;
+
+    public ListenerButtonDeleteChat(ApplicationView app) {
+        this.app = app;
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        app.savedChatsList.flagChatsAsDeleted(app.savedChatsList.getSelectedValuesList());
+    }
+
 }
