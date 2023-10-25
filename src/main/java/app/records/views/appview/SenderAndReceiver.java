@@ -18,7 +18,7 @@ public class SenderAndReceiver {
         this.app = app;
     }
 
-    void sendMessage() {
+    public void sendMessage() {
         System.out.println("sendMessage");
         // Disable UI components to prevent multiple requests
         app.queryPane.disableListener();
@@ -35,12 +35,14 @@ public class SenderAndReceiver {
                 long startTime = System.currentTimeMillis();
                 var response = app.manager.callGPT(query);
                 if (response.isEmpty()) {
-                    app.chatPane.writeMsg("Timeout erreicht!\n", Role.ASSISTANT);
+                    app.chatPane.writeMsg("Timeout erreicht!\n Erhöhe ggf. die Wartezeit.", Role.ASSISTANT);
+                    app.timeoutLabel.setText("Timeout erreicht!");
+                    SwingUtilities.invokeLater(() -> app.timeoutTextField.requestFocusInWindow());
                     app.progressBar.setIndeterminate(false);
                 }
                 response.ifPresent(s -> {
                     long endTime = System.currentTimeMillis();
-                    app.timeoutLabel.setText("Antwort nach " + (endTime - startTime) / 1000 + " Sekunden");
+                    app.timeoutLabel.setText("Antwort nach " + (endTime - startTime) / 1000 + "s");
                     app.chatPane.writeMsg(s, Role.ASSISTANT);
                     SwingUtilities.invokeLater(() -> {
                         app.progressBar.setIndeterminate(false);

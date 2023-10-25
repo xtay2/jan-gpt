@@ -1,6 +1,7 @@
-package app.records.views.appview;
+package app.records.views.appview.listeners;
 
 import app.records.GPTModel;
+import app.records.views.appview.ApplicationView;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

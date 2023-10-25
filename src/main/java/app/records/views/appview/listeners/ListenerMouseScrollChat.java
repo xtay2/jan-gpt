@@ -1,4 +1,7 @@
-package app.records.views.appview;
+package app.records.views.appview.listeners;
+
+import app.records.views.appview.ApplicationView;
+import app.records.views.appview.TextPaneChat;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,9 +16,9 @@ import java.awt.event.MouseWheelListener;
 
 public class ListenerMouseScrollChat implements MouseWheelListener {
 
-    private final ApplicationView app;
     private static final int MIN_FONT_SIZE = 12;
     private static final int MAX_FONT_SIZE = 30;
+    private final ApplicationView app;
 
 
     public ListenerMouseScrollChat(ApplicationView app) {
@@ -26,7 +29,7 @@ public class ListenerMouseScrollChat implements MouseWheelListener {
     public void mouseWheelMoved(MouseWheelEvent e) {
         if (e.isControlDown()) {
 
-            int newFontSize = app.chatPane.getFont().getSize() - (2*e.getWheelRotation());
+            int newFontSize = app.chatPane.getFont().getSize() - (2 * e.getWheelRotation());
             newFontSize = Math.max(MIN_FONT_SIZE, Math.min(newFontSize, MAX_FONT_SIZE));
             var font = new Font(app.chatPane.getFont().getFamily(), app.chatPane.getFont().getStyle(), newFontSize);
             app.chatPane.setFont(font);

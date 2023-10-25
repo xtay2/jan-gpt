@@ -1,6 +1,7 @@
 package app.records.views.appview;
 
 import app.records.GPTModel;
+import app.records.views.appview.listeners.ListenerDropdownGPTModels;
 
 import javax.swing.*;
 
@@ -16,5 +17,10 @@ public class DropdownGPTModels extends JComboBox<String> {
         setModel(new DefaultComboBoxModel<>(models));
         addActionListener(new ListenerDropdownGPTModels(app));
         app.getPreferredModel().ifPresent(gptModel -> setSelectedItem(gptModel.modelName));
+        setToolTipText("<html>" +
+                "Defaultmäßig wird das neuste Modell verwendet.<br>" +
+                "Sobald du ein anderes Modell auswählst, merke ich es mir.<br>" +
+                "</html>"
+        );
     }
 }

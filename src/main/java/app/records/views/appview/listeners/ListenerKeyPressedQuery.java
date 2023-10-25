@@ -1,4 +1,7 @@
-package app.records.views.appview;
+package app.records.views.appview.listeners;
+
+import app.records.views.appview.ApplicationView;
+import app.records.views.appview.SavedChatsList;
 
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
@@ -24,21 +27,21 @@ public class ListenerKeyPressedQuery extends java.awt.event.KeyAdapter {
         if (app.queryPane.getText().equals(app.queryPane.hint))
             app.queryPane.clear();
 
-        // if user holds ctrl and presses w, delete the selected chat
-        if (e.getKeyCode() == KeyEvent.VK_W && e.isControlDown()) {
+        // if user presses ctrl + delete, delete the selected chat
+        if (e.getKeyCode() == KeyEvent.VK_DELETE && e.isControlDown()) {
             app.savedChatsList.flagChatsAsDeleted(app.savedChatsList.getSelectedValuesList());
         }
 
 
         // if the user presses ctrl + t open new chat
-        if (e.getKeyCode() == 84 && e.isControlDown()) {
+        if (e.getKeyCode() == KeyEvent.VK_T && e.isControlDown()) {
             app.savedChatsList.setNewChat();
             app.savedChatsList.openNewChatAndUpdateChatPane(SavedChatsList.NEW_CHAT);
         }
 
-        // if user presses ctrl + z undo chat deletion
+        // if user presses ctrl + z, undo chat deletion
 
-        if (e.getKeyCode() == 90 && e.isControlDown()) {
+        if (e.getKeyCode() == KeyEvent.VK_Z && e.isControlDown()) {
             app.savedChatsList.undoDelete();
             e.consume();
             return;
@@ -73,13 +76,13 @@ public class ListenerKeyPressedQuery extends java.awt.event.KeyAdapter {
         if (e.getKeyCode() != KeyEvent.CHAR_UNDEFINED) arrowMode = false;
 
         // if the user presses ctrl + s, save the current line to prompts
-        if (e.getKeyCode() == 83 && e.isControlDown()) {
+        if (e.getKeyCode() == KeyEvent.VK_S && e.isControlDown()) {
             if (!app.queryPane.prompts.contains(app.queryPane.getText().trim()))
                 app.queryPane.prompts.add(app.queryPane.getText().trim());
         }
 
         // if the user presses ctrl + d, delete the current line from prompts if present
-        if (e.getKeyCode() == 68 && e.isControlDown()) {
+        if (e.getKeyCode() == KeyEvent.VK_D && e.isControlDown()) {
             app.queryPane.prompts.remove(app.queryPane.getText());
             app.queryPane.setText("");
         }

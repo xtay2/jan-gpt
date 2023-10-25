@@ -1,4 +1,6 @@
-package app.records.views.appview;
+package app.records.views.appview.listeners;
+
+import app.records.views.appview.ApplicationView;
 
 import java.awt.event.KeyEvent;
 

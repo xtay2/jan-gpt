@@ -14,22 +14,24 @@ public class Tooltip extends JLabel {
         setFont(customFont);
         setVisible(true);
         setToolTipText("<html>" +
-                "↵ : Frage absenden <br/>" +
-                "Esc : Eingabefeld leeren <br/>" +
-                "⇧ + ↵ : Zeilenumbruch <br/>" +
-                "Strg + ⇕ : Schriftgröße ändern <br/>" +
-                "Strg + w : ausgewählte gespeicherte Chats löschen <br/>" +
-                "Strg + z : gelöschte Chats wiederherstellen <br/>" +
-                "Strg + t : neuen Chat öffnen <br/>" +
-                "Strg + s : Frage im Eingabefeld merken <br/>" +
-                "Strg + d : Frage im Eingabefeld vergessen <br/>" +
-                "↑ : letzte gemerkte Frage einfügen <br/>" +
-                "↓ : nächste gemerkte Frage einfügen <br/>" +
+                "↵           : Frage absenden <br/>" +
+                "⇧ + ↵       : Zeilenumbruch <br/>" +
+                "Strg + ⇕    : Schriftgröße ändern <br/>" +
+                "Strg + Entf : ausgewählte gespeicherte Chats löschen <br/>" +
+                "Strg + z    : gelöschte Chats wiederherstellen <br/>" +
+                "Strg + t    : neuen Chat öffnen <br/>" +
+                "Strg + s    : Frage im Eingabefeld merken <br/>" +
+                "Strg + d    : Frage im Eingabefeld vergessen <br/>" +
+                "Esc         : Eingabefeld leeren <br/>" +
+                "↑           : letzte gemerkte Frage einfügen <br/>" +
+                "↓           : nächste gemerkte Frage einfügen <br/>" +
                 "</html>");
-        // Set the initial delay for the tooltip in milliseconds (default is 500 ms)
-        ToolTipManager.sharedInstance().setInitialDelay(10);
+
+
         // Set the dismiss delay for the tooltip in milliseconds (default is 4,000 ms)
         ToolTipManager.sharedInstance().setDismissDelay(100000);
+        ToolTipManager.sharedInstance().setInitialDelay(800);
+
     }
 
 }

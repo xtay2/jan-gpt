@@ -1,11 +1,9 @@
-package app.records.views.appview;
+package app.records.views.appview.listeners;
 
-import javax.swing.*;
+import app.records.views.appview.ApplicationView;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Vector;
 
 /**
  * @author A.Mukhamedov

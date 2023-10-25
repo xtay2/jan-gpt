@@ -1,4 +1,6 @@
-package app.records.views.appview;
+package app.records.views.appview.panels;
+
+import app.records.views.appview.SavedChatsList;
 
 import javax.swing.*;
 import java.awt.*;

@@ -1,4 +1,4 @@
-package app.records.views.appview;
+package app.records.views.appview.panels;
 
 import javax.swing.*;
 import java.awt.*;

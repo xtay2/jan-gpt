@@ -18,6 +18,7 @@ import java.util.regex.Pattern;
 public class TextPaneChat extends JTextPane {
 
     private final StyledDocument document;
+    private final SimpleAttributeSet codeStyleAttbs = new SimpleAttributeSet();
 
     public TextPaneChat() {
         super();
@@ -26,10 +27,8 @@ public class TextPaneChat extends JTextPane {
         StyleConstants.setForeground(codeStyleAttbs, Color.BLUE);
         StyleConstants.setFontFamily(codeStyleAttbs, "Consolas");
         StyleConstants.setFontSize(codeStyleAttbs, 12);
-        writeMsg("Hallo, ich bin Ihr Assistent. Wie kann ich Ihnen helfen?", Role.ASSISTANT);
+        writeMsg("Hallo, ich bin dein Assistent. Wie kann ich dir helfen?", Role.ASSISTANT);
     }
-
-    private final SimpleAttributeSet codeStyleAttbs = new SimpleAttributeSet();
 
     public void writeMsg(String response, Role role) {
         appendToDoc(role.alias(false) + ":\n");

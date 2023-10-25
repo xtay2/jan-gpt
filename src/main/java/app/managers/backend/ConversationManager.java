@@ -19,14 +19,10 @@ import static app.Main.BASE_DATA_PATH;
  * @author Dennis Woithe
  */
 public interface ConversationManager {
-
     String CONVERSATIONS_PATH = BASE_DATA_PATH + "conversations";
 
-    private static Path conversationPath(String conversationName) {
-        return Path.of(CONVERSATIONS_PATH + File.separator + conversationName + ".json");
-    }
-
     static boolean saveConversation(String conversationName, List<Message> messages) {
+
         if (conversationName == null || conversationName.isBlank() || messages == null || messages.isEmpty())
             return false;
         try {
@@ -38,6 +34,10 @@ public interface ConversationManager {
         } catch (IOException e) {
             return false;
         }
+    }
+
+    private static Path conversationPath(String conversationName) {
+        return Path.of(CONVERSATIONS_PATH + File.separator + conversationName + ".json");
     }
 
     static Optional<List<Message>> loadConversation(String conversationName) {

@@ -1,4 +1,6 @@
-package app.records.views.appview;
+package app.records.views.appview.panels;
+
+import app.records.views.appview.SaveCurrentChatNameField;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,7 +16,6 @@ public class PanelButtons extends JPanel {
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.fill = GridBagConstraints.HORIZONTAL; // Buttons will expand horizontally if there's extra space
         constraints.insets = new Insets(2, 2, 2, 2); // Add some padding between buttons
-
 
         // Add timeoutPanel
         constraints.gridx = 0; // Column 0
@@ -52,7 +53,16 @@ public class PanelButtons extends JPanel {
         constraints.gridwidth = 1; // Span 1 column
         add(tooltipPanel, constraints);
 
-
-
+        deleteSelectedButton.setToolTipText("<html>" +
+                "Löscht die ausgewählten Chats. <br/>" +
+                "</html>");
+        deleteAllButton.setToolTipText("<html>" +
+                "Löscht alle gespeicherten Chats. <br/>" +
+                "</html>");
+        saveButton.setToolTipText("<html>" +
+                "Deine Chats werden laufend lokal ohne Namen gespeichert. <br/>" +
+                "Hier kannst du sie unter einem bestimmten Namen abspeichern. <br/>" +
+                "Bitte verwende nur Buchstaben ohne Akzentuierung." +
+                "</html>");
     }
 }

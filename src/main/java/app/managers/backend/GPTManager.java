@@ -22,23 +22,14 @@ import java.util.Optional;
  */
 public class GPTManager implements GPTPort {
 
-    private Duration timeout = Duration.of(60, java.time.temporal.ChronoUnit.SECONDS);
-
     private static final URI GPT_CHAT_URI = URI.create("https://api.openai.com/v1/chat/completions"), GPT_MODEL_URI = URI.create("https://api.openai.com/v1/models");
-
     private final List<Message> messages = new ArrayList<>();
-
     private final HttpClient httpClient = HttpClient.newHttpClient();
-
     private final String apiKey;
+    private Duration timeout = Duration.of(60, java.time.temporal.ChronoUnit.SECONDS);
 
     public GPTManager(String apiKey) {
         this.apiKey = apiKey;
-    }
-
-    @Override
-    public void setTimeoutSec(int sec) {
-        timeout = Duration.ofSeconds(sec);
     }
 
     @Override
@@ -69,17 +60,6 @@ public class GPTManager implements GPTPort {
         }
     }
 
-    private Optional<String> parseJsonResponse(String response) {
-        if (response == null || response.isBlank())
-            return Optional.empty();
-        var jsonResponse = new Gson().fromJson(response, JsonObject.class);
-        try {
-            return Optional.of(jsonResponse.get("choices").getAsJsonArray().get(0).getAsJsonObject().get("message").getAsJsonObject().get("content").getAsString().trim());
-        } catch (Exception e) {
-            return Optional.empty();
-        }
-    }
-
     @Override
     public boolean testConnection() {
         try {
@@ -105,11 +85,27 @@ public class GPTManager implements GPTPort {
         this.messages.addAll(messages);
     }
 
+    @Override
+    public void setTimeoutSec(int sec) {
+        timeout = Duration.ofSeconds(sec);
+    }
+
     private JsonObject buildPromptRequestBody(GPTModel model) {
         var requestBody = new JsonObject();
         requestBody.add("model", new JsonPrimitive(model.modelName));
         requestBody.add("messages", messages.stream().map(Message::toJsonObject).collect(JsonArray::new, JsonArray::add, JsonArray::addAll));
         return requestBody;
+    }
+
+    private Optional<String> parseJsonResponse(String response) {
+        if (response == null || response.isBlank())
+            return Optional.empty();
+        var jsonResponse = new Gson().fromJson(response, JsonObject.class);
+        try {
+            return Optional.of(jsonResponse.get("choices").getAsJsonArray().get(0).getAsJsonObject().get("message").getAsJsonObject().get("content").getAsString().trim());
+        } catch (Exception e) {
+            return Optional.empty();
+        }
     }
 
 }
