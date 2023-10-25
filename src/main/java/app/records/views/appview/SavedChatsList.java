@@ -47,15 +47,14 @@ public class SavedChatsList extends JList<String> {
     }
 
     public void concurrentlyUpdateList() {
-        if (chats.contains(app.currentChatName)) {
-            app.manager.deleteConversation(hyphenizeName(app.currentChatName));
-            app.manager.saveConversationAs(hyphenizeName(app.currentChatName));
-        } else if (app.currentChatNameField.getText().isBlank() && app.currentChatName.isEmpty()) {
+        if (chats.contains(app.currentHypenizedChatName)) {
+            app.manager.deleteConversation(hyphenizeName(app.currentHypenizedChatName));
+            app.manager.saveConversationAs(hyphenizeName(app.currentHypenizedChatName));
+        } else if (app.currentChatNameField.getText().isBlank() && app.currentHypenizedChatName.isEmpty()) {
             var namelessChat = new SimpleDateFormat("yyyy.MM.dd").format(new Date()) + " um " + new SimpleDateFormat("HH:mm:ss").format(new Date());
             app.manager.saveConversationAs(hyphenizeName(namelessChat));
-            app.currentChatName = namelessChat;
+            app.currentHypenizedChatName = namelessChat;
             updateViewOfSavedChats();
-            setSelectedValue(hyphenizeName(app.currentChatName), true);
         }
     }
 
@@ -63,23 +62,27 @@ public class SavedChatsList extends JList<String> {
         return name.replaceAll("\\.", "-").replaceAll(":", "-");
     }
 
-
     public void updateViewOfSavedChats() {
         chats = new Vector<>(app.manager.getConversations().orElse(Collections.emptyList()));
         if (!chats.contains(NEW_CHAT)) chats.add(0, NEW_CHAT);
         chats.removeAll(flaggedAsDeleted);
         setListData(formatVectorForView(chats));
-        setSelectedValue(app.currentChatName, true);
+
+        setSelectedValue(dehyphenizeName(app.currentHypenizedChatName), true);
+    }
+
+    public String dehyphenizeName(String name) {
+        return name.replaceFirst("-", ".").replaceFirst("-", ".").replaceAll("-", ":");
     }
 
     public void flagChatsAsDeleted(List<String> selectedNames) {
-        if (app.currentChatName.isBlank()) return;
+        if (app.currentHypenizedChatName.isBlank()) return;
         var choice = 0;
         if (selectedNames.size() > 1)
             choice = JOptionPane.showConfirmDialog(app.mainFrame, "Sicher, dass du alle ausgewählten Chats löschen möchtest?", "Bestätigung", JOptionPane.YES_NO_OPTION);
         else
             choice = JOptionPane.showConfirmDialog(app.mainFrame, "Sicher, dass du den ausgewählten Chat löschen möchtest?", "Bestätigung", JOptionPane.YES_NO_OPTION);
-
+        if (choice == JOptionPane.NO_OPTION) return;
         if (choice == JOptionPane.YES_OPTION) {
             selectedNames.removeIf(name -> name.equals(NEW_CHAT));
             var formatForSave = new Vector<String>();
@@ -100,33 +103,39 @@ public class SavedChatsList extends JList<String> {
 
     public void undoDelete() {
         if (flaggedAsDeleted.isEmpty()) return;
-        System.out.println("undoDeleted:");
-        System.out.println(flaggedAsDeleted.peek());
-        setSelectedValue(flaggedAsDeleted.peek(), true);
-        openNewChatAndUpdateChatPane(flaggedAsDeleted.pop());
+        app.currentHypenizedChatName = flaggedAsDeleted.peek();
+        openCurrentChatAndUpdateChatPane(flaggedAsDeleted.pop());
         updateViewOfSavedChats();
     }
 
     // loads a conversation of type Optional<List<Message>> from the manager and displays it in the chat pane
-    public void openNewChatAndUpdateChatPane(String convName) {
+    public void openCurrentChatAndUpdateChatPane(String convName) {
         if (convName.equals(SavedChatsList.NEW_CHAT)) {
             app.manager.newConversation();
             app.chatPane.setText("");
-            app.currentChatName = "";
+            app.currentHypenizedChatName = "";
             app.currentChatNameField.setText("");
             app.chatPane.writeMsg("Hallo, ich bin dein Assistent. Wie kann ich dir helfen?", Role.ASSISTANT);
         } else {
-            app.mainFrame.setTitle(convName);
-            app.currentChatName = convName;
+            app.currentHypenizedChatName = convName;
             app.chatPane.setText("");
             app.manager.loadConversation(convName).ifPresent(
                     msgs -> msgs.forEach(msg -> app.chatPane.writeMsg(msg.content(), msg.role()))
             );
         }
         SwingUtilities.invokeLater(() -> app.queryPane.requestFocusInWindow());
+
     }
 
     public void permaDeleteFlaggedChats() {
         for (var chat : flaggedAsDeleted) app.manager.deleteConversation(hyphenizeName(chat));
+    }
+
+    public void disableListener() {
+        setEnabled(false);
+    }
+
+    public void enableListener() {
+        setEnabled(true);
     }
 }

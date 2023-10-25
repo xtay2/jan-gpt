@@ -25,10 +25,10 @@ public class ApplicationView implements View {
     public TextPaneQuery queryPane;
     public TextPaneChat chatPane;
     public JTextArea unformattedChat;
-    public SenderAndReceiver senderAndReceiver;
+    public SenderReceiver senderReceiver;
     public JProgressBar progressBar;
     public SaveCurrentChatNameField currentChatNameField;
-    public String currentChatName;
+    public String currentHypenizedChatName;
     public JButton saveButton;
     public JButton deleteAllButton;
     public JButton deleteSelectedButton;
@@ -48,11 +48,10 @@ public class ApplicationView implements View {
     public Tooltip tooltipCommands;
     public JLabel timeoutLabel;
     public JTextField timeoutTextField;
-    public int timeoutValue = 60;
-    public int HEIGHT = 600, WIDTH = 1200;
+    public int timeoutValue = 30;
+    public int HEIGHT = 650, WIDTH = 1250;
     public Path PREFERRED_MODEL_FILE_PATH = Path.of(Main.BASE_DATA_PATH + "preferred_model.txt");
     public ToolTipManager globalToolTipManager;
-
 
     /**
      * @param manager The component that excepts data.
@@ -76,7 +75,7 @@ public class ApplicationView implements View {
         queryPane = new TextPaneQuery(this);
         queryPane.initHint();
         savedChatsLabel = new JLabel("Gespeicherte Chats:", SwingConstants.CENTER);
-        senderAndReceiver = new SenderAndReceiver(this);
+        senderReceiver = new SenderReceiver(this);
         progressBar = new JProgressBar();
         progressBar.setIndeterminate(false);
         timeoutTextField = new JTextField(String.valueOf(timeoutValue));
@@ -94,8 +93,10 @@ public class ApplicationView implements View {
         deleteSelectedButton.addActionListener(new ListenerButtonDeleteChat(this));
         deleteAllButton = new JButton("Alle löschen");
         deleteAllButton.addActionListener(new ListenerButtonDeleteAllChats(this));
-        tooltipCommands = new Tooltip(" ♿");
-        currentChatName = "";
+        // a a tooltip displaying an ⓘ
+        String INFO = "<html><b><span style='font-size: 16px;'>ⓘ</span></b></html>";
+        tooltipCommands = new Tooltip(INFO);
+        currentHypenizedChatName = "";
         globalToolTipManager = ToolTipManager.sharedInstance();
         globalToolTipManager.setInitialDelay(800);
 
@@ -109,7 +110,7 @@ public class ApplicationView implements View {
         scrollableQuery.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollableQuery.getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE);
         scrollableQuery.setWheelScrollingEnabled(true);
-        scrollableQuery.setPreferredSize(new Dimension(1000, 150));
+        scrollableQuery.setPreferredSize(new Dimension(1000, 160));
 
         timeoutPanel = new PanelTimeout(timeoutLabel, timeoutTextField);
         tooltipPanel = new PanelLeftSideBottom(tooltipCommands, dropdownGPTModels);
@@ -165,5 +166,17 @@ public class ApplicationView implements View {
 
     public void setTimeoutSec(int sec) {
         manager.setTimeoutSec(sec);
+    }
+
+    public void disableButtons() {
+        saveButton.setEnabled(false);
+        deleteSelectedButton.setEnabled(false);
+        deleteAllButton.setEnabled(false);
+    }
+
+    public void enableButtons() {
+        saveButton.setEnabled(true);
+        deleteSelectedButton.setEnabled(true);
+        deleteAllButton.setEnabled(true);
     }
 }

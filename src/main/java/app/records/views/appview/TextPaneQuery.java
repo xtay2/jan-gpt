@@ -20,6 +20,7 @@ public class TextPaneQuery extends JTextPane {
     public Style color;
     public String hint = "Schreibe hier deine Nachricht...";
 
+
     public TextPaneQuery(ApplicationView app) {
         super();
         this.app = app;

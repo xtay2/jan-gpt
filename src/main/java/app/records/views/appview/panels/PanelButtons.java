@@ -10,6 +10,7 @@ import java.awt.*;
  */
 
 public class PanelButtons extends JPanel {
+
     public PanelButtons(PanelTimeout timeoutPanel, SaveCurrentChatNameField saveNameField, JButton saveButton, JButton deleteSelectedButton, JButton deleteAllButton, PanelLeftSideBottom tooltipPanel) {
         setLayout(new GridBagLayout());
 
@@ -65,4 +66,5 @@ public class PanelButtons extends JPanel {
                 "Bitte verwende nur Buchstaben ohne Akzentuierung." +
                 "</html>");
     }
+
 }

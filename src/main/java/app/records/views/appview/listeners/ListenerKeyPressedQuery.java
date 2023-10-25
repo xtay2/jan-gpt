@@ -36,7 +36,7 @@ public class ListenerKeyPressedQuery extends java.awt.event.KeyAdapter {
         // if the user presses ctrl + t open new chat
         if (e.getKeyCode() == KeyEvent.VK_T && e.isControlDown()) {
             app.savedChatsList.setNewChat();
-            app.savedChatsList.openNewChatAndUpdateChatPane(SavedChatsList.NEW_CHAT);
+            app.savedChatsList.openCurrentChatAndUpdateChatPane(SavedChatsList.NEW_CHAT);
         }
 
         // if user presses ctrl + z, undo chat deletion
@@ -63,7 +63,7 @@ public class ListenerKeyPressedQuery extends java.awt.event.KeyAdapter {
             } else {
                 // Execute the sending of the message in a background thread
                 app.queryPane.prompts.add(app.queryPane.getText().trim());
-                SwingUtilities.invokeLater(app.senderAndReceiver::sendMessage);
+                SwingUtilities.invokeLater(app.senderReceiver::sendMessage);
             }
             // Prevents a new line from being added
             e.consume();
@@ -116,3 +116,4 @@ public class ListenerKeyPressedQuery extends java.awt.event.KeyAdapter {
         }
     }
 }
+

@@ -13,8 +13,8 @@ import javax.swing.event.ListSelectionListener;
 public class ListenerClickedSavedChatsList implements ListSelectionListener {
     private final ApplicationView app;
 
-    public ListenerClickedSavedChatsList(ApplicationView applicationView) {
-        app = applicationView;
+    public ListenerClickedSavedChatsList(ApplicationView app) {
+        this.app = app;
     }
 
     @SuppressWarnings({"unchecked"})
@@ -25,7 +25,7 @@ public class ListenerClickedSavedChatsList implements ListSelectionListener {
         String convName = savedChatsList.getSelectedValue();
         if (convName == null) return;
 
-        app.savedChatsList.openNewChatAndUpdateChatPane(app.savedChatsList.hyphenizeName(convName));
+        app.savedChatsList.openCurrentChatAndUpdateChatPane(app.savedChatsList.hyphenizeName(convName));
 
     }
 
