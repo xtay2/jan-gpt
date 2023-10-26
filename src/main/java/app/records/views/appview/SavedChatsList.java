@@ -88,8 +88,6 @@ public class SavedChatsList extends JList<String> {
             var formatForSave = new Vector<String>();
             selectedNames.forEach(name -> formatForSave.add(hyphenizeName(name)));
             formatForSave.forEach(flaggedAsDeleted::push);
-            System.out.println("flaggedAsDeleted:");
-            formatForSave.forEach(System.out::println);
             updateViewOfSavedChats();
             setNewChat();
         }

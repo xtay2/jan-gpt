@@ -24,13 +24,7 @@ public class SenderReceiver {
 
     public void sendMessage() {
         // Disable UI components to prevent multiple requests
-        app.queryPane.disableListener();
-        app.savedChatsList.disableListener();
-        app.disableButtons();
-        app.dropdownGPTModels.setEnabled(false);
-        app.currentChatNameField.setEnabled(false);
-        app.timeoutTextField.setEnabled(false);
-        app.progressBar.setIndeterminate(true);
+        app.disableElements();
         String query = app.queryPane.getText();
 
         // Initialize the counter for seconds spent waiting
@@ -54,14 +48,12 @@ public class SenderReceiver {
                     app.chatPane.setCaretPosition(app.chatPane.getDocument().getLength());
                     app.timeoutLabel.setText("Timeout erreicht.");
                     SwingUtilities.invokeLater(() -> app.timeoutTextField.requestFocusInWindow());
-                    app.progressBar.setIndeterminate(false);
                 }
                 response.ifPresent(s -> {
                     long endTime = System.currentTimeMillis();
                     app.timeoutLabel.setText("Antwort nach " + (endTime - startTime) / 1000 + "s");
                     app.chatPane.writeMsg(s, Role.ASSISTANT);
                     SwingUtilities.invokeLater(() -> {
-                        app.progressBar.setIndeterminate(false);
                         app.chatPane.setCaretPosition(app.chatPane.getDocument().getLength());
                         SwingUtilities.invokeLater(() -> app.queryPane.requestFocusInWindow());
                         app.savedChatsList.concurrentlyUpdateList();
@@ -79,12 +71,7 @@ public class SenderReceiver {
             timerFuture.cancel(true);
 
             // Enable UI components after the request is completed
-            SwingUtilities.invokeLater(() -> app.queryPane.enableListener());
-            SwingUtilities.invokeLater(() -> app.savedChatsList.enableListener());
-            SwingUtilities.invokeLater(app::enableButtons);
-            SwingUtilities.invokeLater(() -> app.dropdownGPTModels.setEnabled(true));
-            SwingUtilities.invokeLater(() -> app.currentChatNameField.setEnabled(true));
-            SwingUtilities.invokeLater(() -> app.timeoutTextField.setEnabled(true));
+            SwingUtilities.invokeLater(app::enableElements);
         });
     }
 }

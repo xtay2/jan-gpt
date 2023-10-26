@@ -29,8 +29,9 @@ public class ListenerTimeoutText implements ActionListener {
             // Update the timeout value
             app.setTimeoutSec(newTimeoutValue);
             app.timeoutValue = newTimeoutValue;
+            app.rememberPreferredTimeout(newTimeoutValue);
             app.timeoutLabel.setText("maximale Wartezeit: " + app.timeoutValue + "s");
-            app.timeoutLabel.setToolTipText("Timeout nach " + newTimeoutValue + " Sekunden");
+            app.timeoutLabel.setToolTipText("Timeout nach " + app.timeoutValue + " Sekunden");
             app.timeoutTextField.setText(String.valueOf(newTimeoutValue));
             app.timeoutTextField.setText("");
             SwingUtilities.invokeLater(() -> app.queryPane.requestFocusInWindow());

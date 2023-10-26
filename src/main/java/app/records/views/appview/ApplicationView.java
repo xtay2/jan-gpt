@@ -20,6 +20,8 @@ import java.util.Optional;
  */
 public class ApplicationView implements View {
 
+    public final Path PREFERRED_MODEL_FILE_PATH = Path.of(Main.BASE_DATA_PATH + "preferred_model.txt");
+    public final Path PREFERRED_TIMEOUT_FILE_PATH = Path.of(Main.BASE_DATA_PATH + "preferred_timeout.txt");
     public ViewManager manager;
     public MainFrame mainFrame;
     public TextPaneQuery queryPane;
@@ -48,9 +50,8 @@ public class ApplicationView implements View {
     public Tooltip tooltipCommands;
     public JLabel timeoutLabel;
     public JTextField timeoutTextField;
-    public int timeoutValue = 30;
+    public int timeoutValue;
     public int HEIGHT = 650, WIDTH = 1250;
-    public Path PREFERRED_MODEL_FILE_PATH = Path.of(Main.BASE_DATA_PATH + "preferred_model.txt");
     public ToolTipManager globalToolTipManager;
 
     /**
@@ -66,7 +67,7 @@ public class ApplicationView implements View {
 
     void buildMainFrame(@NotNull ViewManager manager) {
         this.manager = manager;
-        setPreferredModel();
+        rememberPreferredModel();
 
         mainFrame = new MainFrame(this);
         chatPane = new TextPaneChat();
@@ -78,11 +79,15 @@ public class ApplicationView implements View {
         senderReceiver = new SenderReceiver(this);
         progressBar = new JProgressBar();
         progressBar.setIndeterminate(false);
+        timeoutValue = getPreferredTimeout();
         timeoutTextField = new JTextField(String.valueOf(timeoutValue));
         timeoutTextField.addActionListener(new ListenerTimeoutText(this));
         timeoutTextField.setEditable(true);
         timeoutLabel = new JLabel("maximale Wartezeit: ");
-        timeoutLabel.setToolTipText("Timeout nach " + 60 + " Sekunden");
+        timeoutLabel.setToolTipText("<html>" +
+                "Defaultmäßig ist die Wartezeit auf 30 Sekunden gesetzt. <br/>" +
+                "Sobald du sie änderst, merke ich sie mir. <br/>" +
+                "</html>");
         currentChatNameField = new SaveCurrentChatNameField(this);
         currentChatNameField.addKeyListener(new ListenerKeyPressedNameField(this));
         savedChatsList = new SavedChatsList(this);
@@ -99,7 +104,6 @@ public class ApplicationView implements View {
         currentHypenizedChatName = "";
         globalToolTipManager = ToolTipManager.sharedInstance();
         globalToolTipManager.setInitialDelay(800);
-
 
         scrollableChat = new JScrollPane(chatPane);
         scrollableChat.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -134,7 +138,7 @@ public class ApplicationView implements View {
         queryPane.requestFocus();
     }
 
-    public void setPreferredModel() {
+    public void rememberPreferredModel() {
         try {
             getPreferredModel().ifPresentOrElse(
                     manager::setGPTModel,
@@ -142,6 +146,14 @@ public class ApplicationView implements View {
             );
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    public int getPreferredTimeout() {
+        try {
+            return Integer.parseInt(Files.readString(PREFERRED_TIMEOUT_FILE_PATH));
+        } catch (Exception e) {
+            return 30;
         }
     }
 
@@ -153,7 +165,7 @@ public class ApplicationView implements View {
         }
     }
 
-    public void setPreferredModel(GPTModel model) {
+    public void rememberPreferredModel(GPTModel model) {
         try {
             Files.createDirectories(PREFERRED_MODEL_FILE_PATH.getParent());
             Files.deleteIfExists(PREFERRED_MODEL_FILE_PATH);
@@ -164,17 +176,40 @@ public class ApplicationView implements View {
         }
     }
 
+    public void rememberPreferredTimeout(int sec) {
+        try {
+            Files.createDirectories(PREFERRED_TIMEOUT_FILE_PATH.getParent());
+            Files.deleteIfExists(PREFERRED_TIMEOUT_FILE_PATH);
+            Files.createFile(PREFERRED_TIMEOUT_FILE_PATH);
+            Files.writeString(PREFERRED_TIMEOUT_FILE_PATH, String.valueOf(sec), StandardOpenOption.WRITE);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public void setTimeoutSec(int sec) {
         manager.setTimeoutSec(sec);
     }
 
-    public void disableButtons() {
+    public void disableElements() {
+        queryPane.disableListener();
+        savedChatsList.disableListener();
+        dropdownGPTModels.setEnabled(false);
+        currentChatNameField.setEnabled(false);
+        timeoutTextField.setEnabled(false);
+        progressBar.setIndeterminate(true);
         saveButton.setEnabled(false);
         deleteSelectedButton.setEnabled(false);
         deleteAllButton.setEnabled(false);
     }
 
-    public void enableButtons() {
+    public void enableElements() {
+        queryPane.enableListener();
+        savedChatsList.enableListener();
+        dropdownGPTModels.setEnabled(true);
+        currentChatNameField.setEnabled(true);
+        timeoutTextField.setEnabled(true);
+        progressBar.setIndeterminate(false);
         saveButton.setEnabled(true);
         deleteSelectedButton.setEnabled(true);
         deleteAllButton.setEnabled(true);

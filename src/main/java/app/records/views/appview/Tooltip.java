@@ -19,7 +19,6 @@ public class Tooltip extends JLabel {
                 "Strg + ⇕    : Schriftgröße ändern <br/>" +
                 "Strg + Entf : ausgewählte gespeicherte Chats löschen <br/>" +
                 "Strg + z    : gelöschte Chats wiederherstellen <br/>" +
-                "Strg + q    : Anfrage anhalten <br/>" +
                 "Strg + t    : neuen Chat öffnen <br/>" +
                 "Strg + s    : Frage im Eingabefeld merken <br/>" +
                 "Strg + d    : Frage im Eingabefeld vergessen <br/>" +
