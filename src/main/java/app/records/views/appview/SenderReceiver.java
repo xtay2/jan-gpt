@@ -4,16 +4,11 @@ import app.managers.backend.GPTPort;
 import app.records.Role;
 
 import javax.swing.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 public class SenderReceiver {
 
     private final ApplicationView app;
-    // Add a ScheduledExecutorService for the timer
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     public ExecutorService executorService = Executors.newSingleThreadExecutor();
     public Future<?> future;
@@ -44,9 +39,8 @@ public class SenderReceiver {
                 long startTime = System.currentTimeMillis();
                 var response = app.manager.callGPT(query);
                 if (response.isEmpty()) {
-                    app.chatPane.writeMsg("Timeout erreicht!\n Erhöhe ggf. die Wartezeit.", Role.ASSISTANT);
+                    app.chatPane.writeMsg("< Fehler: Keine Antwort von OpenAI erhalten. >", Role.ASSISTANT);
                     app.chatPane.setCaretPosition(app.chatPane.getDocument().getLength());
-                    app.timeoutLabel.setText("Timeout erreicht.");
                     SwingUtilities.invokeLater(() -> app.timeoutTextField.requestFocusInWindow());
                 }
                 response.ifPresent(s -> {
@@ -60,10 +54,16 @@ public class SenderReceiver {
                     });
                 });
             } catch (GPTPort.MissingAPIKeyException ex) {
+                app.timeoutLabel.setText("missing API key");
                 System.err.println("API key is missing.");
                 throw new RuntimeException(ex);
             } catch (GPTPort.MissingModelException ex) {
+                app.timeoutLabel.setText("missing model");
                 System.err.println("Model is missing.");
+                throw new RuntimeException(ex);
+            } catch (TimeoutException ex) {
+                app.timeoutLabel.setText("timeout reached");
+                System.err.println("Timeout reached.");
                 throw new RuntimeException(ex);
             }
 
@@ -73,5 +73,20 @@ public class SenderReceiver {
             // Enable UI components after the request is completed
             SwingUtilities.invokeLater(app::enableElements);
         });
+
+
+        new Thread(() -> {
+            try {
+                future.get(app.timeoutValue, TimeUnit.SECONDS);  // This now runs on a separate thread
+            } catch (TimeoutException e) {
+                future.cancel(true);  // Interrupts the task
+                System.err.println("Timeout reached.");
+                // You may want to update the UI to indicate the timeout. Ensure this is done on the EDT:
+                SwingUtilities.invokeLater(() -> app.timeoutLabel.setText("Timeout erreicht!"));
+            } catch (InterruptedException | ExecutionException e) {
+                // Handle other exceptions
+                e.printStackTrace();
+            }
+        }).start();
     }
 }

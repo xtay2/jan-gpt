@@ -27,6 +27,8 @@ public class PromptCommand extends ConsoleCommand {
             errStream.accept("Ich kann dir leider nicht helfen, da ich keine API-Schlüssel habe.");
         } catch (GPTPort.MissingModelException e) {
             errStream.accept("Bitte lege das Modell fest, mit dem ich arbeiten soll.");
+        } catch (Exception e) {
+            errStream.accept("Es ist ein Fehler aufgetreten: " + e.getMessage());
         }
     }
 }

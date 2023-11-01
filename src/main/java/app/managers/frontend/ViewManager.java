@@ -7,13 +7,16 @@ import app.records.Message;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeoutException;
 
 /**
  * @author Dennis Woithe
  */
 public interface ViewManager {
 
-    /** Return true if a valid API key was set. */
+    /**
+     * Return true if a valid API key was set.
+     */
     boolean hasAPIKey();
 
     /**
@@ -23,7 +26,9 @@ public interface ViewManager {
      */
     boolean setAPIKey(String apiKey);
 
-    /** Return true if a valid GPT version was set. */
+    /**
+     * Return true if a valid GPT version was set.
+     */
     boolean hasGPTModel();
 
     /**
@@ -45,24 +50,36 @@ public interface ViewManager {
      *
      * @return The response from the API or {@link Optional#empty()} if the API call failed.
      */
-    Optional<String> callGPT(String prompt) throws GPTPort.MissingAPIKeyException, GPTPort.MissingModelException;
+    Optional<String> callGPT(String prompt) throws GPTPort.MissingAPIKeyException, GPTPort.MissingModelException, TimeoutException;
 
-    /** Return the currently set {@link GPTModel}. */
+    /**
+     * Return the currently set {@link GPTModel}.
+     */
     Optional<GPTModel> getGPTModel();
 
-    /** Save the current conversation to a file. */
+    /**
+     * Save the current conversation to a file.
+     */
     boolean saveConversationAs(String name);
 
-    /** Return the names of all saved conversations. */
+    /**
+     * Return the names of all saved conversations.
+     */
     Optional<List<String>> getConversations();
 
-    /** Load a conversation from a file. */
+    /**
+     * Load a conversation from a file.
+     */
     Optional<List<Message>> loadConversation(String name);
 
-    /** Start a new conversation. */
+    /**
+     * Start a new conversation.
+     */
     void newConversation();
 
-    /** Delete a conversation-file. */
+    /**
+     * Delete a conversation-file.
+     */
     boolean deleteConversation(String name);
 
     void setTimeoutSec(int timeout);

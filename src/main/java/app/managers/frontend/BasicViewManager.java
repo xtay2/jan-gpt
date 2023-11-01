@@ -9,6 +9,7 @@ import app.records.Message;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeoutException;
 
 /**
  * @author Dennis Woithe
@@ -52,7 +53,8 @@ public class BasicViewManager implements ViewManager {
     }
 
     @Override
-    public Optional<String> callGPT(String prompt) throws GPTPort.MissingAPIKeyException, GPTPort.MissingModelException {
+    public Optional<String> callGPT(String prompt)
+            throws GPTPort.MissingAPIKeyException, GPTPort.MissingModelException, TimeoutException {
         if (gptPort == null)
             throw new GPTPort.MissingAPIKeyException();
         return gptPort.callGPT(gptModel, prompt);

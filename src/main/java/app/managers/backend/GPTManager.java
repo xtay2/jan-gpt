@@ -10,12 +10,14 @@ import com.google.gson.JsonPrimitive;
 
 import java.net.URI;
 import java.net.http.HttpClient;
+import java.net.http.HttpConnectTimeoutException;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeoutException;
 
 /**
  * @author Dennis Woithe
@@ -33,7 +35,8 @@ public class GPTManager implements GPTPort {
     }
 
     @Override
-    public Optional<String> callGPT(GPTModel model, String prompt) throws GPTPort.MissingAPIKeyException, MissingModelException {
+    public Optional<String> callGPT(GPTModel model, String prompt)
+            throws GPTPort.MissingAPIKeyException, MissingModelException, TimeoutException {
         if (apiKey == null)
             throw new GPTPort.MissingAPIKeyException();
         if (model == null)
@@ -55,6 +58,8 @@ public class GPTManager implements GPTPort {
             var responseMsg = parseJsonResponse(responseBody.strip());
             responseMsg.ifPresent(s -> messages.add(new Message(Role.ASSISTANT, s)));
             return responseMsg;
+        } catch (HttpConnectTimeoutException e) {
+            throw new TimeoutException(e.getMessage());
         } catch (Exception e) {
             return Optional.empty();
         }

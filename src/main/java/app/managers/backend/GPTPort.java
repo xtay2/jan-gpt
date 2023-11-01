@@ -5,6 +5,7 @@ import app.records.Message;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeoutException;
 
 /**
  * @author Dennis Woithe
@@ -25,17 +26,22 @@ public interface GPTPort {
      *
      * @return The response from the API or {@link Optional#empty()} if the API call failed.
      */
-    Optional<String> callGPT(GPTModel model, String prompt) throws MissingAPIKeyException, MissingModelException;
+    Optional<String> callGPT(GPTModel model, String prompt)
+            throws MissingAPIKeyException, MissingModelException, TimeoutException;
 
     /**
      * Test the connection to the GPT API.
      */
     boolean testConnection();
 
-    /** Returns the messages of the current conversation. */
+    /**
+     * Returns the messages of the current conversation.
+     */
     List<Message> getMessages();
 
-    /** Sets the messages of the current conversation. */
+    /**
+     * Sets the messages of the current conversation.
+     */
     void setMessages(List<Message> messages);
 
     void setTimeoutSec(int sec);
