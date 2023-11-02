@@ -39,7 +39,9 @@ public class SenderReceiver {
                 long startTime = System.currentTimeMillis();
                 var response = app.manager.callGPT(query);
                 if (response.isEmpty()) {
+                    long endTime = System.currentTimeMillis();
                     app.chatPane.writeMsg("< Fehler: Keine Antwort von OpenAI erhalten. >", Role.ASSISTANT);
+                    app.timeoutLabel.setText("Angehalten nach " + (endTime - startTime) / 1000 + "s");
                     app.chatPane.setCaretPosition(app.chatPane.getDocument().getLength());
                     SwingUtilities.invokeLater(() -> app.timeoutTextField.requestFocusInWindow());
                 }
@@ -80,7 +82,7 @@ public class SenderReceiver {
                 future.get(app.timeoutValue, TimeUnit.SECONDS);  // This now runs on a separate thread
             } catch (TimeoutException e) {
                 future.cancel(true);  // Interrupts the task
-                System.err.println("Timeout reached.");
+                System.err.println("Timeout reached in new Thread.");
                 // You may want to update the UI to indicate the timeout. Ensure this is done on the EDT:
                 SwingUtilities.invokeLater(() -> app.timeoutLabel.setText("Timeout erreicht!"));
             } catch (InterruptedException | ExecutionException e) {

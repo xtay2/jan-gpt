@@ -11,7 +11,15 @@ import java.awt.*;
 
 public class PanelButtons extends JPanel {
 
-    public PanelButtons(PanelTimeout timeoutPanel, SaveCurrentChatNameField saveNameField, JButton saveButton, JButton deleteSelectedButton, JButton deleteAllButton, PanelLeftSideBottom tooltipPanel) {
+    public PanelButtons(
+            PanelTimeout timeoutPanel,
+            SaveCurrentChatNameField saveNameField,
+            JButton saveButton,
+            JButton deleteSelectedButton,
+            JButton deleteAllButton,
+            PanelLeftSideBottom tooltipPanel,
+            JButton csvButton
+    ) {
         setLayout(new GridBagLayout());
 
         GridBagConstraints constraints = new GridBagConstraints();
@@ -53,6 +61,12 @@ public class PanelButtons extends JPanel {
         constraints.gridy = 5; // Row 5
         constraints.gridwidth = 1; // Span 1 column
         add(tooltipPanel, constraints);
+
+        // Add csvButton
+        constraints.gridx = 0; // Column 0
+        constraints.gridy = 6; // Row 5
+        constraints.gridwidth = 1; // Span 1 column
+        add(csvButton, constraints);
 
         deleteSelectedButton.setToolTipText("<html>" +
                 "Löscht die ausgewählten Chats. <br/>" +

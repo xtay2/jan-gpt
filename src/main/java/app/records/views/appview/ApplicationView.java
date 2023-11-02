@@ -53,6 +53,7 @@ public class ApplicationView implements View {
     public int timeoutValue;
     public int HEIGHT = 650, WIDTH = 1250;
     public ToolTipManager globalToolTipManager;
+    public CSVReaderApp csvReaderApp;
 
     /**
      * @param manager The component that excepts data.
@@ -116,9 +117,13 @@ public class ApplicationView implements View {
         scrollableQuery.setWheelScrollingEnabled(true);
         scrollableQuery.setPreferredSize(new Dimension(1000, 160));
 
+        //GRP-----------------------
+        csvReaderApp = new CSVReaderApp(this);
+        //GRP-----------------------
+
         timeoutPanel = new PanelTimeout(timeoutLabel, timeoutTextField);
         tooltipPanel = new PanelLeftSideBottom(tooltipCommands, dropdownGPTModels);
-        buttonsPanel = new PanelButtons(timeoutPanel, currentChatNameField, saveButton, deleteSelectedButton, deleteAllButton, tooltipPanel);
+        buttonsPanel = new PanelButtons(timeoutPanel, currentChatNameField, saveButton, deleteSelectedButton, deleteAllButton, tooltipPanel, csvReaderApp.GRPButton);
         leftSidePanel = new PanelLeftSide(savedChatsLabel, savedChatsList, buttonsPanel);
         chatPanel = new PanelChat(chatPane);
         queryPanel = new PanelQuery(scrollableQuery, progressBar);
@@ -136,6 +141,8 @@ public class ApplicationView implements View {
         mainFrame.setVisible(true);
         mainFrame = new MainFrame(this);
         queryPane.requestFocus();
+
+
     }
 
     public void rememberPreferredModel() {
