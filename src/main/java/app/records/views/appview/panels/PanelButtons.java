@@ -1,6 +1,6 @@
 package app.records.views.appview.panels;
 
-import app.records.views.appview.SaveCurrentChatNameField;
+import app.records.views.appview.textfields.SaveCurrentChatNameField;
 
 import javax.swing.*;
 import java.awt.*;

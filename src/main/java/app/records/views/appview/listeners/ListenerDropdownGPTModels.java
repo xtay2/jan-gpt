@@ -29,6 +29,7 @@ public class ListenerDropdownGPTModels implements ActionListener {
 
         app.rememberPreferredModel(model.get());
         app.rememberPreferredModel();
+        app.savedChatsList.setNewChat();
 
         // Set focus on the query text field
         SwingUtilities.invokeLater(() -> app.queryPane.requestFocusInWindow());

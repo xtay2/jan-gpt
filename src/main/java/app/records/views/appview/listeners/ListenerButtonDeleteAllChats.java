@@ -19,7 +19,7 @@ public class ListenerButtonDeleteAllChats implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        app.savedChatsList.flagChatsAsDeleted(app.savedChatsList.chats);
+        app.savedChatsList.flagChatsAsDeleted(app.savedChatsList.chats.subList(1, app.savedChatsList.chats.size()));
     }
 
 

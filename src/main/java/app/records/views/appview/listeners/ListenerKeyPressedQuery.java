@@ -25,7 +25,7 @@ public class ListenerKeyPressedQuery extends java.awt.event.KeyAdapter {
         var str = app.queryPane.getText().replaceAll("\n", "").replaceAll("\t", "");
 
         if (app.queryPane.getText().equals(app.queryPane.hint))
-            app.queryPane.clear();
+            app.queryPane.clearHintColor();
 
         // if user presses ctrl + delete, delete the selected chat
         if (e.getKeyCode() == KeyEvent.VK_DELETE && e.isControlDown()) {

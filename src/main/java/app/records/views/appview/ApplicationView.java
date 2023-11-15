@@ -6,6 +6,9 @@ import app.records.GPTModel;
 import app.records.views.View;
 import app.records.views.appview.listeners.*;
 import app.records.views.appview.panels.*;
+import app.records.views.appview.textfields.SaveCurrentChatNameField;
+import app.records.views.appview.textfields.TextPaneChat;
+import app.records.views.appview.textfields.TextPaneQuery;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -81,7 +84,7 @@ public class ApplicationView implements View {
         progressBar.setIndeterminate(false);
         timeoutValue = getPreferredTimeout();
         timeoutTextField = new JTextField(String.valueOf(timeoutValue));
-        timeoutTextField.addActionListener(new ListenerTimeoutText(this));
+        timeoutTextField.addFocusListener(new ListenerTimeoutText(this));
         timeoutTextField.setEditable(true);
         timeoutLabel = new JLabel("maximale Wartezeit: ");
         timeoutLabel.setToolTipText("<html>" +

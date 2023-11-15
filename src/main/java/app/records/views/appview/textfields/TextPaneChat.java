@@ -1,4 +1,4 @@
-package app.records.views.appview;
+package app.records.views.appview.textfields;
 
 import app.records.Role;
 

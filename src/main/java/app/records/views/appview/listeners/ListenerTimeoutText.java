@@ -3,13 +3,13 @@ package app.records.views.appview.listeners;
 import app.records.views.appview.ApplicationView;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 
 /**
  * @author A.Mukhamedov
  */
-public class ListenerTimeoutText implements ActionListener {
+public class ListenerTimeoutText implements FocusListener {
 
     private final ApplicationView app;
 
@@ -17,9 +17,17 @@ public class ListenerTimeoutText implements ActionListener {
         this.app = app;
     }
 
+    @Override
+    public void focusGained(FocusEvent e) {
+        app.timeoutTextField.setText("");
+    }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
+    public void focusLost(FocusEvent e) {
+        setNewTimeout();
+    }
+
+    private void setNewTimeout() {
         // Get the text entered by the user
         String input = app.timeoutTextField.getText();
 
@@ -38,8 +46,7 @@ public class ListenerTimeoutText implements ActionListener {
 
         } catch (NumberFormatException ex) {
             app.timeoutTextField.setText("");
-            app.timeoutLabel.setText("Nur ganze Zahlen bitte!");
+            app.timeoutLabel.setText("maximale Wartezeit: " + app.timeoutValue + "s");
         }
     }
-
 }

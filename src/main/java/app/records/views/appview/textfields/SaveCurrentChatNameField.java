@@ -1,4 +1,6 @@
-package app.records.views.appview;
+package app.records.views.appview.textfields;
+
+import app.records.views.appview.ApplicationView;
 
 import javax.swing.*;
 import java.awt.*;

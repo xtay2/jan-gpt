@@ -1,6 +1,6 @@
 package app.records.views.appview.panels;
 
-import app.records.views.appview.TextPaneChat;
+import app.records.views.appview.textfields.TextPaneChat;
 
 import javax.swing.*;
 import java.awt.*;

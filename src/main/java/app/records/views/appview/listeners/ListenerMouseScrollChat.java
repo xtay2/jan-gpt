@@ -1,7 +1,7 @@
 package app.records.views.appview.listeners;
 
 import app.records.views.appview.ApplicationView;
-import app.records.views.appview.TextPaneChat;
+import app.records.views.appview.textfields.TextPaneChat;
 
 import javax.swing.*;
 import java.awt.*;
