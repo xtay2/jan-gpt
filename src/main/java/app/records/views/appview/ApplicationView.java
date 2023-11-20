@@ -84,7 +84,8 @@ public class ApplicationView implements View {
         progressBar.setIndeterminate(false);
         timeoutValue = getPreferredTimeout();
         timeoutTextField = new JTextField(String.valueOf(timeoutValue));
-        timeoutTextField.addFocusListener(new ListenerTimeoutText(this));
+        timeoutTextField.addFocusListener(new ListenerFocusTimeoutText(this));
+        timeoutTextField.addKeyListener(new ListenerKeyPressedTimeoutText(this));
         timeoutTextField.setEditable(true);
         timeoutLabel = new JLabel("maximale Wartezeit: ");
         timeoutLabel.setToolTipText("<html>" +

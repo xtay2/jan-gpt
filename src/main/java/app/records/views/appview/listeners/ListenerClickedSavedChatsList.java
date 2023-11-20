@@ -25,7 +25,7 @@ public class ListenerClickedSavedChatsList implements ListSelectionListener {
         String convName = savedChatsList.getSelectedValue();
         if (convName == null) return;
 
-        app.savedChatsList.openCurrentChatAndUpdateChatPane(app.savedChatsList.hyphenizeName(convName));
+        app.savedChatsList.openCurrentChatAndUpdateChatPane(app.savedChatsList.formatToSave(convName));
 
     }
 

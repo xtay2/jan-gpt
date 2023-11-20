@@ -27,7 +27,6 @@ public class TextPaneChat extends JTextPane {
         StyleConstants.setForeground(codeStyleAttbs, Color.BLUE);
         StyleConstants.setFontFamily(codeStyleAttbs, "Consolas");
         StyleConstants.setFontSize(codeStyleAttbs, 12);
-        writeMsg("Hallo, ich bin dein Assistent. Wie kann ich dir helfen?", Role.ASSISTANT);
     }
 
     public void writeMsg(String response, Role role) {

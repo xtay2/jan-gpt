@@ -65,6 +65,7 @@ public class GPTManager implements GPTPort {
         }
     }
 
+
     @Override
     public boolean testConnection() {
         try {
@@ -95,6 +96,7 @@ public class GPTManager implements GPTPort {
         timeout = Duration.ofSeconds(sec);
     }
 
+
     private JsonObject buildPromptRequestBody(GPTModel model) {
         var requestBody = new JsonObject();
         requestBody.add("model", new JsonPrimitive(model.modelName));
@@ -112,5 +114,4 @@ public class GPTManager implements GPTPort {
             return Optional.empty();
         }
     }
-
 }

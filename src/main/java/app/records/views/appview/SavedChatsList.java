@@ -32,6 +32,7 @@ public class SavedChatsList extends JList<String> {
         chats = new Vector<>(app.manager.getConversations().orElse(Collections.emptyList()));
         if (!chats.contains(NEW_CHAT))
             chats.add(0, NEW_CHAT);
+        chats.removeIf(name -> name.equals("u0308"));
         setListData(formatVectorForView(chats));
         setSelectedValue(NEW_CHAT, true);
     }
@@ -48,31 +49,44 @@ public class SavedChatsList extends JList<String> {
 
     public void concurrentlyUpdateList() {
         if (chats.contains(app.currentHypenizedChatName)) {
-            app.manager.deleteConversation(hyphenizeName(app.currentHypenizedChatName));
-            app.manager.saveConversationAs(hyphenizeName(app.currentHypenizedChatName));
+            app.manager.deleteConversation(formatToSave(app.currentHypenizedChatName));
+            app.manager.saveConversationAs(formatToSave(app.currentHypenizedChatName));
         } else if (app.currentChatNameField.getText().isBlank() && app.currentHypenizedChatName.isEmpty()) {
             var namelessChat = new SimpleDateFormat("yyyy.MM.dd").format(new Date()) + " um " + new SimpleDateFormat("HH:mm:ss").format(new Date());
-            app.manager.saveConversationAs(hyphenizeName(namelessChat));
+            app.manager.saveConversationAs(formatToSave(namelessChat));
             app.currentHypenizedChatName = namelessChat;
             updateViewOfSavedChats();
         }
     }
 
-    public String hyphenizeName(String name) {
-        return name.replaceAll("\\.", "-").replaceAll(":", "-");
+    public String formatToSave(String name) {
+        return name
+                .replaceAll("\\.", "-")
+                .replaceAll(":", "-")
+                .replaceAll("ä", "\u00E4")
+                .replaceAll("ö", "\u00F6")
+                .replaceAll("ü", "\u00FC")
+                .replaceAll("Ä", "\u00C4")
+                .replaceAll("Ö", "\u00D6")
+                .replaceAll("Ü", "\u00DC")
+                .replaceAll("ß", "\u00DF");
     }
 
     public void updateViewOfSavedChats() {
         chats = new Vector<>(app.manager.getConversations().orElse(Collections.emptyList()));
         if (!chats.contains(NEW_CHAT)) chats.add(0, NEW_CHAT);
         chats.removeAll(flaggedAsDeleted);
+        chats.removeIf(name -> name.equals("u0308"));
         setListData(formatVectorForView(chats));
 
-        setSelectedValue(dehyphenizeName(app.currentHypenizedChatName), true);
+        setSelectedValue(formatToShow(app.currentHypenizedChatName), true);
     }
 
-    public String dehyphenizeName(String name) {
-        return name.replaceFirst("-", ".").replaceFirst("-", ".").replaceAll("-", ":");
+    public String formatToShow(String name) {
+        return name
+                .replaceFirst("-", ".")
+                .replaceFirst("-", ".")
+                .replaceAll("-", ":");
     }
 
     public void flagChatsAsDeleted(List<String> selectedNames) {
@@ -86,7 +100,7 @@ public class SavedChatsList extends JList<String> {
         if (choice == JOptionPane.YES_OPTION) {
             selectedNames.removeIf(name -> name.equals(NEW_CHAT));
             var formatForSave = new Vector<String>();
-            selectedNames.forEach(name -> formatForSave.add(hyphenizeName(name)));
+            selectedNames.forEach(name -> formatForSave.add(formatToSave(name)));
             formatForSave.forEach(flaggedAsDeleted::push);
             updateViewOfSavedChats();
             setNewChat();
@@ -96,7 +110,14 @@ public class SavedChatsList extends JList<String> {
     public void setNewChat() {
         app.savedChatsList.setSelectedValue(SavedChatsList.NEW_CHAT, true);
         app.chatPane.setText("");
-        app.chatPane.writeMsg("Hallo, ich bin dein Assistent. Wie kann ich dir helfen?", Role.ASSISTANT);
+        intro();
+    }
+
+    private void intro() {
+        app.chatPane.writeMsg("""
+                Hallo, ich bin dein Assistent.
+                Meine Antworten können aufgrund veralteter Informationen oder Missverständnissen ungenau oder falsch sein.
+                Du solltest keine sensiblen oder persönlichen Daten teilen, da ich diese nicht schützen kann.""", Role.ASSISTANT);
     }
 
     public void undoDelete() {
@@ -113,7 +134,7 @@ public class SavedChatsList extends JList<String> {
             app.chatPane.setText("");
             app.currentHypenizedChatName = "";
             app.currentChatNameField.setText("");
-            app.chatPane.writeMsg("Hallo, ich bin dein Assistent. Wie kann ich dir helfen?", Role.ASSISTANT);
+            intro();
         } else {
             app.currentHypenizedChatName = convName;
             app.chatPane.setText("");
@@ -125,8 +146,28 @@ public class SavedChatsList extends JList<String> {
 
     }
 
+    public void setNewTimeout() {
+        String input = app.timeoutTextField.getText();
+
+        try {
+            int newTimeoutValue = Integer.parseInt(input);
+            app.setTimeoutSec(newTimeoutValue);
+            app.timeoutValue = newTimeoutValue;
+            app.rememberPreferredTimeout(newTimeoutValue);
+            app.timeoutLabel.setText("maximale Wartezeit: " + app.timeoutValue + "s");
+            app.timeoutLabel.setToolTipText("Timeout nach " + app.timeoutValue + " Sekunden");
+            app.timeoutTextField.setText(String.valueOf(newTimeoutValue));
+            app.timeoutTextField.setText("");
+            SwingUtilities.invokeLater(() -> app.queryPane.requestFocusInWindow());
+
+        } catch (NumberFormatException ex) {
+            app.timeoutTextField.setText("");
+            app.timeoutLabel.setText("maximale Wartezeit: " + app.timeoutValue + "s");
+        }
+    }
+
     public void permaDeleteFlaggedChats() {
-        for (var chat : flaggedAsDeleted) app.manager.deleteConversation(hyphenizeName(chat));
+        for (var chat : flaggedAsDeleted) app.manager.deleteConversation(formatToSave(chat));
     }
 
     public void disableListener() {

@@ -67,11 +67,20 @@ public class BasicViewManager implements ViewManager {
 
     @Override
     public boolean saveConversationAs(String name) {
-        return ConversationManager.saveConversation(hyphenizeName(name), gptPort.getMessages());
+        return ConversationManager.saveConversation(formatToSave(name), gptPort.getMessages());
     }
 
-    private String hyphenizeName(String name) {
-        return name.replaceAll("\\.", "-").replaceAll(":", "-");
+    public String formatToSave(String name) {
+        return name
+                .replaceAll("\\.", "-")
+                .replaceAll(":", "-")
+                .replaceAll("ä", "\u00E4")
+                .replaceAll("ö", "\u00F6")
+                .replaceAll("ü", "\u00FC")
+                .replaceAll("Ä", "\u00C4")
+                .replaceAll("Ö", "\u00D6")
+                .replaceAll("Ü", "\u00DC")
+                .replaceAll("ß", "\u00DF");
     }
 
     @Override

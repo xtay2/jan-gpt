@@ -4,7 +4,6 @@ import app.records.views.appview.ApplicationView;
 
 import javax.swing.*;
 import java.awt.*;
-import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Vector;
@@ -64,10 +63,10 @@ public class SaveCurrentChatNameField extends JTextField {
     }
 
     public static boolean hasAccentedChars(String name) {
-        String normalized = Normalizer.normalize(name, Normalizer.Form.NFD);        // Normalize the string to decompose accented characters
-        Pattern pattern = Pattern.compile("[^\\p{ASCII}]");        // Regular expression pattern to match any non-ASCII character
-        return pattern.matcher(normalized).find();      // Check if the normalized string contains any non-ASCII character
+        Pattern pattern = Pattern.compile("[^\\p{ASCII}äÄöÖüÜß]");
+        return pattern.matcher(name).find();
     }
+
 
     public static boolean hasForbiddenChars(String name) {
         var forbiddenChars = new ArrayList<>(Arrays.asList('<', '>', ':', '"', '/', '\\', '|', '?', '*'));
