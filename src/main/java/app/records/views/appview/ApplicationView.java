@@ -9,7 +9,7 @@ import app.records.views.appview.panels.*;
 import app.records.views.appview.textfields.SaveCurrentChatNameField;
 import app.records.views.appview.textfields.TextPaneChat;
 import app.records.views.appview.textfields.TextPaneQuery;
-import org.jetbrains.annotations.NotNull;
+//import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
@@ -68,7 +68,7 @@ public class ApplicationView implements View {
             new APIKeyFrame(manager, () -> buildMainFrame(manager));
     }
 
-    void buildMainFrame(@NotNull ViewManager manager) {
+    void buildMainFrame(ViewManager manager) {
         this.manager = manager;
         rememberPreferredModel();
 
