@@ -62,8 +62,7 @@ public class ListenerKeyPressedQuery extends java.awt.event.KeyAdapter {
                 }
             } else {
                 // Execute the sending of the message in a background thread
-                app.queryPane.prompts.add(app.queryPane.getText().trim());
-                SwingUtilities.invokeLater(app.senderReceiver::sendMessage);
+                checkWebSearchAndSend();
             }
             // Prevents a new line from being added
             e.consume();
@@ -114,6 +113,12 @@ public class ListenerKeyPressedQuery extends java.awt.event.KeyAdapter {
             }
         } catch (Exception ignored) {
         }
+    }
+
+    private void checkWebSearchAndSend() {
+        var query = app.queryPane.getText().trim();
+        app.queryPane.prompts.add(query);
+        SwingUtilities.invokeLater(app.senderReceiver::sendMessage);
     }
 }
 

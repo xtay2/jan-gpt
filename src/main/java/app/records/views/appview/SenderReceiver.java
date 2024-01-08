@@ -1,9 +1,11 @@
 package app.records.views.appview;
 
 import app.managers.backend.GPTPort;
+import app.managers.backend.WebScraper;
 import app.records.Role;
 
 import javax.swing.*;
+import java.util.Optional;
 import java.util.concurrent.*;
 
 public class SenderReceiver {
@@ -19,8 +21,7 @@ public class SenderReceiver {
 
     public void sendMessage() {
         // Disable UI components to prevent multiple requests
-        app.disableElements();
-        String query = app.queryPane.getText();
+        app.appPreferenceManager.disableElements();
 
         // Initialize the counter for seconds spent waiting
         final int[] secondsSpent = {0};
@@ -33,11 +34,21 @@ public class SenderReceiver {
 
         future = executorService.submit(() -> {
             try {
+                var query = app.queryPane.getText();
                 app.chatPane.writeMsg(query, Role.USER);
                 app.chatPane.setCaretPosition(app.chatPane.getDocument().getLength());
                 app.queryPane.setText("");
                 long startTime = System.currentTimeMillis();
-                var response = app.manager.callGPT(query);
+                Optional<String> response;
+
+                if (app.webSearchEnabled)
+                    response = app.manager.callGPT(query
+                            + "\nAnswer based on the following information:\n"
+                            + String.join("\n", WebScraper.tryScrapeWebsites(WebScraper.tryGetLinksFor(query))));
+                else
+                    response = app.manager.callGPT(query);
+
+
                 if (response.isEmpty()) {
                     app.chatPane.writeMsg("< Fehler: Keine Antwort von OpenAI erhalten. >", Role.ASSISTANT);
                     app.chatPane.setCaretPosition(app.chatPane.getDocument().getLength());
@@ -71,7 +82,7 @@ public class SenderReceiver {
             timerFuture.cancel(true);
 
             // Enable UI components after the request is completed
-            SwingUtilities.invokeLater(app::enableElements);
+            SwingUtilities.invokeLater(app.appPreferenceManager::enableElements);
         });
 
 

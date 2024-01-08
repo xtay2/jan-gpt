@@ -83,4 +83,5 @@ public interface ViewManager {
     boolean deleteConversation(String name);
 
     void setTimeoutSec(int timeout);
+
 }

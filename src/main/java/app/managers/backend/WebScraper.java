@@ -7,6 +7,13 @@ import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.gson.GsonFactory;
+import com.google.api.services.customsearch.v1.Customsearch;
+import com.google.api.services.customsearch.v1.model.Result;
+import com.google.api.services.customsearch.v1.model.Search;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -20,23 +27,7 @@ import org.jsoup.select.Elements;
 public class WebScraper {
     private static final HttpClient httpClient = HttpClient.newBuilder().build();
 
-    public static void main(String[] args) {
-        returnScrapedContent();
-    }
-
-    private static void returnScrapedContent() {
-        List<String> links = GoogleAPIHelper.tryGetLinksFor("welche kriege gibt es aktuell und warum?");
-        List<String> htmlResponses = scrapeWebsites(links);
-        System.out.println(links.get(0));
-        System.out.println(htmlResponses.get(0));
-        System.out.println(links.get(1));
-        System.out.println(htmlResponses.get(1));
-        System.out.println(links.get(2));
-        System.out.println(htmlResponses.get(2));
-
-    }
-
-    public static List<String> scrapeWebsites(List<String> urls) {
+    public static List<String> tryScrapeWebsites(List<String> urls) {
         List<String> textResponses = new ArrayList<>();
 
         for (String url : urls) {
@@ -56,13 +47,46 @@ public class WebScraper {
                 StringBuilder relevantText = new StringBuilder();
                 for (Element element : relevantElements)
                     relevantText.append(element.text().replaceAll("[|\\[\\](){}]", "")).append("\n");
-
-                textResponses.add(relevantText.toString());
-
+                textResponses.add(String.valueOf(relevantText));
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
         return textResponses;
+    }
+
+    public static List<String> tryGetLinksFor(String query) {
+
+        String apiKey = "AIzaSyAY_Pub4sFkdQbybFPdgMOPIPKpMOpMQKc";
+        String searchEngineId = "f296827fce4f6406f";
+
+        HttpTransport httpTransport = new NetHttpTransport();
+        JsonFactory jsonFactory = new GsonFactory();
+
+        Customsearch customsearch = new Customsearch
+                .Builder(httpTransport, jsonFactory, null)
+                .setApplicationName("Google Search API")
+                .build();
+
+        try {
+            Customsearch.Cse.List list = customsearch.cse().list();
+            list.setQ(query);
+            list.setKey(apiKey);
+            list.setCx(searchEngineId);
+            list.setNum(2);
+
+            Search results = list.execute();
+
+            List<String> links = new ArrayList<>();
+            if (results.getItems() == null)
+                return List.of();
+            for (Result result : results.getItems())
+                links.add(result.getLink());
+            return links;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return List.of();
+        }
     }
 }

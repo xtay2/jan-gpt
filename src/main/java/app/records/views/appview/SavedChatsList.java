@@ -151,9 +151,9 @@ public class SavedChatsList extends JList<String> {
 
         try {
             int newTimeoutValue = Integer.parseInt(input);
-            app.setTimeoutSec(newTimeoutValue);
+            app.appPreferenceManager.setTimeoutSec(newTimeoutValue);
             app.timeoutValue = newTimeoutValue;
-            app.rememberPreferredTimeout(newTimeoutValue);
+            app.appPreferenceManager.rememberPreferredTimeout(newTimeoutValue);
             app.timeoutLabel.setText("maximale Wartezeit: " + app.timeoutValue + "s");
             app.timeoutLabel.setToolTipText("Timeout nach " + app.timeoutValue + " Sekunden");
             app.timeoutTextField.setText(String.valueOf(newTimeoutValue));

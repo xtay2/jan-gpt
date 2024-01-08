@@ -2,21 +2,16 @@ package app.records.views.appview;
 
 import app.Main;
 import app.managers.frontend.ViewManager;
-import app.records.GPTModel;
 import app.records.views.View;
 import app.records.views.appview.listeners.*;
 import app.records.views.appview.panels.*;
 import app.records.views.appview.textfields.SaveCurrentChatNameField;
 import app.records.views.appview.textfields.TextPaneChat;
 import app.records.views.appview.textfields.TextPaneQuery;
-//import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
-import java.util.Optional;
 
 /**
  * @author Dennis Woithe
@@ -25,6 +20,7 @@ public class ApplicationView implements View {
 
     public final Path PREFERRED_MODEL_FILE_PATH = Path.of(Main.BASE_DATA_PATH + "preferred_model.txt");
     public final Path PREFERRED_TIMEOUT_FILE_PATH = Path.of(Main.BASE_DATA_PATH + "preferred_timeout.txt");
+
     public ViewManager manager;
     public MainFrame mainFrame;
     public TextPaneQuery queryPane;
@@ -39,6 +35,7 @@ public class ApplicationView implements View {
     public JButton deleteSelectedButton;
     public JScrollPane scrollableChat;
     public JScrollPane scrollableQuery;
+
     public SavedChatsList savedChatsList;
     public DropdownGPTModels dropdownGPTModels;
     public JLabel savedChatsLabel;
@@ -56,6 +53,9 @@ public class ApplicationView implements View {
     public int timeoutValue;
     public int HEIGHT = 650, WIDTH = 1250;
     public ToolTipManager globalToolTipManager;
+    public WebCheckBox webCheckBox;
+    public boolean webSearchEnabled = false;
+    public AppPreferenceManager appPreferenceManager;
 
     /**
      * @param manager The component that excepts data.
@@ -70,7 +70,8 @@ public class ApplicationView implements View {
 
     void buildMainFrame(ViewManager manager) {
         this.manager = manager;
-        rememberPreferredModel();
+        appPreferenceManager = new AppPreferenceManager(this);
+        appPreferenceManager.rememberPreferredModel();
 
         mainFrame = new MainFrame(this);
         chatPane = new TextPaneChat();
@@ -82,7 +83,7 @@ public class ApplicationView implements View {
         senderReceiver = new SenderReceiver(this);
         progressBar = new JProgressBar();
         progressBar.setIndeterminate(false);
-        timeoutValue = getPreferredTimeout();
+        timeoutValue = appPreferenceManager.getPreferredTimeout();
         timeoutTextField = new JTextField(String.valueOf(timeoutValue));
         timeoutTextField.addFocusListener(new ListenerFocusTimeoutText(this));
         timeoutTextField.addKeyListener(new ListenerKeyPressedTimeoutText(this));
@@ -118,11 +119,13 @@ public class ApplicationView implements View {
         scrollableQuery.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollableQuery.getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE);
         scrollableQuery.setWheelScrollingEnabled(true);
-        scrollableQuery.setPreferredSize(new Dimension(1000, 160));
+        scrollableQuery.setPreferredSize(new Dimension(1000, 190));
+
+        webCheckBox = new WebCheckBox(this);
 
         timeoutPanel = new PanelTimeout(timeoutLabel, timeoutTextField);
         tooltipPanel = new PanelLeftSideBottom(tooltipCommands, dropdownGPTModels);
-        buttonsPanel = new PanelButtons(timeoutPanel, currentChatNameField, saveButton, deleteSelectedButton, deleteAllButton, tooltipPanel);
+        buttonsPanel = new PanelButtons(timeoutPanel, currentChatNameField, saveButton, deleteSelectedButton, deleteAllButton, tooltipPanel, webCheckBox);
         leftSidePanel = new PanelLeftSide(savedChatsLabel, savedChatsList, buttonsPanel);
         chatPanel = new PanelChat(chatPane);
         queryPanel = new PanelQuery(scrollableQuery, progressBar);
@@ -140,82 +143,5 @@ public class ApplicationView implements View {
         mainFrame.setVisible(true);
         mainFrame = new MainFrame(this);
         queryPane.requestFocus();
-    }
-
-    public void rememberPreferredModel() {
-        try {
-            getPreferredModel().ifPresentOrElse(
-                    manager::setGPTModel,
-                    () -> manager.setGPTModel(GPTModel.getNewest().orElseThrow())
-            );
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public int getPreferredTimeout() {
-        try {
-            return Integer.parseInt(Files.readString(PREFERRED_TIMEOUT_FILE_PATH));
-        } catch (Exception e) {
-            return 30;
-        }
-    }
-
-    public Optional<GPTModel> getPreferredModel() {
-        try {
-            return GPTModel.valueOf(Files.readString(PREFERRED_MODEL_FILE_PATH));
-        } catch (Exception e) {
-            return GPTModel.getNewest();
-        }
-    }
-
-    public void rememberPreferredModel(GPTModel model) {
-        try {
-            Files.createDirectories(PREFERRED_MODEL_FILE_PATH.getParent());
-            Files.deleteIfExists(PREFERRED_MODEL_FILE_PATH);
-            Files.createFile(PREFERRED_MODEL_FILE_PATH);
-            Files.writeString(PREFERRED_MODEL_FILE_PATH, model.modelName, StandardOpenOption.WRITE);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void rememberPreferredTimeout(int sec) {
-        try {
-            Files.createDirectories(PREFERRED_TIMEOUT_FILE_PATH.getParent());
-            Files.deleteIfExists(PREFERRED_TIMEOUT_FILE_PATH);
-            Files.createFile(PREFERRED_TIMEOUT_FILE_PATH);
-            Files.writeString(PREFERRED_TIMEOUT_FILE_PATH, String.valueOf(sec), StandardOpenOption.WRITE);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void setTimeoutSec(int sec) {
-        manager.setTimeoutSec(sec);
-    }
-
-    public void disableElements() {
-        queryPane.disableListener();
-        savedChatsList.disableListener();
-        dropdownGPTModels.setEnabled(false);
-        currentChatNameField.setEnabled(false);
-        timeoutTextField.setEnabled(false);
-        progressBar.setIndeterminate(true);
-        saveButton.setEnabled(false);
-        deleteSelectedButton.setEnabled(false);
-        deleteAllButton.setEnabled(false);
-    }
-
-    public void enableElements() {
-        queryPane.enableListener();
-        savedChatsList.enableListener();
-        dropdownGPTModels.setEnabled(true);
-        currentChatNameField.setEnabled(true);
-        timeoutTextField.setEnabled(true);
-        progressBar.setIndeterminate(false);
-        saveButton.setEnabled(true);
-        deleteSelectedButton.setEnabled(true);
-        deleteAllButton.setEnabled(true);
     }
 }

@@ -28,7 +28,7 @@ public interface GPTPort {
      */
     Optional<String> callGPT(GPTModel model, String prompt)
             throws MissingAPIKeyException, MissingModelException, TimeoutException;
-
+    
     /**
      * Test the connection to the GPT API.
      */

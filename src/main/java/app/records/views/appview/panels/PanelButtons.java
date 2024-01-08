@@ -1,5 +1,6 @@
 package app.records.views.appview.panels;
 
+import app.records.views.appview.WebCheckBox;
 import app.records.views.appview.textfields.SaveCurrentChatNameField;
 
 import javax.swing.*;
@@ -11,7 +12,13 @@ import java.awt.*;
 
 public class PanelButtons extends JPanel {
 
-    public PanelButtons(PanelTimeout timeoutPanel, SaveCurrentChatNameField saveNameField, JButton saveButton, JButton deleteSelectedButton, JButton deleteAllButton, PanelLeftSideBottom tooltipPanel) {
+    public PanelButtons(PanelTimeout timeoutPanel,
+                        SaveCurrentChatNameField saveNameField,
+                        JButton saveButton,
+                        JButton deleteSelectedButton,
+                        JButton deleteAllButton,
+                        PanelLeftSideBottom tooltipPanel,
+                        WebCheckBox webSearchCheckBox) {
         setLayout(new GridBagLayout());
 
         GridBagConstraints constraints = new GridBagConstraints();
@@ -48,9 +55,15 @@ public class PanelButtons extends JPanel {
         constraints.gridwidth = 1; // Span 1 column
         add(deleteAllButton, constraints);
 
+        // Add Web Search Toggle Button
+        constraints.gridx = 0; // Column 0
+        constraints.gridy = 6; // Row 5
+        constraints.gridwidth = 1; // Span 1 column
+        add(webSearchCheckBox, constraints);
+
         // Add Dropdown GPT Models
         constraints.gridx = 0; // Column 0
-        constraints.gridy = 5; // Row 5
+        constraints.gridy = 5; // Row 6
         constraints.gridwidth = 1; // Span 1 column
         add(tooltipPanel, constraints);
 

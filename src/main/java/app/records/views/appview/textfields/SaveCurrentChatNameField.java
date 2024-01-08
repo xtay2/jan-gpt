@@ -29,7 +29,7 @@ public class SaveCurrentChatNameField extends JTextField {
             JOptionPane.showMessageDialog(app.mainFrame, "Bitte gib über dem Button einen Namen ein.");
             return;
         } else if (hasAccentedChars(nameInBox) || hasForbiddenChars(nameInBox)) { // not saved chat and name in box is "New Chat"
-            JOptionPane.showMessageDialog(app.mainFrame, "Der Name darf keine Akzentuierungen oder Sonderzeichen enthalten.");
+            JOptionPane.showMessageDialog(app.mainFrame, "Der Name darf keine Akzentuierungen oder Sonderzeichen enthalten. '+' und '_' sind erlaubt.");
             return;
             // if nameInBox already exists but new conversation is longer than old conversation then replace old conversation with new conversation
         } else if (app.savedChatsList.chats.contains(nameInBox)) {
@@ -69,7 +69,7 @@ public class SaveCurrentChatNameField extends JTextField {
 
 
     public static boolean hasForbiddenChars(String name) {
-        var forbiddenChars = new ArrayList<>(Arrays.asList('<', '>', ':', '"', '/', '\\', '|', '?', '*'));
+        var forbiddenChars = new ArrayList<>(Arrays.asList('.', '-', '<', '>', ':', '"', '/', '\\', '|', '?', '*'));
         for (var forbiddenChar : forbiddenChars) if (name.contains(forbiddenChar.toString())) return true;
         return false;
     }

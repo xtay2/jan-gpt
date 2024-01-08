@@ -27,8 +27,8 @@ public class ListenerDropdownGPTModels implements ActionListener {
         var model = GPTModel.valueOf(modelName);
         if (model.isEmpty()) return;
 
-        app.rememberPreferredModel(model.get());
-        app.rememberPreferredModel();
+        app.appPreferenceManager.rememberPreferredModel(model.get());
+        app.appPreferenceManager.rememberPreferredModel();
         app.savedChatsList.setNewChat();
 
         // Set focus on the query text field
