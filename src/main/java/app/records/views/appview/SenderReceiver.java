@@ -1,12 +1,12 @@
 package app.records.views.appview;
 
 import app.managers.backend.GPTPort;
-import app.managers.backend.WebScraper;
 import app.records.Role;
 
 import javax.swing.*;
 import java.util.Optional;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class SenderReceiver {
 
@@ -24,13 +24,13 @@ public class SenderReceiver {
         app.appPreferenceManager.disableElements();
 
         // Initialize the counter for seconds spent waiting
-        final int[] secondsSpent = {0};
+        var secondsSpent = new AtomicInteger();
 
         // Schedule a task to update the UI every second
-        final Future<?> timerFuture = scheduler.scheduleAtFixedRate(() -> {
-            secondsSpent[0]++;
-            SwingUtilities.invokeLater(() -> app.timeoutLabel.setText("Denke nach... " + secondsSpent[0] + " / " + app.timeoutValue + "s"));
-        }, 1, 1, TimeUnit.SECONDS);
+        final Future<?> timerFuture = scheduler.scheduleAtFixedRate(
+                () -> SwingUtilities.invokeLater(
+                        () -> app.timeoutLabel.setText("Denke nach... " + secondsSpent.getAndIncrement() + " / " + app.timeoutValue + "s")
+                ), 1, 1, TimeUnit.SECONDS);
 
         future = executorService.submit(() -> {
             try {
@@ -41,12 +41,8 @@ public class SenderReceiver {
                 long startTime = System.currentTimeMillis();
                 Optional<String> response;
 
-                if (app.webSearchEnabled)
-                    response = app.manager.callGPT(query
-                            + "\nAnswer based on the following information:\n"
-                            + String.join("\n", WebScraper.tryScrapeWebsites(WebScraper.tryGetLinksFor(query))));
-                else
-                    response = app.manager.callGPT(query);
+
+                response = app.manager.callGPT(query);
 
 
                 if (response.isEmpty()) {
