@@ -25,7 +25,7 @@ public class GPTManager implements GPTPort {
     private final List<Message> messages = new ArrayList<>();
     private final HttpClient httpClient = HttpClient.newHttpClient();
     private final String apiKey;
-    private Duration timeout = Duration.of(60, java.time.temporal.ChronoUnit.SECONDS);
+    private Duration timeout = Duration.of(120, java.time.temporal.ChronoUnit.SECONDS);
 
     public GPTManager(String apiKey) {
         this.apiKey = apiKey;

@@ -22,6 +22,27 @@ public class GPTModel {
     public static final URI MODELS_URI = URI.create("https://api.openai.com/v1/models");
 
     private static final Set<GPTModel> MODELS = new HashSet<>();
+    public final String modelName;
+    private final LocalDateTime created;
+
+    private GPTModel(String modelName, long createdTs) {
+        this.modelName = modelName;
+        this.created = LocalDateTime.ofEpochSecond(createdTs, 0, ZoneOffset.UTC);
+    }
+
+    public static Optional<GPTModel> valueOf(String model) {
+        for (GPTModel gptModel : MODELS) {
+            if (gptModel.modelName.equalsIgnoreCase(model))
+                return Optional.of(gptModel);
+        }
+        return Optional.empty();
+    }
+
+    public static Set<String> values() {
+        return getModels().orElse(Collections.emptySet()).stream()
+                .map(gptModel -> gptModel.modelName)
+                .collect(Collectors.toUnmodifiableSet());
+    }
 
     /**
      * Fetches all models from the OpenAI API and returns them as a set of {@link GPTModel}.
@@ -44,35 +65,13 @@ public class GPTModel {
                     ).getAsJsonObject().getAsJsonArray("data").asList().stream().map(JsonElement::getAsJsonObject)
                     .filter(jsonObject -> {
                         var modelName = jsonObject.getAsJsonPrimitive("id").getAsString();
-                        return modelName.startsWith("gpt") && !modelName.contains("instruct");
+                        return modelName.startsWith("gpt-4") && !modelName.contains("instruct") && !modelName.contains("vision");
                     }).map(jObj -> new GPTModel(jObj.get("id").getAsString(), jObj.get("created").getAsLong())
                     ).forEach(MODELS::add);
             return Optional.of(MODELS);
         } catch (Exception e) {
             return Optional.empty();
         }
-    }
-
-    public final String modelName;
-    private final LocalDateTime created;
-
-    private GPTModel(String modelName, long createdTs) {
-        this.modelName = modelName;
-        this.created = LocalDateTime.ofEpochSecond(createdTs, 0, ZoneOffset.UTC);
-    }
-
-    public static Optional<GPTModel> valueOf(String model) {
-        for (GPTModel gptModel : MODELS) {
-            if (gptModel.modelName.equalsIgnoreCase(model))
-                return Optional.of(gptModel);
-        }
-        return Optional.empty();
-    }
-
-    public static Set<String> values() {
-        return getModels().orElse(Collections.emptySet()).stream()
-                .map(gptModel -> gptModel.modelName)
-                .collect(Collectors.toUnmodifiableSet());
     }
 
     public static Optional<GPTModel> getNewest() {
