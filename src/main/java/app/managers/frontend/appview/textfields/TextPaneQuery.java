@@ -63,14 +63,16 @@ public class TextPaneQuery extends JTextPane {
 
     public void clearHintColor() {
         app.queryPane.setText("");
-        app.queryPane.setCaretPosition(0);
         StyleConstants.setForeground(app.queryPane.gray_color_Style, Color.black);
+        StyleConstants.setForeground(app.queryPane.black_color_Style, Color.black);
+        app.queryPane.setCaretPosition(0);
     }
 
     public void initHint() {
         try {
             document = app.queryPane.getStyledDocument();
             document.insertString(document.getLength(), hint, gray_color_Style);
+            gray_color_Style = black_color_Style;
 
         } catch (BadLocationException ignored) {
         }
