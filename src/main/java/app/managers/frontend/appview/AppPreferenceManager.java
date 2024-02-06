@@ -10,7 +10,7 @@ import java.util.Optional;
  * @author A.Mukhamedov
  */
 public class AppPreferenceManager {
-    private ApplicationView app;
+    private final ApplicationView app;
 
     public AppPreferenceManager(ApplicationView app) {
         this.app = app;
@@ -35,11 +35,14 @@ public class AppPreferenceManager {
         }
     }
 
+    /**
+     * Returns default timeout of 120 sec if none set.
+     */
     public int getPreferredTimeout() {
         try {
             return Integer.parseInt(Files.readString(app.PREFERRED_TIMEOUT_FILE_PATH));
         } catch (Exception e) {
-            return 30;
+            return 120;
         }
     }
 
