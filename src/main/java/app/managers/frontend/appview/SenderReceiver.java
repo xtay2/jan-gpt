@@ -4,7 +4,6 @@ import app.managers.backend.GPTPort;
 import app.records.Role;
 
 import javax.swing.*;
-import java.util.Optional;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -26,7 +25,7 @@ public class SenderReceiver {
 
         final Future<?> timerFuture = scheduler.scheduleAtFixedRate(
                 () -> SwingUtilities.invokeLater(
-                        () -> app.timeoutLabel.setText("Denke nach... " + secondsSpent.getAndIncrement() + " / " + app.timeoutValue + "s")
+                        () -> app.timeoutLabel.setText("\0x1F916 ... " + secondsSpent.getAndIncrement() + " / " + app.timeoutValue + "s")
                 ), 1, 1, TimeUnit.SECONDS);
 
         future = executorService.submit(() -> {
@@ -36,27 +35,29 @@ public class SenderReceiver {
                 app.chatPane.setCaretPosition(app.chatPane.getDocument().getLength());
                 app.queryPane.setText("");
                 long startTime = System.currentTimeMillis();
-                Optional<String> response;
+//                Optional<String> response;
 
 
-                response = app.manager.callGPT(query);
+//                response = app.manager.callGPT(query);
+
+                app.manager.streamGPT(query, app.chatPane::writeStreamedMsg);
 
 
-                if (response.isEmpty()) {
-                    app.chatPane.writeMsg("< Fehler: Keine Antwort von OpenAI erhalten. >", Role.ASSISTANT);
+//                if (response.isEmpty()) {
+//                    app.chatPane.writeMsg("< Fehler: Keine Antwort von OpenAI erhalten. >", Role.ASSISTANT);
+//                    app.chatPane.setCaretPosition(app.chatPane.getDocument().getLength());
+//                    SwingUtilities.invokeLater(() -> app.timeoutTextField.requestFocusInWindow());
+//                }
+//                response.ifPresent(s -> {
+                long endTime = System.currentTimeMillis();
+                app.timeoutLabel.setText("Antwort nach " + (endTime - startTime) / 1000 + "s");
+//                    app.chatPane.writeMsg(s, Role.ASSISTANT);
+                SwingUtilities.invokeLater(() -> {
                     app.chatPane.setCaretPosition(app.chatPane.getDocument().getLength());
-                    SwingUtilities.invokeLater(() -> app.timeoutTextField.requestFocusInWindow());
-                }
-                response.ifPresent(s -> {
-                    long endTime = System.currentTimeMillis();
-                    app.timeoutLabel.setText("Antwort nach " + (endTime - startTime) / 1000 + "s");
-                    app.chatPane.writeMsg(s, Role.ASSISTANT);
-                    SwingUtilities.invokeLater(() -> {
-                        app.chatPane.setCaretPosition(app.chatPane.getDocument().getLength());
-                        SwingUtilities.invokeLater(() -> app.queryPane.requestFocusInWindow());
-                        app.savedChatsList.concurrentlyUpdateList();
-                    });
+                    SwingUtilities.invokeLater(() -> app.queryPane.requestFocusInWindow());
+                    app.savedChatsList.concurrentlyUpdateList();
                 });
+//                });
             } catch (GPTPort.MissingAPIKeyException ex) {
                 app.timeoutLabel.setText("missing API key");
                 System.err.println("API key is missing.");
@@ -65,10 +66,10 @@ public class SenderReceiver {
                 app.timeoutLabel.setText("missing model");
                 System.err.println("Model is missing.");
                 throw new RuntimeException(ex);
-            } catch (TimeoutException ex) {
-                app.timeoutLabel.setText("timeout reached");
-                System.err.println("Timeout reached.");
-                throw new RuntimeException(ex);
+//            } catch (TimeoutException ex) {
+//                app.timeoutLabel.setText("timeout reached");
+//                System.err.println("Timeout reached.");
+//                throw new RuntimeException(ex);
             }
 
             timerFuture.cancel(true);

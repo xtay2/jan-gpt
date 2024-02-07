@@ -8,6 +8,7 @@ import app.records.Message;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeoutException;
+import java.util.function.Consumer;
 
 /**
  * @author Dennis Woithe
@@ -46,11 +47,17 @@ public interface ViewManager {
     boolean setGPTModel(GPTModel version);
 
     /**
-     * Send a prompt to the GPT-3 API and return the response.
+     * Send a prompt to the GPT API and return the response.
      *
      * @return The response from the API or {@link Optional#empty()} if the API call failed.
      */
     Optional<String> callGPT(String prompt) throws GPTPort.MissingAPIKeyException, GPTPort.MissingModelException, TimeoutException;
+
+    /**
+     * Send a prompt to the GPT API and streams the response token wise into the consumer.
+     * This function is not asynchronous and will block until the response is fully streamed.
+     */
+    void streamGPT(String prompt, Consumer<String> consumer) throws GPTPort.MissingAPIKeyException, GPTPort.MissingModelException;
 
     /**
      * Return the currently set {@link GPTModel}.

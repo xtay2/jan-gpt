@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeoutException;
+import java.util.function.Consumer;
 
 /**
  * @author Dennis Woithe
@@ -58,6 +59,14 @@ public class BasicViewManager implements ViewManager {
         if (gptPort == null)
             throw new GPTPort.MissingAPIKeyException();
         return gptPort.callGPT(gptModel, prompt);
+    }
+
+    @Override
+    public void streamGPT(String prompt, Consumer<String> consumer)
+            throws GPTPort.MissingAPIKeyException, GPTPort.MissingModelException {
+        if (gptPort == null)
+            throw new GPTPort.MissingAPIKeyException();
+        gptPort.streamGPT(gptModel, prompt, consumer);
     }
 
     @Override

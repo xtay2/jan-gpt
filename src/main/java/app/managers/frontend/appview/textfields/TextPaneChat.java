@@ -37,6 +37,22 @@ public class TextPaneChat extends JTextPane {
         StyleConstants.setFontFamily(assistantStyleAttr, "Arial");
     }
 
+    public void writeStreamedMsg(String responseToken) {
+        appendToDoc(responseToken);
+    }
+
+    private void appendToDoc(String msg) {
+        appendToDoc(msg, null);
+    }
+
+    private void appendToDoc(String msg, SimpleAttributeSet attributeSet) {
+        try {
+            document.insertString(document.getLength(), msg, attributeSet);
+        } catch (BadLocationException e) {
+            throw new AssertionError(e);
+        }
+    }
+
     public void writeMsg(String response, Role role) {
         SimpleAttributeSet roleAttributes = role == Role.USER ? userStyleAttr : assistantStyleAttr;
 
@@ -69,18 +85,6 @@ public class TextPaneChat extends JTextPane {
                 lastMatchEnd = matchEnd;
             }
         }
-    }
-
-    private void appendToDoc(String msg, SimpleAttributeSet attributeSet) {
-        try {
-            document.insertString(document.getLength(), msg, attributeSet);
-        } catch (BadLocationException e) {
-            throw new AssertionError(e);
-        }
-    }
-
-    private void appendToDoc(String msg) {
-        appendToDoc(msg, null);
     }
 
 }
