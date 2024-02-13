@@ -54,7 +54,9 @@ public class ListenerKeyPressedQuery extends java.awt.event.KeyAdapter {
                 } catch (BadLocationException ignored) {
                 }
             } else {
-                checkWebSearchAndSend();
+                var query = app.queryPane.getText().trim();
+                app.queryPane.prompts.add(query);
+                SwingUtilities.invokeLater(app.requestManager::sendRequest);
             }
             e.consume();
         }
@@ -100,10 +102,5 @@ public class ListenerKeyPressedQuery extends java.awt.event.KeyAdapter {
         }
     }
 
-    private void checkWebSearchAndSend() {
-        var query = app.queryPane.getText().trim();
-        app.queryPane.prompts.add(query);
-        SwingUtilities.invokeLater(app.senderReceiver::sendMessage);
-    }
 }
 

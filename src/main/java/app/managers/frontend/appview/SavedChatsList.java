@@ -114,10 +114,11 @@ public class SavedChatsList extends JList<String> {
     }
 
     private void intro() {
-        app.chatPane.writeMsg("""
+        app.requestManager.printRole(Role.ASSISTANT);
+        app.requestManager.printMsg("""
                 Hallo, ich bin dein Assistent.
                 Meine Antworten können aufgrund veralteter Informationen oder Missverständnissen ungenau oder falsch sein.
-                Du solltest keine sensiblen oder persönlichen Daten teilen, da ich diese nicht schützen kann.""", Role.ASSISTANT);
+                Du solltest keine sensiblen oder persönlichen Daten teilen, da ich diese nicht schützen kann.""");
     }
 
     public void undoDelete() {
@@ -127,7 +128,6 @@ public class SavedChatsList extends JList<String> {
         updateViewOfSavedChats();
     }
 
-    // loads a conversation of type Optional<List<Message>> from the manager and displays it in the chat pane
     public void openCurrentChatAndUpdateChatPane(String convName) {
         if (convName.equals(SavedChatsList.NEW_CHAT)) {
             app.manager.newConversation();
@@ -138,12 +138,16 @@ public class SavedChatsList extends JList<String> {
         } else {
             app.currentHypenizedChatName = convName;
             app.chatPane.setText("");
-            app.manager.loadConversation(convName).ifPresent(
-                    msgs -> msgs.forEach(msg -> app.chatPane.writeMsg(msg.content(), msg.role()))
-            );
+            loadChat(convName);
         }
+        app.chatPane.setCaretPosition(app.chatPane.getDocument().getLength());
         SwingUtilities.invokeLater(() -> app.queryPane.requestFocusInWindow());
+    }
 
+    public void loadChat(String convName) {
+        app.manager.loadConversation(convName)
+                .ifPresent(msgs -> msgs.forEach(
+                        msg -> app.requestManager.printChat(msg.role(), msg.content())));
     }
 
     public void setNewTimeout() {

@@ -10,7 +10,7 @@ public class Tooltip extends JLabel {
 
     public Tooltip(String str) {
         super(str);
-        Font customFont = new Font("Segoe UI Symbol", Font.PLAIN, 18); // a font that supports the "ⓘ" symbol
+        Font customFont = new Font("Segoe UI Symbol", Font.PLAIN, 18); // font supporting symbol "ⓘ"
         setFont(customFont);
         setVisible(true);
         setToolTipText("<html>" +

@@ -27,7 +27,7 @@ public class ApplicationView implements View {
     public TextPaneQuery queryPane;
     public TextPaneChat chatPane;
     public JTextArea unformattedChat;
-    public SenderReceiver senderReceiver;
+    public RequestManager requestManager;
     public JProgressBar progressBar;
     public SaveCurrentChatNameField currentChatNameField;
     public String currentHypenizedChatName;
@@ -80,7 +80,7 @@ public class ApplicationView implements View {
         queryPane = new TextPaneQuery(this);
         queryPane.initHint();
         savedChatsLabel = new JLabel("Gespeicherte Chats:", SwingConstants.CENTER);
-        senderReceiver = new SenderReceiver(this);
+        requestManager = new RequestManager(this);
         progressBar = new JProgressBar();
         progressBar.setIndeterminate(false);
         timeoutValue = appPreferenceManager.getPreferredTimeout();

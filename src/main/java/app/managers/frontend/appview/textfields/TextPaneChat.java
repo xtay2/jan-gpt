@@ -17,35 +17,40 @@ import java.util.regex.Pattern;
  */
 public class TextPaneChat extends JTextPane {
 
-    private final StyledDocument document;
-    private final SimpleAttributeSet codeStyleAttr = new SimpleAttributeSet();
-    private final SimpleAttributeSet userStyleAttr = new SimpleAttributeSet();
-    private final SimpleAttributeSet assistantStyleAttr = new SimpleAttributeSet();
-
+    public final StyledDocument document;
+    public final SimpleAttributeSet baseColor, codeColor, userColor, assistantColor;
 
     public TextPaneChat() {
         super();
         setEditable(false);
         document = getStyledDocument();
-        StyleConstants.setForeground(codeStyleAttr, Color.BLUE);
-        StyleConstants.setFontFamily(codeStyleAttr, "Consolas");
 
-        StyleConstants.setForeground(userStyleAttr, new Color(255, 155, 0));
-        StyleConstants.setFontFamily(userStyleAttr, "Arial");
+        baseColor = new SimpleAttributeSet();
+        StyleConstants.setForeground(baseColor, new Color(0, 0, 0));
+        StyleConstants.setFontFamily(baseColor, "Arial");
 
-        StyleConstants.setForeground(assistantStyleAttr, new Color(55, 155, 0));
-        StyleConstants.setFontFamily(assistantStyleAttr, "Arial");
+        codeColor = new SimpleAttributeSet();
+        StyleConstants.setForeground(codeColor, new Color(0, 0, 235));
+        StyleConstants.setFontFamily(codeColor, "Consolas");
+
+        userColor = new SimpleAttributeSet();
+        StyleConstants.setForeground(userColor, new Color(255, 155, 0));
+        StyleConstants.setFontFamily(userColor, "Arial");
+
+        assistantColor = new SimpleAttributeSet();
+        StyleConstants.setForeground(assistantColor, new Color(55, 155, 0));
+        StyleConstants.setFontFamily(assistantColor, "Arial");
     }
 
     public void writeStreamedMsg(String responseToken) {
         appendToDoc(responseToken);
     }
 
-    private void appendToDoc(String msg) {
+    public void appendToDoc(String msg) {
         appendToDoc(msg, null);
     }
 
-    private void appendToDoc(String msg, SimpleAttributeSet attributeSet) {
+    public void appendToDoc(String msg, SimpleAttributeSet attributeSet) {
         try {
             document.insertString(document.getLength(), msg, attributeSet);
         } catch (BadLocationException e) {
@@ -53,38 +58,39 @@ public class TextPaneChat extends JTextPane {
         }
     }
 
-    public void writeMsg(String response, Role role) {
-        SimpleAttributeSet roleAttributes = role == Role.USER ? userStyleAttr : assistantStyleAttr;
-
-        appendToDoc(role.alias(false) + ":\n", roleAttributes);
-        if (!response.contains("```"))
-            appendToDoc(response + "\n\n");
-        else {
-            var codePattern = Pattern.compile("```\\w+\\s+(.*?)```", Pattern.DOTALL);
-            var matcher = codePattern.matcher(response);
-            for (int matchStart = 0, matchEnd = 0, lastMatchEnd = 0; matcher.find(); matchStart = matcher.start(), matchEnd = matcher.end()) {
-                if (matchStart > lastMatchEnd) {
-                    appendToDoc(response.substring(lastMatchEnd, matchStart - 1));
-                    appendToDoc("\n");
-                }
-                var code = matcher.group(1).trim();
-                appendToDoc(code, codeStyleAttr);
-                appendToDoc("\n");
-
-                var copyCodeButton = new JButton("Code kopieren");
-                var copyButtonAttr = new SimpleAttributeSet();
-                copyCodeButton.addActionListener(e -> {
-                    Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-                    StringSelection selection = new StringSelection(code);
-                    clipboard.setContents(selection, null);
-                });
-                StyleConstants.setComponent(copyButtonAttr, copyCodeButton);
-
-                appendToDoc(" ", copyButtonAttr);
-                appendToDoc("\n\n");
-                lastMatchEnd = matchEnd;
-            }
-        }
+    public SimpleAttributeSet getRoleColor(Role role) {
+        return role == Role.USER ? userColor : assistantColor;
     }
+
+
+    public void reformatChat() {
+        var fullChat = getText();
+        setText("");
+        var userPattern = Pattern.compile("User: (.*?)\n", Pattern.DOTALL);
+        var assistantPattern = Pattern.compile("Assistant: (.*?)\n", Pattern.DOTALL);
+        var codePattern = Pattern.compile("```\\w+\\s+(.*?)```", Pattern.DOTALL);
+        var matcher = codePattern.matcher(fullChat);
+        for (int matchStart = 0, matchEnd = 0, lastMatchEnd = 0; matcher.find(); matchStart = matcher.start(), matchEnd = matcher.end()) {
+            if (matchStart > lastMatchEnd) {
+                appendToDoc(fullChat.substring(lastMatchEnd, matchStart - 1));
+            }
+            var code = matcher.group(1).trim();
+            appendToDoc(code + "\n", codeColor);
+
+            var copyCodeButton = new JButton("Code kopieren");
+            var copyButtonAttr = new SimpleAttributeSet();
+            copyCodeButton.addActionListener(e -> {
+                Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+                StringSelection selection = new StringSelection(code);
+                clipboard.setContents(selection, null);
+            });
+            StyleConstants.setComponent(copyButtonAttr, copyCodeButton);
+
+            appendToDoc(" ", copyButtonAttr);
+            lastMatchEnd = matchEnd;
+        }
+        appendToDoc(fullChat);
+    }
+
 
 }
